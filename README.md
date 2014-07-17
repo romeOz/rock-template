@@ -30,9 +30,9 @@ In your composer.json:
 
 ```json
 {
- "require": {
-     "romeo7/rock-template": "*"
- }
+    "require": {
+        "romeo7/rock-template": "*"
+    }
 }
 ```
 
@@ -46,14 +46,14 @@ Requirements
 ```
  composer require romeo7/rock-cache:*
 ```
-  
+
  or in your composer.json:
 
 ```json
  {
-  "require": {
-      "romeo7/rock-cache": "*"
-  }
+    "require": {
+        "romeo7/rock-cache": "*"
+    }
  }
 ```
 

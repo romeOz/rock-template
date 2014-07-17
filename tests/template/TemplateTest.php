@@ -26,6 +26,11 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->getChunk('@rockunit.tpl/condition_filter', ['title' => '<b>test</b>', 'number' => 3]), file_get_contents($this->path . '/_condition_filter.html'));
     }
 
+    public function testIfException()
+    {
+        $this->setExpectedException(Exception::className());
+        $this->template->replace('[[+title:if]]', ['title'=> 'Hello World']);
+    }
 
     public function testFilters()
     {
@@ -41,8 +46,16 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace('[[+title:truncate&length=`5`]]', ['title'=> 'Hello world']), 'Hello...');
         $this->template->removeAllPlaceholders();
 
+        // null + truncate
+        $this->assertSame($this->template->replace('[[+title:truncate]]', ['title'=> null]), '');
+        $this->template->removeAllPlaceholders();
+
         // truncate words
         $this->assertSame($this->template->replace('[[+title:truncateWords&length=`6`]]', ['title'=> 'Hello world']), 'Hello...');
+        $this->template->removeAllPlaceholders();
+
+        // null + truncate words
+        $this->assertSame($this->template->replace('[[+title:truncateWords]]', ['title'=> null]), '');
         $this->template->removeAllPlaceholders();
 
         // lower
@@ -55,6 +68,18 @@ class TemplateTest extends TemplateCommon
 
         // upper first character
         $this->assertSame($this->template->replace('[[+title:upperFirst]]', ['title'=> 'hello world']), 'Hello world');
+        $this->template->removeAllPlaceholders();
+
+        // trim pattern
+        $this->assertSame($this->template->replace('[[+title:trimPattern&pattern=`/l{2}/`]]', ['title'=> 'Hello World']), 'Heo World');
+        $this->template->removeAllPlaceholders();
+
+        // contains success
+        $this->assertSame($this->template->replace('[[+title:contains&is=`Wo`&then=`[[+title]]`]]', ['title'=> 'Hello World']), 'Hello World');
+        $this->template->removeAllPlaceholders();
+
+        // contains fail
+        $this->assertSame($this->template->replace('[[+title:contains&is=`wo`&then=`[[+title]]`]]', ['title'=> 'Hello World']), '');
         $this->template->removeAllPlaceholders();
 
         // encode
@@ -134,6 +159,12 @@ class TemplateTest extends TemplateCommon
 
         $this->setExpectedException(Exception::className());
         $this->template->replace('[[+num:formula&operator=`<!<!<`&operand=`4`]]', ['num'=> 2]);
+    }
+
+    public function testContainsException()
+    {
+        $this->setExpectedException(Exception::className());
+        $this->template->replace('[[+title:contains]]', ['title'=> 'Hello World']);
     }
 
     public function testUnknownFilter()

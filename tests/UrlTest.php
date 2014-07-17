@@ -35,7 +35,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($url->getHttpsUrl(),'https://site.com/');
 
         // absolute
-        $_SERVER['HTTP_HOST'] = '';
+        $_SERVER['HTTP_HOST'] = null;
         $url = new Url();
         $this->assertSame($url->getAbsoluteUrl(),'http://site.com/');
 
@@ -128,6 +128,9 @@ class UrlTest extends \PHPUnit_Framework_TestCase
                 ->getRelativeUrl(),
             '/parts/news/?view=all#name'
         );
+
+        // get unknown data of url
+        $this->assertNull((new Url())->foo);
     }
 
     public function testGetCustomUrl()

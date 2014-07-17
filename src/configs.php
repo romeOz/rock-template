@@ -42,10 +42,10 @@ $execute = function(){
 
 return [
     'filters' => [
-        'stripString' => [
+        'trimPattern' => [
             'class' => StringFilter::className(),
         ],
-        'stripTags' => [
+        'contains' => [
             'class' => StringFilter::className(),
         ],
         'truncate' => [

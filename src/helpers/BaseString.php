@@ -171,12 +171,24 @@ class BaseString
      * Trim by pattern
      *
      * @param string $string
-     * @param string $pattern
+     * @param string $pattern - regexp pattern
+     * @param int       $limit
      * @return string
      */
-    public static function trimPattern($string, $pattern)
+    public static function trimPattern($string, $pattern, $limit = -1)
     {
-        return preg_replace($pattern, '', $string);
+        return preg_replace($pattern, '', $string, $limit);
+    }
+
+    /**
+     * Check contains word or char in string
+     * @param $string
+     * @param $contains
+     * @return bool
+     */
+    public static function contains($string, $contains)
+    {
+        return strpos($string, $contains) !== false;
     }
 
     /**

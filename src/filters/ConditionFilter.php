@@ -95,7 +95,7 @@ abstract class ConditionFilter
          * is two operators (e.g. if ... then)
          */
         if (empty($params) || count($params) < 2 || !isset($params['then'])) {
-            throw new Exception(Exception::UNKNOWN_PARAM_FILTER, 0, ['filter' => __METHOD__]);
+            throw new Exception(Exception::UNKNOWN_PARAM_FILTER, 0, ['name' => __METHOD__]);
         }
         $params['else'] = isset($params['else']) ? $params['else'] : null;
         $template = clone $template;

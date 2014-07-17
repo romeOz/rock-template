@@ -24,4 +24,28 @@ class StringTest extends \PHPUnit_Framework_TestCase
             ['hello {value} !!!', [], 'hello {value} !!!'],
         ];
     }
+
+    public function testLower()
+    {
+        $this->assertSame(String::lower('Foo'), 'foo');
+
+        // empty
+        $this->assertSame(String::lower(''), '');
+    }
+
+    public function testUpper()
+    {
+        $this->assertSame(String::upper('Foo'), 'FOO');
+
+        // empty
+        $this->assertSame(String::upper(''), '');
+    }
+
+    public function testUpperFirst()
+    {
+        $this->assertSame(String::upperFirst('foo'), 'Foo');
+
+        // empty
+        $this->assertSame(String::upperFirst(''), '');
+    }
 }
