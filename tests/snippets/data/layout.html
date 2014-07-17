@@ -1,0 +1,9 @@
+[[ListView
+    ?call=`context.getAll`
+    ?prepare=`{"call" : "rockunit\\snippets\\data\\PrepareSnippet"}`
+    ?tpl=`@rockunit.tpl/item`
+    ?wrapperTpl=`@INLINE[[!+output]]
+[[+countItems]]`
+    ?nav=`{"call" : "context.getPagination", "toPlaceholder" : "navigation"}`
+]]
+[[!++navigation]]
