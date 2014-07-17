@@ -22,15 +22,15 @@ class DateTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTimestamp($time)
     {
-        $this->assertSame($this->date->set($time)->getTimestamp(), 595285200);
+        $this->assertSame($this->date->set($time)->getTimestamp(), 595296000);
     }
 
     public function providerData()
     {
         return [
             ['1988-11-12'],
-            [595285200],
-            ['595285200']
+            [595296000],
+            ['595296000']
         ];
     }
 
