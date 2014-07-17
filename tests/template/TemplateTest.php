@@ -10,20 +10,83 @@ use rockunit\template\snippets\TestSnippet;
 
 class TemplateTest extends TemplateCommon
 {
+    protected function setUp()
+    {
+        parent::setUp();
+        static::clearRuntime();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+        static::clearRuntime();
+    }
+
     protected function calculatePath()
     {
         $this->path = __DIR__ . '/data';
     }
+
+    public function testPlaceholder()
+    {
+        // magic methods
+        $this->template->text = 'foo';
+        $this->assertTrue(isset($this->template->text));
+        $this->assertSame($this->template->text, 'foo');
+        unset($this->template->text);
+        $this->assertFalse(isset($this->template->text));
+
+        // get all local
+        $this->template->text = 'foo';
+        $this->assertSame($this->template->getAllPlaceholders(), ['text' => 'foo']);
+
+        // get all global
+        $this->template->addPlaceholder('bar', 'test', true);
+        $this->assertTrue($this->template->hasPlaceholder('bar', true));
+        $this->assertSame($this->template->getAllPlaceholders(false, true), ['bar' => 'test']);
+
+        // remove multi placeholder
+        $this->template->removeMultiPlaceholders(['bar'], true);
+        $this->assertFalse($this->template->hasPlaceholder('bar', true));
+    }
+
+    public function testResource()
+    {
+        $this->template->addResource('foo', 'foo');
+        $this->template->addResource('bar', 'bar');
+        $this->template->addResource('baz', 'baz');
+        $this->assertSame($this->template->getAllResources(true, ['foo', 'bar'], ['foo']), ['bar' => 'bar']);
+
+        // remove resource
+        $this->template->removeResource('bar');
+        $this->assertFalse($this->template->hasResource('bar'));
+    }
+
     public function testRender()
     {
         $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>']], true);
-        $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']], true);
+        $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']]);
         $this->assertSame($this->template->render($this->path . '/layout', ['text' => 'world']), file_get_contents($this->path . '/_layout.html'));
+    }
+
+    public function testRenderUnknownFileException()
+    {
+        $this->setExpectedException(Exception::className());
+        $this->template->render($this->path . '/unknown');
+    }
+
+    public function testHasChunk()
+    {
+        $this->assertTrue($this->template->hasChunk($this->path . '/layout'));
     }
 
     public function testConditionFilter()
     {
         $this->assertSame($this->template->getChunk('@rockunit.tpl/condition_filter', ['title' => '<b>test</b>', 'number' => 3]), file_get_contents($this->path . '/_condition_filter.html'));
+
+        // unknown param
+        $this->setExpectedException(Exception::className());
+        $this->template->replace('[[+content:if&foo=`null`&then=`[[!+title]]`]]');
     }
 
     public function testIfException()
@@ -82,6 +145,22 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace('[[+title:contains&is=`wo`&then=`[[+title]]`]]', ['title'=> 'Hello World']), '');
         $this->template->removeAllPlaceholders();
 
+        // isParity success
+        $this->assertSame($this->template->replace('[[+num:isParity&then=`success`]]', ['num'=> 2]), 'success');
+        $this->template->removeAllPlaceholders();
+
+        // isParity fail
+        $this->assertSame($this->template->replace('[[+num:isParity&then=`success`&else=`fail`]]', ['num'=> '3']), 'fail');
+        $this->template->removeAllPlaceholders();
+
+        // to positive fail
+        $this->assertSame($this->template->replace('[[+num:positive]]', ['num'=> '7']), '7');
+        $this->template->removeAllPlaceholders();
+
+        // to positive fail
+        $this->assertSame($this->template->replace('[[+num:positive]]', ['num'=> '-7']), '0');
+        $this->template->removeAllPlaceholders();
+
         // encode
         $this->assertSame($this->template->replace('[[!+title:encode]]', ['title'=> '<b>Hello World</b>']), String::encode('<b>Hello World</b>'));
         $this->template->removeAllPlaceholders();
@@ -104,7 +183,12 @@ class TemplateTest extends TemplateCommon
 
         // modify date
         $replace = '[[+date:modifyDate&format=`dmyhm`]]';
-        $this->assertSame($this->template->replace($replace, ['date'=> '2014-02-12 15:01']), '12 February 15:01');
+        $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '12 February 2012 15:01');
+        $this->template->removeAllPlaceholders();
+
+        // modify date
+        $replace = '[[+date:modifyDate&format=`dmy`]]';
+        $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '12 February 2012');
         $this->template->removeAllPlaceholders();
 
         // multiplication
@@ -167,6 +251,12 @@ class TemplateTest extends TemplateCommon
         $this->template->replace('[[+title:contains]]', ['title'=> 'Hello World']);
     }
 
+    public function testIsParityException()
+    {
+        $this->setExpectedException(Exception::className());
+        $this->template->replace('[[+num:isParity]]', ['num'=> 2]);
+    }
+
     public function testUnknownFilter()
     {
         $this->setExpectedException(Exception::className());
@@ -192,6 +282,12 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`]]'), '<b>test snippet</b>');
     }
 
+    public function testUnknownSnippet()
+    {
+        $this->setExpectedException(Exception::className());
+        $this->template->getSnippet('Unknown');
+    }
+
     public function testExtensions()
     {
         $this->template->extensions = [
@@ -207,7 +303,7 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace('[[!#extension.get?param=`<b>test extension</b>`]]'), '<b>test extension</b>');
     }
 
-    public function testRockCache()
+    public function testRockCacheExists()
     {
         if (!interface_exists('\rock\cache\CacheInterface') || !class_exists('\League\Flysystem\Filesystem')) {
             $this->markTestSkipped('Rock cache not installed.');
@@ -215,9 +311,48 @@ class TemplateTest extends TemplateCommon
     }
 
     /**
-     * @depends testRockCache
+     * @depends testRockCacheExists
      */
-    public function testCache()
+    public function testCacheSnippet()
+    {
+        $cache = $this->getCache();
+        $className = get_class(new TestSnippet);
+        $this->template->cache = $cache;
+        $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
+        $this->assertTrue($cache->has($className));
+        $this->assertSame($cache->get($className), '<b>test snippet</b>');
+        $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
+    }
+
+    /**
+     * @depends testRockCacheExists
+     */
+    public function testCacheLayout()
+    {
+        $cache = $this->getCache();
+        $this->template->cache = $cache;
+        $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>']], true);
+        $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']]);
+        $placeholders = [
+            'text' => 'world',
+            'cacheKey' => 'key_layout'
+        ];
+        $this->assertSame($this->template->render($this->path . '/layout', $placeholders), file_get_contents($this->path . '/_layout.html'));
+        $this->assertTrue($cache->has('key_layout'));
+        $this->assertSame($this->template->render($this->path . '/layout', $placeholders), file_get_contents($this->path . '/_layout.html'));
+    }
+
+    public function testRenderAsPHP()
+    {
+        $this->template->engine = Template::PHP;
+        $this->template->fileExtension = 'php';
+        $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>']], true);
+        $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']], true);
+        $this->assertSame($this->template->render($this->path . '/layout', ['text' => 'world']), file_get_contents($this->path . '/_layout.html'));
+        $this->assertSame($this->template->getChunk($this->path . '/subchunk', ['title'=> 'test']), '<b>subchunk</b>test');
+    }
+
+    protected function getCache()
     {
         $adapter = new \rock\cache\filemanager\FileManager(
             [
@@ -233,30 +368,9 @@ class TemplateTest extends TemplateCommon
                     }
             ]
         );
-        $cache = new \rock\cache\CacheFile([
-          'enabled' => true,
-          'adapter' => $adapter,
-        ]);
-        $cache->flush();
-        static::clearRuntime();
-
-        $className = get_class(new TestSnippet);
-        $this->template->cache = $cache;
-        $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
-        $this->assertTrue($cache->has($className));
-        $this->assertSame($cache->get($className), '<b>test snippet</b>');
-
-        $cache->flush();
-        static::clearRuntime();
-    }
-
-    public function testRenderAsPHP()
-    {
-        $this->template->engine = Template::PHP;
-        $this->template->fileExtension = 'php';
-        $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>']], true);
-        $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']], true);
-        $this->assertSame($this->template->render($this->path . '/layout', ['text' => 'world']), file_get_contents($this->path . '/_layout.html'));
-        $this->assertSame($this->template->getChunk($this->path . '/subchunk', ['title'=> 'test']), '<b>subchunk</b>test');
+        return new \rock\cache\CacheFile([
+                                               'enabled' => true,
+                                               'adapter' => $adapter,
+                                           ]);
     }
 }

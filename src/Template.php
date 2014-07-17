@@ -164,11 +164,8 @@ class Template
         $name = static::getAlias($name);
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($placeholders);
 
-        /**
-         * Get cache
-         */
+        // Get cache
         if (($resultCache = $this->getCache($cacheKey)) !== false) {
-
             return $resultCache;
         }
 
@@ -183,9 +180,7 @@ class Template
             $result = implode("\n", [$this->beginPage(), $this->beginBody(), $result, $this->endBody(), $this->endPage()]);
         }
 
-        /**
-         * Set cache
-         */
+        // Set cache
         $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags);
 
         return $result;
@@ -214,10 +209,7 @@ class Template
             $this->addMultiPlaceholders($placeholders ? : []);
             return $this->renderPhpFile($path);
         } else {
-            if (!$result = file_get_contents($path)) {
-                throw new Exception(Exception::UNKNOWN_FILE, 0, ['path' => $path]);
-            }
-            return $this->replace($result, $placeholders);
+            return $this->replace(file_get_contents($path), $placeholders);
         }
     }
 
@@ -1231,7 +1223,7 @@ class Template
         /**
          * Validate: if count quotes does not parity
          */
-        if (!Numeric::parity(mb_substr_count($matches[0], '`', 'UTF-8'))) {
+        if (!Numeric::isParity(mb_substr_count($matches[0], '`', 'UTF-8'))) {
             return $matches[0];
         }
 
@@ -1677,12 +1669,13 @@ class Template
 
     /**
      * Caching template
+     *
      * @param null $key
      * @param null $value
      * @param int  $expire
-     * @param null $dependency
+     * @param null $tags
      */
-    protected function setCache($key = null, $value = null, $expire = 0, $dependency = null)
+    protected function setCache($key = null, $value = null, $expire = 0, $tags = null)
     {
         if (!isset($this->cache)) {
             return;
@@ -1700,7 +1693,7 @@ class Template
                 $key,
                 $value,
                 $expire,
-                is_string($dependency) ? explode(',', $dependency) : $dependency
+                is_string($tags) ? explode(',', $tags) : $tags
             );
             $this->cachePlaceholders = [];
         }

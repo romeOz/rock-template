@@ -152,7 +152,7 @@ abstract class ConditionFilter
             $actual = is_string($actual) ?  explode(',', $actual) : $actual;
             $result = in_array($value, $actual) ? $template->replace($params['then'], $placeholders) : $template->replace($params['else'], $placeholders);
         } else {
-            return false;
+            throw new Exception(Exception::UNKNOWN_PARAM_FILTER, 0, ['name' => json_encode($params)]);
         }
 
         return $result;

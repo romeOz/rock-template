@@ -48,4 +48,17 @@ class StringTest extends \PHPUnit_Framework_TestCase
         // empty
         $this->assertSame(String::upperFirst(''), '');
     }
+
+    public function testTruncateWords()
+    {
+        $this->assertSame(String::truncateWords('Hello', 7), 'Hello');
+        $this->assertSame(String::truncateWords('Hello', 3), '');
+        $this->assertSame(String::truncateWords('Hello world', 7), 'Hello...');
+    }
+
+    public function testTruncate()
+    {
+        $this->assertSame(String::truncate('Hello', 7), 'Hello');
+        $this->assertSame(String::truncate('Hello', 4), 'Hell...');
+    }
 }

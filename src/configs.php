@@ -3,6 +3,7 @@ use rock\template\date\Date;
 use rock\template\execute\CacheExecute;
 use rock\template\filters\BaseFilter;
 use rock\template\filters\ConditionFilter;
+use rock\template\filters\NumericFilter;
 use rock\template\filters\StringFilter;
 use rock\template\snippets\Formula;
 use rock\template\snippets\ForSnippet;
@@ -68,6 +69,12 @@ return [
         ],
         'decode' => [
             'class' => StringFilter::className(),
+        ],
+        'isParity' => [
+            'class' => NumericFilter::className(),
+        ],
+        'positive' => [
+            'class' => NumericFilter::className(),
         ],
         'formula' => [
             'class' => BaseFilter::className(),

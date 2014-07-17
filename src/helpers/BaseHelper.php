@@ -15,12 +15,6 @@ class BaseHelper implements SerializeInterface
         return isset($value) ? $value : $default;
     }
 
-
-    public static function update(&$value, callable $callback, $default = null)
-    {
-        return $value ? $callback($value) : $default;
-    }
-
     /**
      * Conversion to type
      *

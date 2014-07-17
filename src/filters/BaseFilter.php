@@ -1,6 +1,7 @@
 <?php
 namespace rock\template\filters;
 
+use rock\template\ClassName;
 use rock\template\date\Date;
 use rock\template\Exception;
 use rock\template\helpers\ArrayHelper;
@@ -10,8 +11,10 @@ use rock\template\helpers\Serialize;
 use rock\template\Template;
 use rock\template\url\Url;
 
-class BaseFilter extends ConditionFilter
+class BaseFilter
 {
+    use ClassName;
+
     /**
      * Unserialize
      *
@@ -37,7 +40,6 @@ class BaseFilter extends ConditionFilter
 
         return $result;
     }
-
 
     /**
      * Replace variables template (chunk, snippet...)

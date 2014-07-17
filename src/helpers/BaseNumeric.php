@@ -5,28 +5,26 @@ namespace rock\template\helpers;
 class BaseNumeric
 {
     /**
-     * Validation numeric is parity
+     * Is parity
      *
      * @param int $value - numeric
      * @return boolean
      */
-    public static function parity($value)
+    public static function isParity($value)
     {
         return $value & 1 ? false : true;
     }
 
-
     /**
-     * Get Positive
+     * Number convert to positive
      *
      * @param int $value - number
      * @return int
      */
-    public static function positive($value)
+    public static function toPositive($value)
     {
-        return ($value < 0) ? 0 : $value;
+        return $value < 0 ? 0 : $value;
     }
-
 
     /**
      * String conversion to numbers
@@ -39,13 +37,10 @@ class BaseNumeric
         if (!is_numeric($value)) {
             return 0;
         }
-        $buff = 1 + $value;
-        if (is_int($buff)) {
+        $is = 1 + $value;
+        if (is_int($is)) {
             return (int)$value;
-        } elseif (is_float($buff)) {
-            return (float)$value;
         }
-
-        return 0;
+        return (float)$value;
     }
 }

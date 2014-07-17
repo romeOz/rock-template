@@ -46,6 +46,10 @@ class BaseArrayHelper
         if ($key instanceof \Closure) {
             return $key($array, $default);
         }
+
+        if (is_object($array) && is_array($key)) {
+            $key = implode('.', $key);
+        }
         if (is_array($array) && is_array($key)) {
             return static::keyAsArray($array, $key, $default);
         }
@@ -112,7 +116,6 @@ class BaseArrayHelper
         return $array;
     }
 
-
     /**
      * Map recursive
      *
@@ -123,7 +126,7 @@ class BaseArrayHelper
      * @param int      $count
      * @return array
      */
-    public static function map(array $array, \Closure $callback, $recursive = false, $depth = null, &$count = 0)
+    public static function map(array $array, callable $callback, $recursive = false, $depth = null, &$count = 0)
     {
         foreach ($array as $key => $value) {
             if (isset($depth) && $count === $depth) {
