@@ -7,6 +7,18 @@ use rock\template\helpers\String;
 use rock\template\ObjectTrait;
 use rock\template\Template;
 
+/**
+ * Class Url
+ * @property string $scheme
+ * @property string $host
+ * @property int $port
+ * @property string $user
+ * @property string $pass
+ * @property string $path
+ * @property string|null $query
+ * @property string|null $fragment
+ * @package rock\template\url
+ */
 class Url implements UrlInterface
 {
     use ObjectTrait;
@@ -30,7 +42,7 @@ class Url implements UrlInterface
 
     public function set($url = null)
     {
-        $url = empty($url) ? $this->getHostInfo() . $this->getBaseUrl() : Template::getAlias($url);
+        $url = empty($url) ? $this->getBaseHostInfo() . $this->getBaseUrl() : Template::getAlias($url);
         $this->dataUrl = parse_url(trim($url));
         if (isset($this->dataUrl['query'])) {
             parse_str($this->dataUrl['query'], $this->dataUrl['query']);
@@ -176,7 +188,7 @@ class Url implements UrlInterface
         if (empty($this->dataUrl)) {
             $this->set();
         }
-        call_user_func($callback, $this->dataUrl);
+        call_user_func($callback, $this);
         return $this;
     }
 
@@ -209,11 +221,11 @@ class Url implements UrlInterface
             $this->set();
         }
         if (empty($this->dataUrl['path'])) {
-            $this->dataUrl = array_merge(parse_url($this->getHostInfo() . $this->getBaseUrl()), $this->dataUrl);
+            $this->dataUrl = array_merge(parse_url($this->getBaseHostInfo() . $this->getBaseUrl()), $this->dataUrl);
         }
         if ($selfHost == true) {
-            $this->dataUrl['scheme'] = $this->getScheme();
-            $this->dataUrl['host'] = $this->getHost();
+            $this->dataUrl['scheme'] = $this->getBaseScheme();
+            $this->dataUrl['host'] = $this->getBaseHost();
         }
 
         if ($const & self::HTTP && isset($this->dataUrl['host'])) {
@@ -222,8 +234,8 @@ class Url implements UrlInterface
             $this->dataUrl['scheme'] = 'https';
         } elseif($const & self::ABS) {
             if (!isset($this->dataUrl['host'])) {
-                $this->dataUrl['scheme'] = $this->getScheme();
-                $this->dataUrl['host'] = $this->getHost();
+                $this->dataUrl['scheme'] = $this->getBaseScheme();
+                $this->dataUrl['host'] = $this->getBaseHost();
             }
         } else {
             unset($this->dataUrl['scheme'] , $this->dataUrl['host'], $this->dataUrl['user'], $this->dataUrl['pass']);
@@ -270,7 +282,45 @@ class Url implements UrlInterface
     {
         return $this->get(self::HTTPS, $selfHost);
     }
-    
+
+    /**
+     * Set data of url
+     * @param $name
+     * @param $value
+     *
+     * ```php
+     * (new Url())->host = site.com
+     * ```
+     */
+    public function __set($name, $value)
+    {
+        if (empty($this->dataUrl)) {
+            $this->set();
+        }
+        $this->dataUrl[$name] = $value;
+    }
+
+    /**
+     * Get data of url
+     * @param $name
+     * @return string|null
+     *
+     * ```php
+     * echo (new Url())->host; // result: site.com
+     * ```
+     */
+    public function __get($name)
+    {
+        if (empty($this->dataUrl)) {
+            $this->set();
+        }
+        if (isset($this->dataUrl[$name])) {
+            return $this->dataUrl[$name];
+        }
+
+        return null;
+    }
+
     public function reset()
     {
         $this->dataUrl = [];
@@ -289,7 +339,7 @@ class Url implements UrlInterface
      * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.site.com`)
      * @see setHostInfo()
      */
-    public function getHostInfo()
+    public function getBaseHostInfo()
     {
         if (self::$_hostInfo === null) {
             $secure = $this->isSecureConnection();
@@ -298,7 +348,7 @@ class Url implements UrlInterface
                 self::$_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
             } else {
                 self::$_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
-                $port = $secure ? $this->getSecurePort() : $this->getPort();
+                $port = $secure ? $this->getSecurePort() : $this->getBasePort();
                 if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
                     self::$_hostInfo .= ':' . $port;
                 }
@@ -329,7 +379,7 @@ class Url implements UrlInterface
      * @return integer port number for insecure requests.
      * @see setPort()
      */
-    public function getPort()
+    public function getBasePort()
     {
         if (self::$_port === null) {
             self::$_port = !$this->isSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int)$_SERVER['SERVER_PORT'] : 80;
@@ -343,7 +393,7 @@ class Url implements UrlInterface
      * server configurations.
      * @param integer $value port number.
      */
-    public function setPort($value)
+    public function setBasePort($value)
     {
         if ($value != self::$_port) {
             self::$_port = (int)$value;
@@ -390,7 +440,7 @@ class Url implements UrlInterface
     /**
      * @return string
      */
-    public function getScheme()
+    public function getBaseScheme()
     {
         if (static::$_schema === null) {
             static::$_schema = $this->isSecureConnection() ? 'https' : 'http';
@@ -401,7 +451,7 @@ class Url implements UrlInterface
 
     private static $_host;
 
-    public function getHost()
+    public function getBaseHost()
     {
         if (self::$_host === null) {
             self::$_host = Helper::getValue($_SERVER['HTTP_HOST'], $_SERVER['SERVER_NAME']);
