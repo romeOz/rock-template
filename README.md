@@ -41,14 +41,21 @@ Requirements
 
  * **PHP 5.4+**
  * **For caching (optional):**
- suggested to use [Rock Cache](https://github.com/romeo7/rock-cache). Should be installed: ```composer require romeo7/rock-cache:*``` or in your composer.json:
- ```json
+ suggested to use [Rock Cache](https://github.com/romeo7/rock-cache). Should be installed:
+
+```
+ composer require romeo7/rock-cache:*
+```
+  
+ or in your composer.json:
+
+```json
  {
   "require": {
       "romeo7/rock-cache": "*"
   }
  }
- ```
+```
 
 License
 -------------------
