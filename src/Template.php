@@ -901,7 +901,7 @@ class Template
 
         $position = isset($options['position']) ? $options['position'] : self::POS_HEAD;
         unset($options['position']);
-        $this->cssFiles[$position][$key] = Html::cssFile($url, $options);
+        $this->cssFiles[$position][$key] = $this->renderWrapperTag(Html::cssFile($url, $options), $options);
     }
 
     /**
@@ -948,7 +948,7 @@ class Template
 
         $position = isset($options['position']) ? $options['position'] : self::POS_END;
         unset($options['position']);
-        $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
+        $this->jsFiles[$position][$key] = $this->renderWrapperTag(Html::jsFile($url, $options), $options);
 
     }
 
@@ -957,7 +957,7 @@ class Template
      * @see getAlias()
      * @see setAlias()
      */
-    protected static $aliases = [
+    public static $aliases = [
         '@rock' => __DIR__,
         '@views' => '@rock/views'
     ];
@@ -1109,7 +1109,7 @@ class Template
      * ]
      * ```
      */
-    public function setAliases($aliases)
+    public static function setAliases(array $aliases)
     {
         foreach ($aliases as $name => $alias) {
             static::setAlias($name, $alias);
@@ -1197,7 +1197,7 @@ class Template
         return empty($lines) ? '' : implode("\n", $lines);
     }
 
-    private function renderWrapperTag($value, array $options = null)
+    private function renderWrapperTag($value, array $options = [])
     {
         if (empty($options['wrapperTpl'])) {
             return $value;

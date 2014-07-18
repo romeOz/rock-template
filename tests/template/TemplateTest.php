@@ -14,10 +14,13 @@ use rockunit\template\snippets\TestSnippet;
 
 class TemplateTest extends TemplateCommon
 {
+    public $aliases;
+
     protected function setUp()
     {
         parent::setUp();
         static::clearRuntime();
+        $this->aliases = Template::$aliases;
     }
 
     public static function setUpBeforeClass()
@@ -33,9 +36,48 @@ class TemplateTest extends TemplateCommon
         static::clearRuntime();
     }
 
+    protected function tearDown()
+    {
+        parent::tearDown();
+        Template::$aliases = $this->aliases;
+    }
+
     protected function calculatePath()
     {
         $this->path = __DIR__ . '/data';
+    }
+
+    public function testAlias()
+    {
+        Template::$aliases = [];
+        $this->assertFalse(Template::getAlias('@rock', [], false));
+
+        Template::setAlias('@rock', '/rock/framework');
+        $this->assertEquals('/rock/framework', Template::getAlias('@rock'));
+        $this->assertEquals('/rock/framework/test/file', Template::getAlias('@rock/test/file'));
+        Template::setAlias('@rock/runtime', '/rock/runtime');
+        $this->assertEquals('/rock/framework', Template::getAlias('@rock'));
+        $this->assertEquals('/rock/framework/test/file', Template::getAlias('@rock/test/file'));
+        $this->assertEquals('/rock/runtime', Template::getAlias('@rock/runtime'));
+        $this->assertEquals('/rock/runtime/file', Template::getAlias('@rock/runtime/file'));
+
+        Template::setAlias('@rock.test', '@rock/test');
+        $this->assertEquals('/rock/framework/test', Template::getAlias('@rock.test'));
+
+        Template::setAlias('@rock', null);
+        $this->assertFalse(Template::getAlias('@rock', [], false));
+        $this->assertEquals('/rock/runtime/file', Template::getAlias('@rock/runtime/file'));
+
+        Template::setAlias('@some/alias', '/www');
+        $this->assertEquals('/www', Template::getAlias('@some/alias'));
+
+        // namespace
+        Template::setAlias('@rock.ns', '\rock\core');
+        $this->assertEquals('\rock\core', Template::getAlias('@rock.ns'));
+
+        Template::setAliases(['@web' => '/assets', '@app' => '/apps/common']);
+        $this->assertEquals('/assets', Template::getAlias('@web'));
+        $this->assertEquals('/apps/common', Template::getAlias('@app'));
     }
 
     public function testPlaceholder()
@@ -106,30 +148,30 @@ class TemplateTest extends TemplateCommon
                 },
             'metaTags' => function(){
                     return [
-                        '<meta charset="UTF-8" />',
+                        '<meta charset="UTF-8">',
                         'language' => '<meta http-equiv="Content-Language" content="en">',
                         'robots' => '<meta name="robots" content="all">',
                         'description' => '<meta name="description" content="about">',
                     ];
                 },
             'linkTags' => [
-                '<link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico?10">',
-                '<link rel="alternate" type="application/rss+xml" title="rss" href="/feed.rss" />'
+                '<link type="image/x-icon" href="/favicon.ico?10" rel="Shortcut Icon">',
+                '<link type="application/rss+xml" href="/feed.rss" title="rss"  rel="alternate">'
             ],
             'cssFiles' => [
                 Template::POS_HEAD => [
-                    '<link href="/assets/css/main.css" media="screen, projection" rel="stylesheet"/>'
+                    '<link href="http://site.com/assets/css/main.css" rel="stylesheet" media="screen, projection">'
                 ],
                 Template::POS_END => [
-                    '<!--[if !(IE) | (gt IE 8) ]>--><link href="/assets/css/footer.css" media="screen, projection" rel="stylesheet"/><!--<![endif]-->'
+                    '<!--[if !(IE) | (gt IE 8) ]>--><link href="http://site.com/assets/css/footer.css" rel="stylesheet" media="screen, projection"><!--<![endif]-->'
                 ]
             ],
             'jsFiles' => [
                 Template::POS_HEAD => [
-                    '<!--[if lt IE 9]><script src="/assets/head.js"></script><![endif]-->'
+                    '<!--[if lt IE 9]><script src="http://site.com/assets/head.js"></script><![endif]-->'
                 ],
                 Template::POS_END => [
-                    '<script src="/assets/end.js"></script>'
+                    '<script src="http://site.com/assets/end.js"></script>'
                 ]
             ],
         ];
@@ -145,6 +187,41 @@ class TemplateTest extends TemplateCommon
         $config['fileExtension'] = 'php';
         $this->assertSame(
             static::removeSpace((new Template($config))->render($this->path . '/meta', ['about' => 'demo'])),
+            static::removeSpace(file_get_contents($this->path . '/_meta.html'))
+        );
+
+        // register
+        $template = new Template;
+        $template->engine = Template::PHP;
+        $template->head = '<!DOCTYPE html>
+            <!--[if !IE]>--><html class="no-js"><!--<![endif]-->';
+        $template->title = 'Demo';
+        $template->registerMetaTag(['charset' => 'UTF-8']);
+        $template->registerMetaTag(['http-equiv' => 'Content-Language', 'content' => 'en'], 'language');
+        $template->registerMetaTag(['name' => 'robots', 'content' => 'all'], 'robots');
+        $template->registerMetaTag(['name' => 'description', 'content' => 'about'], 'description');
+        $template->registerLinkTag(['rel' => 'Shortcut Icon', 'type' => 'image/x-icon', 'href' => '/favicon.ico?10']);
+        $template->registerLinkTag(['rel' => 'alternate', 'type' => 'application/rss+xml', 'title' => 'rss', 'href' => '/feed.rss']);
+        $template->registerCssFile('/assets/css/main.css', ['media'=>'screen, projection']);
+        $template->registerCssFile(
+            '/assets/css/footer.css',
+            [
+                'position' => Template::POS_END,
+                'media'=>'screen, projection',
+                'wrapperTpl' => '@INLINE<!--[if !(IE) | (gt IE 8) ]>-->[[!+output]]<!--<![endif]-->'
+            ]
+        );
+
+        $template->registerJsFile(
+            '/assets/head.js',
+            [
+                'position' => Template::POS_HEAD,
+                'wrapperTpl' => '@INLINE<!--[if lt IE 9]>[[!+output]]<![endif]-->'
+            ]
+        );
+        $template->registerJsFile('/assets/end.js');
+        $this->assertSame(
+            static::removeSpace($template->render($this->path . '/meta', ['about' => 'demo'])),
             static::removeSpace(file_get_contents($this->path . '/_meta.html'))
         );
     }
@@ -278,9 +355,10 @@ class TemplateTest extends TemplateCommon
         // modify url + remove all args
         $replace = '[[+url:modifyUrl
                         &removeAllArgs=`true`
+                        &removeAnchor=`true`
                         &const=`32`
                      ]]';
-        $this->assertSame($this->template->replace($replace, ['url'=> '/categories/?view=all']), 'http://site.com/categories/');
+        $this->assertSame($this->template->replace($replace, ['url'=> '/categories/?view=all#name']), 'http://site.com/categories/');
         $this->template->removeAllPlaceholders();
 
         // modify url + input null
@@ -392,7 +470,7 @@ class TemplateTest extends TemplateCommon
                 ]
             ]
         ];
-        $this->assertSame((new Template($config))->replace('[[+value]]', ['value' => 'test']), 'test');
+        $this->assertSame((new Template($config))->replace('[[+value:foo]]', ['value' => 'test']), 'test');
     }
 
     public function testOutputArrayException()

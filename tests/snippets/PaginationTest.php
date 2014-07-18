@@ -51,8 +51,6 @@ class PaginationTest extends TemplateCommon
         // not args
         $params = [
             'array' => \rock\template\helpers\Pagination::get(7, null, 5, SORT_DESC),
-            'pageArgs' => ''
-
         ];
         $this->assertSame(
             static::removeSpace($this->template->getSnippet(Pagination::className(), $params)),
