@@ -78,6 +78,9 @@ class TemplateTest extends TemplateCommon
         Template::setAliases(['@web' => '/assets', '@app' => '/apps/common']);
         $this->assertEquals('/assets', Template::getAlias('@web'));
         $this->assertEquals('/apps/common', Template::getAlias('@app'));
+
+        $this->setExpectedException(get_class(new \Exception));
+        Template::getAlias('@rock');
     }
 
     public function testPlaceholder()
@@ -158,6 +161,7 @@ class TemplateTest extends TemplateCommon
                 '<link type="image/x-icon" href="/favicon.ico?10" rel="Shortcut Icon">',
                 '<link type="application/rss+xml" href="/feed.rss" title="rss"  rel="alternate">'
             ],
+            'css' => ['<style>.title {color: #354a57;}</style>'],
             'cssFiles' => [
                 Template::POS_HEAD => [
                     '<link href="http://site.com/assets/css/main.css" rel="stylesheet" media="screen, projection">'
@@ -174,6 +178,17 @@ class TemplateTest extends TemplateCommon
                     '<script src="http://site.com/assets/end.js"></script>'
                 ]
             ],
+            'js' => [
+                Template::POS_HEAD => [
+                    'head = "test"'
+                ],
+                Template::POS_BEGIN => [
+                    'begin = "test"'
+                ],
+                Template::POS_END => [
+                    'end = "test"'
+                ]
+            ]
         ];
 
         // Rock engine
@@ -201,7 +216,7 @@ class TemplateTest extends TemplateCommon
         $template->registerMetaTag(['name' => 'robots', 'content' => 'all'], 'robots');
         $template->registerMetaTag(['name' => 'description', 'content' => 'about'], 'description');
         $template->registerLinkTag(['rel' => 'Shortcut Icon', 'type' => 'image/x-icon', 'href' => '/favicon.ico?10']);
-        $template->registerLinkTag(['rel' => 'alternate', 'type' => 'application/rss+xml', 'title' => 'rss', 'href' => '/feed.rss']);
+        $template->registerLinkTag(['rel' => 'alternate', 'type' => 'application/rss+xml', 'title' => 'rss', 'href' => '/feed.rss'], 'rss');
         $template->registerCssFile('/assets/css/main.css', ['media'=>'screen, projection']);
         $template->registerCssFile(
             '/assets/css/footer.css',
@@ -216,10 +231,15 @@ class TemplateTest extends TemplateCommon
             '/assets/head.js',
             [
                 'position' => Template::POS_HEAD,
-                'wrapperTpl' => '@INLINE<!--[if lt IE 9]>[[!+output]]<![endif]-->'
+                'condition' => 'lt IE 9',
+                //'wrapperTpl' => '@INLINE<!--[if lt IE 9]>[[!+output]]<![endif]-->'
             ]
         );
         $template->registerJsFile('/assets/end.js');
+        $template->registerJs('head = "test"');
+        $template->registerJs('begin = "test"',Template::POS_BEGIN);
+        $template->registerJs('end = "test"', Template::POS_END);
+        $template->registerCss('.title {color: #354a57;}');
         $this->assertSame(
             static::removeSpace($template->render($this->path . '/meta', ['about' => 'demo'])),
             static::removeSpace(file_get_contents($this->path . '/_meta.html'))
@@ -548,6 +568,12 @@ class TemplateTest extends TemplateCommon
         $this->template->getSnippet('Unknown');
     }
 
+    public function testUnknown2Snippet()
+    {
+        $this->setExpectedException(Exception::className());
+        $this->template->getSnippet(Url::className());
+    }
+
     public function testExtensions()
     {
         $this->template->extensions = [
@@ -576,12 +602,17 @@ class TemplateTest extends TemplateCommon
     public function testCacheSnippet()
     {
         $cache = $this->getCache();
-        $className = get_class(new TestSnippet);
+        $className = TestSnippet::className();
         $this->template->cache = $cache;
+
+        // Rock engine
         $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
         $this->assertTrue($cache->has($className));
         $this->assertSame($cache->get($className), '<b>test snippet</b>');
         $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
+
+        // PHP engine
+        $this->assertSame($this->template->getSnippet($className, ['cacheKey' => $className]), '<b>test snippet</b>');
     }
 
     /**

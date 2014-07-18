@@ -79,7 +79,7 @@ class Template
      * @var array the registered CSS code blocks.
      * @see registerCss()
      */
-    public $css = '';
+    public $css = [];
     /**
      * @var array the registered CSS files.
      * @see registerCssFile()
@@ -89,7 +89,7 @@ class Template
      * @var array the registered JS code blocks
      * @see registerJs()
      */
-    public $js = '';
+    public $js = [];
     /**
      * @var array the registered JS files.
      * @see registerJsFile()
@@ -323,7 +323,7 @@ class Template
             /** @var Snippet $snippet */
             $snippet = new $class(array_merge($config, $params));
 
-            if (!($snippet instanceof Snippet)) {
+            if (!$snippet instanceof Snippet) {
                 throw new Exception(Exception::UNKNOWN_SNIPPET, 0, ['name' => $snippet::className()]);
             }
         }
@@ -830,12 +830,12 @@ class Template
      */
     public function clear()
     {
-        $this->metaTags = null;
-        $this->linkTags = null;
-        $this->css = null;
-        $this->cssFiles = null;
-        $this->js = null;
-        $this->jsFiles = null;
+        $this->metaTags = [];
+        $this->linkTags = [];
+        $this->css = [];
+        $this->cssFiles = [];
+        $this->js = [];
+        $this->jsFiles = [];
         static::$placeholders = [];
         $this->localPlaceholders = [];
     }

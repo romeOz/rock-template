@@ -2,6 +2,8 @@
 namespace rock\template\helpers;
 
 
+use rock\template\Template;
+
 class BaseFile
 {
     /**
@@ -16,6 +18,7 @@ class BaseFile
      */
     public static function create($pathFile, $value = "", $const = 0, $recursive = true, $mode = 0775)
     {
+        $pathFile = Template::getAlias($pathFile);
         if ($recursive === true) {
             if (!static::createDirectory(dirname($pathFile))) {
                 return false;
@@ -43,6 +46,7 @@ class BaseFile
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
     {
+        $path = Template::getAlias($path);
         if (is_dir($path)) {
             return true;
         }
@@ -65,6 +69,7 @@ class BaseFile
      */
     public static function deleteDirectory($dir)
     {
+        $dir = Template::getAlias($dir);
         if (!is_dir($dir) || !($handle = opendir($dir))) {
             return false;
         }
@@ -96,6 +101,6 @@ class BaseFile
      */
     public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
     {
-        return rtrim(strtr($path, ['/' => $ds, '\\' => $ds]), $ds);
+        return rtrim(strtr(Template::getAlias($path), ['/' => $ds, '\\' => $ds]), $ds);
     }
 }
