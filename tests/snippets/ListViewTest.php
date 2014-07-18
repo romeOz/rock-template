@@ -43,7 +43,7 @@ class ListViewTest extends TemplateCommon
         $this->assertSame($this->removeSpace($this->template->getSnippet(ListView::className(), $params)), $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')));
 
         // navigation
-        $params['nav']['array'] = Pagination::get(count($params['array']), 1, SORT_DESC, 1);
+        $params['nav']['array'] = Pagination::get(count($params['array']), 1, 1, SORT_DESC);
         $params['nav']['pageVar'] = 'num';
         $params['nav']['toPlaceholder'] = 'navigation';
         $this->assertSame($this->removeSpace($this->template->getSnippet(ListView::className(), $params)), $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')));
@@ -204,7 +204,7 @@ class ListViewTest extends TemplateCommon
 
     public static function getPagination()
     {
-        return Pagination::get(count(static::getAll()), 1, SORT_DESC, 1);
+        return Pagination::get(count(static::getAll()), 1, 1, SORT_DESC);
     }
 
     protected function getCache()

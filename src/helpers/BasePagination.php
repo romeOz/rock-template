@@ -32,8 +32,8 @@ class BasePagination
     public static function get(
         $count,
         $pageCurrent = null,
-        $sort = self::SORT,
         $limit = self::LIMIT,
+        $sort = self::SORT,
         $pageLimit = self::PAGE_LIMIT)
     {
         if (empty($count) || !is_numeric($count) || !is_numeric($pageLimit)) {

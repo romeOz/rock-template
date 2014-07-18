@@ -49,7 +49,7 @@ use rock\template\Snippet;
  * $params = [
  *      'array' => $items
  *      'nav' => [
- *          'array' => \rock\template\helpers\Pagination::get(count($items), (int)$_GET['page'], SORT_DESC)
+ *          'array' => \rock\template\helpers\Pagination::get(count($items), (int)$_GET['page'])
  *      ]
  * ];
  * $template->getSnippet('ListView', $params);

@@ -139,13 +139,8 @@ class Template
 
     public function defaultConfig()
     {
-        if (!$configs = require(__DIR__ . '/configs.php')) {
-            die('configs is empty/not found');
-        }
-
-        return $configs;
+        return require(__DIR__ . '/configs.php');
     }
-
 
     /**
      * Rendering (parse) template

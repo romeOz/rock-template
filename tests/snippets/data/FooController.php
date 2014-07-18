@@ -24,6 +24,6 @@ class FooController
 
     public static function getPagination()
     {
-        return Pagination::get(count(static::getAll()), 1, SORT_DESC, 1);
+        return Pagination::get(count(static::getAll()), 1, 1, SORT_DESC);
     }
 } 

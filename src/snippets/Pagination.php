@@ -14,7 +14,7 @@ use rock\template\url\Url;
  * $template = new \rock\Template;
  * $countItems = 10;
  * $params = [
- *      'array' => \rock\helpers\Pagination::get($countItems, (int)$_GET['page'], SORT_DESC)
+ *      'array' => \rock\helpers\Pagination::get($countItems, (int)$_GET['page'])
  * ];
  * $template->getSnippet('\rock\snippet\Pagination', $params);
  * ```
