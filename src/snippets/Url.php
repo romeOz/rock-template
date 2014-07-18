@@ -25,7 +25,7 @@ class Url extends Snippet implements UrlInterface
 {
     public $url;
     public $args;
-    public $setArgs;
+    public $addArgs;
     public $anchor;
     public $selfHost;
     public $beginPath;
@@ -69,11 +69,11 @@ class Url extends Snippet implements UrlInterface
         if (isset($this->endPath)) {
             $urlManager->addEndPath($this->endPath);
         }
-        if (isset($this->setArgs)) {
-            $urlManager->setArgs($this->setArgs);
-        }
         if (isset($this->args)) {
-            $urlManager->addArgs($this->args);
+            $urlManager->setArgs($this->args);
+        }
+        if (isset($this->addArgs)) {
+            $urlManager->addArgs($this->addArgs);
         }
         if (isset($this->anchor)) {
             $urlManager->addAnchor($this->anchor);

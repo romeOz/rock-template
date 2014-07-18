@@ -287,20 +287,21 @@ class Template
     /**
      * Get data from snippet
      *
-     * @param string|Snippet $snippet   - name
-     * @param array  $params - params
+     * @param string|Snippet $snippet - name
+     * @param array          $params  - params
+     * @param bool           $autoEscape
      * @return mixed
      */
-    public function getSnippet($snippet, array $params = [])
+    public function getSnippet($snippet, array $params = [], $autoEscape = true)
     {
         $template = clone $this;
         $template->removeAllPlaceholders();
-        $result = $template->getSnippetInternal($snippet, $params);
+        $result = $template->getSnippetInternal($snippet, $params, $autoEscape);
         $this->cachePlaceholders = $template->cachePlaceholders;
         return $result;
     }
 
-    protected function getSnippetInternal($snippet, array $params = [])
+    protected function getSnippetInternal($snippet, array $params = [], $autoEscape = true)
     {
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($params);
 
@@ -325,6 +326,9 @@ class Template
             if (!($snippet instanceof Snippet)) {
                 throw new Exception(Exception::UNKNOWN_SNIPPET, 0, ['name' => $snippet::className()]);
             }
+        }
+        if ($autoEscape === false) {
+            $snippet->autoEscape = false;
         }
         $snippet->template = $this;
 
@@ -1313,10 +1317,7 @@ class Template
 
         // snippet
         } elseif (empty($matches['type'])) {
-            if ($escape === false) {
-                $params['autoEscape'] = $escape;
-            }
-            $result = $this->getSnippet($matches['name'], $params);
+            $result = $this->getSnippet($matches['name'], $params, $escape);
         } else {
             return $matches[0];
         }

@@ -2,6 +2,9 @@
 
 namespace rockunit\snippets;
 
+use rock\template\execute\EvalExecute;
+use rock\template\snippets\IfSnippet;
+use rock\template\Template;
 use rockunit\template\TemplateCommon;
 
 class IfSnippetTest extends TemplateCommon
@@ -31,6 +34,7 @@ class IfSnippetTest extends TemplateCommon
                           ),
             'success'
         );
+
         $this->assertSame(
             $this->template->replace('[[\rock\template\snippets\IfSnippet
                                             ?subject=`:foo > 1 && :foo < 3`
@@ -42,6 +46,27 @@ class IfSnippetTest extends TemplateCommon
                                      ['foo'=> 5, 'result' => 'success']
             ),
             htmlentities('<b>fail</b>')
+        );
+
+        $template = new Template();
+        $template->snippets = [
+            'IfThen' => [
+                'class' => IfSnippet::className(),
+                'execute' => new EvalExecute()
+            ]
+        ];
+        $this->assertSame(
+            $template->getSnippet(
+                'IfThen',
+                [
+                    'subject' => ':foo === "text"',
+                    'operands' => ["foo" => 'text'],
+                    'then' => '<b>success</b>',
+                    'else' => 'fail'
+                ],
+                false
+            ),
+            '<b>success</b>'
         );
     }
 }

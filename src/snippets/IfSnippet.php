@@ -35,15 +35,15 @@ class IfSnippet extends Snippet
     public $addPlaceholders = [];
 
     /** @var Execute */
-    public $eval;
+    public $execute;
 
     public function init()
     {
         parent::init();
-        if (!isset($this->eval)) {
-            $this->eval = new CacheExecute;
-        } elseif($this->eval instanceof \Closure) {
-            $this->eval = call_user_func($this->eval);
+        if (!isset($this->execute)) {
+            $this->execute = new CacheExecute;
+        } elseif($this->execute instanceof \Closure) {
+            $this->execute = call_user_func($this->execute);
         }
     }
 
@@ -88,6 +88,6 @@ class IfSnippet extends Snippet
                 : null
             );
 
-        return $this->eval->get(String::trimSpaces($value), $paramsTpl, $data);
+        return $this->execute->get(String::trimSpaces($value), $paramsTpl, $data);
     }
 }
