@@ -43,7 +43,7 @@ class IfSnippet extends Snippet
         if (!isset($this->execute)) {
             $this->execute = new CacheExecute;
         } elseif($this->execute instanceof \Closure) {
-            $this->execute = call_user_func($this->execute);
+            $this->execute = call_user_func($this->execute, $this);
         }
     }
 
@@ -68,13 +68,10 @@ class IfSnippet extends Snippet
         $data = [];
         $this->subject = strip_tags($this->subject);
         foreach ($operands as $keyParam => $valueParam) {
-
             $valueParam = Helper::toType($valueParam);
-
             if (is_string($valueParam)) {
-                $valueParam = addslashes((string)$valueParam);
+                $valueParam = addslashes($valueParam);
             }
-
             $data[$keyParam] = $valueParam;
         }
 

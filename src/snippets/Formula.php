@@ -50,10 +50,11 @@ class Formula extends Snippet
         foreach ($this->operands as $keyParam => $valueParam) {
             $valueParam = Helper::toType($valueParam);
             if (is_string($valueParam)) {
-                $valueParam = addslashes((string)$valueParam);
+                $valueParam = addslashes($valueParam);
             }
             $data[$keyParam] = $valueParam;
         }
+
         return $this->execute->get(
             String::trimSpaces('return ' . preg_replace('/:([\\w]+)/', '$data[\'$1\']', $this->subject) . ';'),
             [

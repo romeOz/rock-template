@@ -47,7 +47,7 @@ class Url extends Snippet implements UrlInterface
         if (!isset($this->urlManager)) {
             $this->urlManager = new \rock\template\url\Url;
         } elseif($this->urlManager instanceof \Closure) {
-            $this->urlManager = call_user_func($this->urlManager);
+            $this->urlManager = call_user_func($this->urlManager, $this);
         }
     }
 

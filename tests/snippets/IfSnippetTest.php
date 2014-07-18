@@ -52,7 +52,7 @@ class IfSnippetTest extends TemplateCommon
         $template->snippets = [
             'IfThen' => [
                 'class' => IfSnippet::className(),
-                'execute' => new EvalExecute()
+                'execute' => function () {return new EvalExecute();}
             ]
         ];
         $this->assertSame(

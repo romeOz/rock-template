@@ -96,33 +96,33 @@ class BaseFilter
         if (empty($url)) {
             return '#';
         }
-        $urlBuilder = isset($params['_handlers']) ? $params['_handlers'] : new Url();
-        $urlBuilder->set($url);
+        $urlManager = isset($params['_handlers']) ? $params['_handlers'] : new Url();
+        $urlManager->set($url);
         if (isset($params['removeAllArgs'])) {
-            $urlBuilder->removeAllArgs();
+            $urlManager->removeAllArgs();
         }
         if (isset($params['removeArgs'])) {
-            $urlBuilder->removeArgs($params['removeArgs']);
+            $urlManager->removeArgs($params['removeArgs']);
         }
         if (isset($params['removeAnchor'])) {
-            $urlBuilder->removeAnchor();
+            $urlManager->removeAnchor();
         }
         if (isset($params['beginPath'])) {
-            $urlBuilder->addBeginPath($params['beginPath']);
+            $urlManager->addBeginPath($params['beginPath']);
         }
         if (isset($params['endPath'])) {
-            $urlBuilder->addEndPath($params['endPath']);
+            $urlManager->addEndPath($params['endPath']);
         }
         if (isset($params['args'])) {
-            $urlBuilder->setArgs($params['args']);
+            $urlManager->setArgs($params['args']);
         }
         if (isset($params['addArgs'])) {
-            $urlBuilder->addArgs($params['addArgs']);
+            $urlManager->addArgs($params['addArgs']);
         }
         if (isset($params['anchor'])) {
-            $urlBuilder->addAnchor($params['anchor']);
+            $urlManager->addAnchor($params['anchor']);
         }
-        return $urlBuilder->get(Helper::getValue($params['const'], 0), (bool)Helper::getValue($params['selfHost']));
+        return $urlManager->get(Helper::getValue($params['const'], 0), (bool)Helper::getValue($params['selfHost']));
     }
 
     /**

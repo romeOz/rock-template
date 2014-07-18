@@ -2,6 +2,7 @@
 namespace rock\template\snippets;
 
 use rock\template\helpers\Helper;
+use rock\template\helpers\String;
 use rock\template\Snippet;
 use rock\template\url\Url;
 
@@ -102,7 +103,7 @@ class Pagination extends Snippet
         if (!isset($this->urlManager)) {
             $this->urlManager = new Url;
         } elseif ($this->urlManager instanceof \Closure) {
-            $this->urlManager = call_user_func($this->urlManager);
+            $this->urlManager = call_user_func($this->urlManager, $this);
         }
     }
 
@@ -112,7 +113,7 @@ class Pagination extends Snippet
             return null;
         }
         $this->calculateArray();
-        if (!is_array($this->array) ||
+        if (!isset($this->array['pageCount']) ||
             (int)$this->array['pageCount'] === 1 ||
             empty($this->array['pageDisplay'])
         ) {
@@ -123,7 +124,7 @@ class Pagination extends Snippet
          * if exits args-url
          */
         if (!$this->calculateArgs()) {
-            return false;
+            return null;
         }
         /**
          * set name of arg-url by navigate
@@ -173,7 +174,7 @@ class Pagination extends Snippet
         }
         if (is_string($this->pageArgs)) {
             parse_str(
-                preg_replace('/\\s+/', "", $this->pageArgs),
+                String::trimSpaces($this->pageArgs),
                 $this->pageArgs
             );
         }

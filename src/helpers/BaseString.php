@@ -164,7 +164,7 @@ class BaseString
      */
     public static function trimSpaces($string)
     {
-        return static::trimPattern($string, '/\s+/i');
+        return static::trimPattern($string, '/\\s+/');
     }
 
     /**

@@ -71,4 +71,85 @@ class DateTest extends \PHPUnit_Framework_TestCase
         $dateInterval = $this->date->diff('1988-11-12', true);
         $this->assertSame($dateInterval->w, (int)floor($dateInterval->days / 7));
     }
+
+    /**
+     * @dataProvider providerIsTrue
+     */
+    public function testIsDateTrue($value)
+    {
+        $this->assertTrue(Date::is($value));
+    }
+
+    public function providerIsTrue()
+    {
+        return [
+            ['1988-11-12'],
+            ['595296000'],
+            ['-595296000'],
+            [595296000],
+            [-595296000],
+            [3.14],
+            ['3.14']
+        ];
+    }
+
+    /**
+     * @dataProvider providerIsFalse
+     */
+    public function testIsDateFalse($value)
+    {
+        $this->assertFalse(Date::is($value));
+    }
+
+    public function providerIsFalse()
+    {
+        return [
+            ['foo'],
+            [''],
+            [null],
+            [true],
+            [false],
+        ];
+    }
+
+    /**
+     * @dataProvider providerIsTimestampTrue
+     */
+    public function testIsTimestampTrue($value)
+    {
+        $this->assertTrue(Date::isTimestamp($value));
+    }
+
+    public function providerIsTimestampTrue()
+    {
+        return [
+            ['595296000'],
+            ['-595296000'],
+            [595296000],
+            [-595296000],
+        ];
+    }
+
+    /**
+     * @dataProvider providerIsTimestampFalse
+     */
+    public function testIsTimestampFalse($value)
+    {
+        $this->assertFalse(Date::isTimestamp($value));
+    }
+
+    public function providerIsTimestampFalse()
+    {
+        return [
+            ['foo'],
+            [''],
+            [null],
+            [true],
+            [false],
+            ['1988-11-12'],
+            ['3.14'],
+            [3.14],
+        ];
+    }
+
 }

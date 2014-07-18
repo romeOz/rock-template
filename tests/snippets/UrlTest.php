@@ -35,7 +35,7 @@ class UrlTest extends TemplateCommon
                 [
                     'url' => 'http://site.com/categories/?view=all',
                     'removeArgs' => ['view'],
-                    'addArgs' => ['page' => 1],
+                    'args' => ['page' => 1],
                     'const' => Url::ABS
                 ]
             ),
@@ -47,15 +47,16 @@ class UrlTest extends TemplateCommon
         $template->snippets = [
             'Url' => [
                 'class' => Url::className(),
-                'urlManager' => new \rock\template\url\Url()
+                'urlManager' => function () {return new \rock\template\url\Url();}
             ]
         ];
         $this->assertSame(
             $template->getSnippet(
                 'Url',
                 [
-                    'url' => 'http://site.com/categories/?view=all',
+                    'url' => 'http://site.com/categories/?view=all#name',
                     'removeAllArgs' => true,
+                    'removeAnchor' => true,
                     'const' => Url::ABS
                 ]
             ),

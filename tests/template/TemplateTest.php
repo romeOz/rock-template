@@ -3,9 +3,13 @@
 namespace rockunit\template;
 
 
+use rock\template\date\Date;
 use rock\template\Exception;
 use rock\template\helpers\String;
 use rock\template\Template;
+use rock\template\url\Url;
+use rockunit\template\filters\TestFilters;
+use rockunit\template\snippets\NullSnippet;
 use rockunit\template\snippets\TestSnippet;
 
 class TemplateTest extends TemplateCommon
@@ -42,6 +46,9 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->text, 'foo');
         unset($this->template->text);
         $this->assertFalse(isset($this->template->text));
+        $this->template->addPlaceholder('bar', 'test', true);
+        $this->assertTrue(isset($this->template->bar));
+        $this->assertSame($this->template->bar, 'test');
 
         // get all local
         $this->template->text = 'foo';
@@ -52,9 +59,15 @@ class TemplateTest extends TemplateCommon
         $this->assertTrue($this->template->hasPlaceholder('bar', true));
         $this->assertSame($this->template->getAllPlaceholders(false, true), ['bar' => 'test']);
 
-        // remove multi placeholder
+        // remove global  placeholder
+        $this->template->removePlaceholder('test', true);
+
+        // remove multi global placeholder
         $this->template->removeMultiPlaceholders(['bar'], true);
         $this->assertFalse($this->template->hasPlaceholder('bar', true));
+
+        // null name
+        $this->template->removePlaceholder(null);
     }
 
     public function testResource()
@@ -62,6 +75,7 @@ class TemplateTest extends TemplateCommon
         $this->template->addResource('foo', 'foo');
         $this->template->addResource('bar', 'bar');
         $this->template->addResource('baz', 'baz');
+        $this->assertTrue(isset($this->template->foo));
         $this->assertSame($this->template->getAllResources(true, ['foo', 'bar'], ['foo']), ['bar' => 'bar']);
 
         // remove resource
@@ -80,6 +94,59 @@ class TemplateTest extends TemplateCommon
     {
         $this->setExpectedException(Exception::className());
         $this->template->render($this->path . '/unknown');
+    }
+
+    public function testRenderMetaTags()
+    {
+        $config = [
+            'head' => '<!DOCTYPE html>
+            <!--[if !IE]>--><html class="no-js"><!--<![endif]-->',
+            'title' => function(){
+                    return 'Demo';
+                },
+            'metaTags' => function(){
+                    return [
+                        '<meta charset="UTF-8" />',
+                        'language' => '<meta http-equiv="Content-Language" content="en">',
+                        'robots' => '<meta name="robots" content="all">',
+                        'description' => '<meta name="description" content="about">',
+                    ];
+                },
+            'linkTags' => [
+                '<link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico?10">',
+                '<link rel="alternate" type="application/rss+xml" title="rss" href="/feed.rss" />'
+            ],
+            'cssFiles' => [
+                Template::POS_HEAD => [
+                    '<link href="/assets/css/main.css" media="screen, projection" rel="stylesheet"/>'
+                ],
+                Template::POS_END => [
+                    '<!--[if !(IE) | (gt IE 8) ]>--><link href="/assets/css/footer.css" media="screen, projection" rel="stylesheet"/><!--<![endif]-->'
+                ]
+            ],
+            'jsFiles' => [
+                Template::POS_HEAD => [
+                    '<!--[if lt IE 9]><script src="/assets/head.js"></script><![endif]-->'
+                ],
+                Template::POS_END => [
+                    '<script src="/assets/end.js"></script>'
+                ]
+            ],
+        ];
+
+        // Rock engine
+        $this->assertSame(
+            static::removeSpace((new Template($config))->render($this->path . '/meta', ['about' => 'demo'])),
+            static::removeSpace(file_get_contents($this->path . '/_meta.html'))
+        );
+
+        // PHP engine
+        $config['engine'] = Template::PHP;
+        $config['fileExtension'] = 'php';
+        $this->assertSame(
+            static::removeSpace((new Template($config))->render($this->path . '/meta', ['about' => 'demo'])),
+            static::removeSpace(file_get_contents($this->path . '/_meta.html'))
+        );
     }
 
     public function testHasChunk()
@@ -310,6 +377,24 @@ class TemplateTest extends TemplateCommon
         $this->template->replace('[[+num:formula&operator=`<!<!<`&operand=`4`]]', ['num'=> 2]);
     }
 
+    public function testFilterHandlers()
+    {
+        $config = [
+            'filters' => [
+                'foo' => [
+                    'class' => TestFilters::className(),
+                    'handlers' => [
+                        function(){
+                            return new Url();
+                        },
+                        new Date()
+                    ]
+                ]
+            ]
+        ];
+        $this->assertSame((new Template($config))->replace('[[+value]]', ['value' => 'test']), 'test');
+    }
+
     public function testOutputArrayException()
     {
         $replace = '[[!+array:jsonToArray]]';
@@ -345,13 +430,38 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace('[[+title?autoEscape=`false`]]', ['title'=> '<b>Hello World</b>']), '<b>Hello World</b>');
     }
 
+    public function testGetNamePrefix()
+    {
+        // null
+        $this->assertEmpty($this->template->getNamePrefix(null));
+        $this->assertSame(
+            $this->template->getNamePrefix('@INLINE<b>foo</b>'),
+            array (
+                'prefix' => 'INLINE',
+                'value' => '<b>foo</b>',
+            )
+        );
+    }
+
+    public function testRemovePrefix()
+    {
+        // null
+        $this->assertEmpty($this->template->removePrefix(null));
+        $this->assertSame($this->template->removePrefix('@INLINE<b>foo</b>'), '<b>foo</b>');
+    }
+
     public function testSnippet()
     {
-        $className = get_class(new TestSnippet);
+        $className = TestSnippet::className();
         $this->assertSame($this->template->getSnippet($className, ['param' => '<b>test snippet</b>']), String::encode('<b>test snippet</b>'));
         $this->assertSame($this->template->getSnippet(new TestSnippet(), ['param' => '<b>test snippet</b>']), String::encode('<b>test snippet</b>'));
         $this->assertSame($this->template->replace('[['.$className.'?param=`<b>test snippet</b>`]]'), String::encode('<b>test snippet</b>'));
         $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`]]'), '<b>test snippet</b>');
+    }
+
+    public function testNullSnippet()
+    {
+        $this->assertEmpty($this->template->getSnippet(NullSnippet::className()));
     }
 
     public function testUnknownSnippet()

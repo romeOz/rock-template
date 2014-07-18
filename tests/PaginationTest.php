@@ -30,6 +30,30 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertSame(Pagination::get(7,1),$actual);
 
+        $actual = array (
+            'pageVar' => 'page',
+            'pageCount' => 5,
+            'pageCurrent' => 2,
+            'pageStart' => 1,
+            'pageEnd' => 5,
+            'pageDisplay' =>
+                array (
+                    0 => 1,
+                    1 => 2,
+                    2 => 3,
+                    3 => 4,
+                    4 => 5,
+                ),
+            'pagePrev' => 1,
+            'pageNext' => 3,
+            'pageFirst' => 1,
+            'pageLast' => 5,
+            'offset' => 10,
+            'limit' => 10,
+            'countMore' => 30,
+        );
+        $this->assertSame(Pagination::get(50, 2), $actual);
+
         // first page
         $actual = array (
             'pageVar' => 'page',
@@ -123,6 +147,30 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(Pagination::get(7, 0, 5, SORT_DESC), $actual);
         $this->assertSame(Pagination::get(7, -1, 5, SORT_DESC), $actual);
         $this->assertSame(Pagination::get(7, 'foo', 5, SORT_DESC), $actual);
+
+        $actual = array (
+            'pageVar' => 'page',
+            'pageCount' => 5,
+            'pageCurrent' => 2,
+            'pageStart' => 5,
+            'pageEnd' => 1,
+            'pageDisplay' =>
+                array (
+                    0 => 5,
+                    1 => 4,
+                    2 => 3,
+                    3 => 2,
+                    4 => 1,
+                ),
+            'pagePrev' => 3,
+            'pageNext' => 1,
+            'pageFirst' => 5,
+            'pageLast' => 1,
+            'offset' => 30,
+            'limit' => 10,
+            'countMore' => 10,
+        );
+        $this->assertSame(Pagination::get(50, 2, 10, SORT_DESC), $actual);
 
         // next page
         $actual = array (

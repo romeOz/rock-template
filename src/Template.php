@@ -169,7 +169,7 @@ class Template
         if ($this->enabledRenderMeta === true) {
             foreach (['jsFiles', 'js', 'linkTags', 'cssFiles', 'css','linkTags', 'title', 'metaTags'] as $property) {
                 if ($this->$property instanceof \Closure) {
-                    call_user_func($this->$property, $this);
+                    $this->$property = call_user_func($this->$property, $this);
                 }
             }
             $result = implode("\n", [$this->beginPage(), $this->beginBody(), $result, $this->endBody(), $this->endPage()]);
@@ -382,7 +382,7 @@ class Template
             return $this->getPlaceholder($name);
         }
         if ($this->hasPlaceholder($name, true)) {
-            return $this->getPlaceholder($name, true);
+            return $this->getPlaceholder($name, true, true);
         }
         if ($this->hasResource($name)) {
             return $this->getResource($name);

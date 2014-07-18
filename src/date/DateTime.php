@@ -172,6 +172,9 @@ class DateTime extends \DateTime implements DateTimeInterface
      */
     public static function isTimestamp($timestamp)
     {
+        if (is_bool($timestamp) || !is_scalar($timestamp)) {
+            return false;
+        }
         return ((string)(int)$timestamp === (string)$timestamp)
                && ($timestamp <= PHP_INT_MAX)
                && ($timestamp >= ~PHP_INT_MAX);
@@ -185,8 +188,10 @@ class DateTime extends \DateTime implements DateTimeInterface
      */
     public static function is($date)
     {
+        if (is_bool($date) || empty($date) xor ($date === 0 || $date === '0')) {
+            return false;
+        }
         $date = static::isTimestamp($date) ? '@' . (string)$date : $date;
-
         return (bool)date_create($date);
     }
 
