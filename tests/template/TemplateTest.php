@@ -249,11 +249,10 @@ class TemplateTest extends TemplateCommon
         $template->registerJs('begin = "test"',Template::POS_BEGIN);
         $template->registerJs('end = "test"', Template::POS_END);
         $template->registerCss('.title {color: #354a57;}');
-        var_dump($template->render($this->path . '/meta', ['about' => 'demo']));
-//        $this->assertSame(
-//            static::removeSpace($template->render($this->path . '/meta', ['about' => 'demo'])),
-//            static::removeSpace(file_get_contents($this->path . '/_meta.html'))
-//        );
+        $this->assertSame(
+            static::removeSpace($template->render($this->path . '/meta', ['about' => 'demo'])),
+            static::removeSpace(file_get_contents($this->path . '/_meta.html'))
+        );
     }
 
     public function testHasChunk()
