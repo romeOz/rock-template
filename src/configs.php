@@ -85,9 +85,6 @@ return [
         'unserialize' => [
             'class' => BaseFilter::className(),
         ],
-        'serialize' => [
-            'class' => BaseFilter::className(),
-        ],
         'replaceTpl' => [
             'class' => BaseFilter::className(),
         ],
@@ -103,30 +100,34 @@ return [
             'class' => BaseFilter::className(),
         ],
         'url' => [
+            'method' => 'modifyUrl',
             'class' => BaseFilter::className(),
         ],
         'arrayToJson' => [
             'class' => BaseFilter::className(),
         ],
         'toJson' => [
+            'method' => 'arrayToJson',
             'class' => BaseFilter::className(),
         ],
         'jsonToArray' => [
             'class' => BaseFilter::className(),
         ],
         'toArray' => [
+            'method' => 'jsonToArray',
             'class' => BaseFilter::className(),
         ],
         'notEmpty' => [
             'class' => ConditionFilter::className(),
         ],
         'empty' => [
+            'method' => '_empty',
             'class' => ConditionFilter::className(),
-            'name' => '_empty'
+
         ],
         'if' => [
+            'method' => '_if',
             'class' => ConditionFilter::className(),
-            'name' => '_if'
         ],
     ],
     'snippets' => [

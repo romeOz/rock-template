@@ -16,6 +16,13 @@ class TemplateTest extends TemplateCommon
         static::clearRuntime();
     }
 
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        $_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'site.com';
+    }
+
+
     public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();
@@ -101,15 +108,27 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace('[[+title:substr&start=`6`&length=`2`:strlen]]', ['title'=> 'hello world']), '2');
         $this->template->removeAllPlaceholders();
 
+        // replaceTpl
+        $this->assertSame($this->template->replace('[[+content:replaceTpl&title=`[[+title]]`:upper]]', ['content' => '[[+title]]', 'title' => 'hello']), 'HELLO');
+        $this->template->removeAllPlaceholders();
+
         // unserialize
         $this->assertSame($this->template->replace('[[!+title:unserialize&key=`foo.bar`]]', ['title'=> json_encode(['baz' => 'baz_text', 'foo' => ['bar' => 'bar_text']])]), 'bar_text');
+        $this->template->removeAllPlaceholders();
+
+        // unserialize + input null
+        $this->assertSame($this->template->replace('[[!+title:unserialize&key=`foo.bar`]]', ['title'=> null]), '');
+        $this->template->removeAllPlaceholders();
+
+        // unserialize + output array
+        $this->assertSame($this->template->replace('[[!+title:unserialize&key=`foo`]]', ['title'=> serialize(['baz' => 'baz_text', 'foo' => ['bar' => 'bar_text']])]), '');
         $this->template->removeAllPlaceholders();
 
         // truncate
         $this->assertSame($this->template->replace('[[+title:truncate&length=`5`]]', ['title'=> 'Hello world']), 'Hello...');
         $this->template->removeAllPlaceholders();
 
-        // null + truncate
+        // truncate + input null
         $this->assertSame($this->template->replace('[[+title:truncate]]', ['title'=> null]), '');
         $this->template->removeAllPlaceholders();
 
@@ -117,7 +136,7 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace('[[+title:truncateWords&length=`6`]]', ['title'=> 'Hello world']), 'Hello...');
         $this->template->removeAllPlaceholders();
 
-        // null + truncate words
+        // truncate words + input null
         $this->assertSame($this->template->replace('[[+title:truncateWords]]', ['title'=> null]), '');
         $this->template->removeAllPlaceholders();
 
@@ -170,7 +189,6 @@ class TemplateTest extends TemplateCommon
         $this->template->removeAllPlaceholders();
 
         // modify url
-        $_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'site.com';
         $replace = '[[+url:modifyUrl
                         &args=`{"page" : 1}`
                         &beginPath=`/parts`
@@ -181,6 +199,28 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace($replace, ['url'=> '/categories/?view=all']), 'http://site.com/parts/categories/news/?page=1#name');
         $this->template->removeAllPlaceholders();
 
+        // modify url + remove args + add args
+        $replace = '[[+url:modifyUrl
+                        &removeArgs=`["view"]`
+                        &addArgs=`{"page" : 1}`
+                        &const=`32`
+                     ]]';
+        $this->assertSame($this->template->replace($replace, ['url'=> '/categories/?view=all']), 'http://site.com/categories/?page=1');
+        $this->template->removeAllPlaceholders();
+
+        // modify url + remove all args
+        $replace = '[[+url:modifyUrl
+                        &removeAllArgs=`true`
+                        &const=`32`
+                     ]]';
+        $this->assertSame($this->template->replace($replace, ['url'=> '/categories/?view=all']), 'http://site.com/categories/');
+        $this->template->removeAllPlaceholders();
+
+        // modify url + input null
+        $replace = '[[+url:modifyUrl]]';
+        $this->assertSame($this->template->replace($replace, ['url'=> '']), '#');
+        $this->template->removeAllPlaceholders();
+
         // modify date
         $replace = '[[+date:modifyDate&format=`dmyhm`]]';
         $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '12 February 2012 15:01');
@@ -189,6 +229,31 @@ class TemplateTest extends TemplateCommon
         // modify date
         $replace = '[[+date:modifyDate&format=`dmy`]]';
         $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '12 February 2012');
+        $this->template->removeAllPlaceholders();
+
+        // modify date + default format
+        $replace = '[[+date:modifyDate]]';
+        $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '2012-02-12 15:01:00');
+        $this->template->removeAllPlaceholders();
+
+        // modify date + input null
+        $replace = '[[+date:modifyDate]]';
+        $this->assertSame($this->template->replace($replace, ['date'=> 'null']), '');
+        $this->template->removeAllPlaceholders();
+
+        // arrayToJson
+        $replace = '[[+array:arrayToJson]]';
+        $this->assertSame($this->template->replace($replace, ['array'=> ['foo' => 'test']]), json_encode(['foo' => 'test']));
+        $this->template->removeAllPlaceholders();
+
+        // arrayToJson + input null
+        $replace = '[[+array:toJson]]';
+        $this->assertSame($this->template->replace($replace, ['array'=> '']), '');
+        $this->template->removeAllPlaceholders();
+
+        // jsonToArray + serialize
+        $replace = '[[!+array:toArray:serialize]]';
+        $this->assertSame($this->template->replace($replace, ['array'=> json_encode(['foo' => 'test'])]), serialize(['foo' => 'test']));
         $this->template->removeAllPlaceholders();
 
         // multiplication
@@ -243,6 +308,13 @@ class TemplateTest extends TemplateCommon
 
         $this->setExpectedException(Exception::className());
         $this->template->replace('[[+num:formula&operator=`<!<!<`&operand=`4`]]', ['num'=> 2]);
+    }
+
+    public function testOutputArrayException()
+    {
+        $replace = '[[!+array:jsonToArray]]';
+        $this->setExpectedException(Exception::className());
+        $this->template->replace($replace, ['array'=> json_encode(['foo' => 'test'])]);
     }
 
     public function testContainsException()

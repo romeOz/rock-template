@@ -131,8 +131,11 @@ class BaseFilter
      * @param array $array - current array
      * @return string
      */
-    public static function arrayToJson(array $array)
+    public static function arrayToJson($array)
     {
+        if (empty($array)) {
+            return null;
+        }
         return Json::encode($array) ? : null;
     }
 
@@ -145,12 +148,6 @@ class BaseFilter
     public static function jsonToArray($value)
     {
         return Json::decode($value);
-    }
-
-
-    public static function serialize($value)
-    {
-        return Serialize::serialize($value);
     }
 
     /**

@@ -707,8 +707,8 @@ class Template
                             $_params['_handlers'] = call_user_func($_params['_handlers'], $this);
                         }
                     }
-                    $name  = Helper::getValue($this->filters[$method]['name'], $method);
-                    $value = call_user_func([$class, $name], $value, $_params, $this);
+                    $method  = Helper::getValue($this->filters[$method]['method'], $method);
+                    $value = call_user_func([$class, $method], $value, $_params, $this);
                 } elseif (function_exists($method)) {
                     $value = call_user_func_array($method, array_merge([$value], $_params));
                 } else {
