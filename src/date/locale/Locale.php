@@ -10,54 +10,54 @@ use rock\template\ClassName;
 abstract class Locale
 {
     use ClassName;
-	/** @var array */
-	protected static $months;
+    /** @var array */
+    protected static $months;
     /** @var  array */
     protected static $shortMonths;
-	/** @var array */
-	protected static $weekDays;
-	/** @var array */
-	protected static $shortWeekDays;
-	/** @var array */
-	protected static $formats;
+    /** @var array */
+    protected static $weekDays;
+    /** @var array */
+    protected static $shortWeekDays;
+    /** @var array */
+    protected static $formats;
 
-	public static function getFormats()
+    public static function getFormats()
     {
-		return static::$formats;
-	}
+        return static::$formats;
+    }
 
-	public static function getMonth($index)
+    public static function getMonth($index)
     {
-		return static::$months[$index];
-	}
+        return static::$months[$index];
+    }
     public static function getShortMonth($index)
     {
         return static::$shortMonths[$index];
     }
-	public static function getMonths()
+    public static function getMonths()
     {
-		return static::$months;
-	}
+        return static::$months;
+    }
 
-	public static function getWeekDay($index)
+    public static function getWeekDay($index)
     {
-		return static::$weekDays[$index];
-	}
+        return static::$weekDays[$index];
+    }
 
-	public static function getWeekDays()
+    public static function getWeekDays()
     {
-		return static::$weekDays;
-	}
+        return static::$weekDays;
+    }
 
-	public static function getShortWeekDay($index)
+    public static function getShortWeekDay($index)
     {
-		return static::$shortWeekDays[$index];
-	}
+        return static::$shortWeekDays[$index];
+    }
 
-	public static function getShortWeekDays()
+    public static function getShortWeekDays()
     {
-		return static::$shortWeekDays;
-	}
+        return static::$shortWeekDays;
+    }
 
     public static function getNamespace()
     {
