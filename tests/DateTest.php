@@ -63,6 +63,11 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->dateTime->set('1988-11-12')->format('j  l  Y'), '12  суббота  1988');
         $this->assertSame($this->dateTime->set('1988-11-12')->format('j  D  Y'), '12  Сб  1988');
         $this->assertTrue($this->dateTime->getLocale() instanceof Ru);
+
+        $this->assertNotEmpty($this->dateTime->getLocale()->getFormats());
+        $this->assertNotEmpty($this->dateTime->getLocale()->getMonths());
+        $this->assertNotEmpty($this->dateTime->getLocale()->getWeekDays());
+        $this->assertNotEmpty($this->dateTime->getLocale()->getShortWeekDays());
     }
 
     public function testAddCustomFormat()
