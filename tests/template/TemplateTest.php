@@ -3,7 +3,7 @@
 namespace rockunit\template;
 
 
-use rock\template\date\Date;
+use rock\template\date\DateTime;
 use rock\template\Exception;
 use rock\template\helpers\String;
 use rock\template\Template;
@@ -494,7 +494,7 @@ class TemplateTest extends TemplateCommon
                         function(){
                             return new Url();
                         },
-                        new Date()
+                        new DateTime()
                     ]
                 ]
             ]

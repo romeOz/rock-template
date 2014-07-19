@@ -16,7 +16,9 @@ class DateTime extends \DateTime implements DateTimeInterface
         ObjectTrait::__construct as parentConstruct;
     }
 
-    public $format = 'Y-m-d';
+    const DEFAULT_FORMAT = 'Y-m-d';
+
+    public $format = self::DEFAULT_FORMAT;
 
     /** @var  string */
     public $locale = 'en';
@@ -55,7 +57,7 @@ class DateTime extends \DateTime implements DateTimeInterface
         }
         $this->parentConstruct($config);
 
-        parent::__construct($time, $this->prepareTimezone($timezone));
+        parent::__construct($time, $this->calculateTimezone($timezone));
 
         $this->formats = array_merge(static::$defaultFormats, $this->formats);
         $this->initCustomFormatOptions();
@@ -64,6 +66,21 @@ class DateTime extends \DateTime implements DateTimeInterface
                 $this->addFormatOption($alias, $callback);
             }
         }
+    }
+
+    /**
+     * @param string|int       $time
+     * @param string|\DateTimeZone $timezone
+     * @return DateTime
+     */
+    public function set($time = 'now', $timezone = null)
+    {
+        $config = [
+            'format' => $this->format,
+            'formats' => $this->formats,
+            'locale' => $this->locale
+        ];
+        return new static($time, $timezone, $config);
     }
 
     /**
@@ -103,16 +120,6 @@ class DateTime extends \DateTime implements DateTimeInterface
             $format = $this->format;
         }
         return $this->formatDatetimeObject($format);
-    }
-
-    /**
-     * @param string $modify Modification string as in http://php.net/date_modify
-     * @return static
-     */
-    public function modify($modify)
-    {
-        parent::modify($modify);
-        return $this;
     }
 
     /**
@@ -195,7 +202,7 @@ class DateTime extends \DateTime implements DateTimeInterface
         return (bool)date_create($date);
     }
 
-    public function setFormat($format)
+    public function setDeafultFormat($format)
     {
         $this->format = $format;
         return $this;
@@ -237,10 +244,10 @@ class DateTime extends \DateTime implements DateTimeInterface
      * ```function (DataTime $dataTime) {}```
      * @throws Exception
      */
-    public static function addFormatOption($optionName, \Closure $callback)
+    public function addFormatOption($optionName, \Closure $callback)
     {
-        if(array_search($optionName, static::$formatOptionsPlaceholders) !== false) {
-            throw new Exception('Option "' . $optionName . '" already added');
+        if(in_array($optionName, static::$formatOptionsNames)) {
+            return;
         }
         static::$formatOptionsNames[] = $optionName;
         static::$formatOptionsPlaceholders[] = '~' . count(static::$formatOptionsPlaceholders) . '~';
@@ -292,7 +299,7 @@ class DateTime extends \DateTime implements DateTimeInterface
      * @param string|\DateTimezone $timezone
      * @return \DateTimezone|null
      */
-    protected function prepareTimezone($timezone)
+    protected function calculateTimezone($timezone)
     {
         if (!isset($timezone)) {
             return null;

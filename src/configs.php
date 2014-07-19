@@ -1,5 +1,4 @@
 <?php
-use rock\template\date\Date;
 use rock\template\execute\CacheExecute;
 use rock\template\filters\BaseFilter;
 use rock\template\filters\ConditionFilter;
@@ -13,9 +12,9 @@ use rock\template\snippets\Pagination;
 use rock\template\snippets\Url;
 
 $datetime = function(){
-    $datetime = new Date;
+    $datetime = new \rock\template\date\DateTime;
     $datetime->formats = [
-        'mysql' => Date::ISO_DATETIME_FORMAT,
+        'mysql' => \rock\template\date\DateTime::ISO_DATETIME_FORMAT,
         'dmy'   => function(\rock\template\date\DateTime $dateTime){
                 $nowYear  = date('Y');
                 $lastYear = $dateTime->format('Y');

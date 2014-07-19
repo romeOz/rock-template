@@ -2,7 +2,7 @@
 namespace rock\template\filters;
 
 use rock\template\ClassName;
-use rock\template\date\Date;
+use rock\template\date\DateTime;
 use rock\template\Exception;
 use rock\template\helpers\ArrayHelper;
 use rock\template\helpers\Helper;
@@ -71,10 +71,10 @@ class BaseFilter
             return null;
         }
         if (empty($params['format'])) {
-            $params['format'] = Date::ISO_DATETIME_FORMAT;
+            $params['format'] = DateTime::ISO_DATETIME_FORMAT;
         }
-        /** @var Date $datetime */
-        $datetime = isset($params['_handlers']) ? $params['_handlers'] : new Date();
+        /** @var DateTime $datetime */
+        $datetime = isset($params['_handlers']) ? $params['_handlers'] : new DateTime();
         return $datetime->set($date)->format($params['format']);
     }
 

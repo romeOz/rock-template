@@ -2,19 +2,19 @@
 
 namespace rockunit;
 
-
-use rock\template\date\Date;
 use rock\template\date\DateTime;
+use rock\template\date\Exception;
+use rock\template\date\locale\Ru;
 
-class DateTest extends \PHPUnit_Framework_TestCase
+class DateTimeTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var  Date */
-    protected $date;
+    /** @var  DateTime */
+    protected $dateTime;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->date = new Date;
+        $this->dateTime = new DateTime;
     }
 
     /**
@@ -22,7 +22,7 @@ class DateTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTimestamp($time)
     {
-        $this->assertSame($this->date->set($time)->getTimestamp(), 595296000);
+        $this->assertSame($this->dateTime->set($time)->getTimestamp(), 595296000);
     }
 
     public function providerData()
@@ -36,39 +36,66 @@ class DateTest extends \PHPUnit_Framework_TestCase
 
     public function testFormat()
     {
-        $this->assertSame($this->date->format('j  n  Y'), date('j  n  Y'));
+        $this->assertSame($this->dateTime->format('j  n  Y'), date('j  n  Y'));
+        $this->assertSame($this->dateTime->format(), date('Y-m-d'));
+    }
+
+    public function testDefaultFormat()
+    {
+        $this->assertSame($this->dateTime->serverDate(), date('Y-m-d'));
+        $this->assertSame($this->dateTime->serverTime(), date('H:i:s'));
+        $this->assertSame($this->dateTime->serverDatetime(), date('Y-m-d H:i:s'));
+
+        // set default format
+        $this->dateTime->setDeafultFormat('j  n  Y');
+        $this->assertSame($this->dateTime->format(), date('j  n  Y'));
+
+        // unknown format
+        $this->setExpectedException(Exception::className());
+        $this->dateTime->unknown();
     }
 
     public function testLocal()
     {
-        $this->date->setLocale('ru');
-        $this->assertSame($this->date->set('1988-11-12')->format('j  F  Y'), '12  ноября  1988');
+        $this->dateTime->setLocale('ru');
+        $this->assertSame($this->dateTime->set('1988-11-12')->format('j  F  Y'), '12  ноября  1988');
+        $this->assertSame($this->dateTime->set('1988-11-12')->format('j  M  Y'), '12  ноя  1988');
+        $this->assertSame($this->dateTime->set('1988-11-12')->format('j  l  Y'), '12  суббота  1988');
+        $this->assertSame($this->dateTime->set('1988-11-12')->format('j  D  Y'), '12  Сб  1988');
+        $this->assertTrue($this->dateTime->getLocale() instanceof Ru);
     }
 
-    public function testAddFormat()
+    public function testAddCustomFormat()
     {
-        $this->date->addFormat('shortDate', 'j / F / Y');
-        $this->assertSame($this->date->set('1988-11-12')->shortDate(), '12 / November / 1988');
+        $datetime = new DateTime('1988-11-12');
+        $datetime->addCustomFormat('shortDate', 'j / F / Y');
+        $this->assertSame($datetime->shortDate(), '12 / November / 1988');
+        $this->assertArrayHasKey('shortDate', $datetime->getCustomFormats());
     }
 
     public function testAddFormatOption()
     {
-        $this->date->addFormatOption('ago', function (DateTime $datetime) {
+        $this->dateTime->addFormatOption('ago', function (DateTime $datetime) {
             return floor((time() - $datetime->getTimestamp()) / 86400) . ' days ago';
         });
-        $ago = floor((time() - $this->date->set('1988-11-12')->getTimestamp()) / 86400);
-        $this->assertSame($this->date->set('1988-11-12')->format('d F Y, ago'), "12 November 1988, {$ago} days ago");
+        $ago = floor((time() - $this->dateTime->set('1988-11-12')->getTimestamp()) / 86400);
+        $this->assertSame($this->dateTime->set('1988-11-12')->format('d F Y, ago'), "12 November 1988, {$ago} days ago");
+
+        // duplicate
+        $this->dateTime->addFormatOption('ago', function (DateTime $datetime) {
+            return floor((time() - $datetime->getTimestamp()) / 86400) . ' days ago';
+        });
     }
 
     public function testDiff()
     {
-        $dateTime = $this->date->set('1988-11-12');
+        $dateTime = $this->dateTime->set('1988-11-12');
         $this->assertSame($dateTime->diff(time())->w, (int)floor($dateTime->diff(time())->days / 7));
 
-        $dateInterval = $this->date->diff('1988-11-12');
+        $dateInterval = $this->dateTime->diff('1988-11-12');
         $this->assertSame($dateInterval->w, (int)floor($dateInterval->days / 7) * -1);
 
-        $dateInterval = $this->date->diff('1988-11-12', true);
+        $dateInterval = $this->dateTime->diff('1988-11-12', true);
         $this->assertSame($dateInterval->w, (int)floor($dateInterval->days / 7));
     }
 
@@ -77,7 +104,7 @@ class DateTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsDateTrue($value)
     {
-        $this->assertTrue(Date::is($value));
+        $this->assertTrue(DateTime::is($value));
     }
 
     public function providerIsTrue()
@@ -98,7 +125,7 @@ class DateTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsDateFalse($value)
     {
-        $this->assertFalse(Date::is($value));
+        $this->assertFalse(DateTime::is($value));
     }
 
     public function providerIsFalse()
@@ -117,7 +144,7 @@ class DateTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsTimestampTrue($value)
     {
-        $this->assertTrue(Date::isTimestamp($value));
+        $this->assertTrue(DateTime::isTimestamp($value));
     }
 
     public function providerIsTimestampTrue()
@@ -135,7 +162,7 @@ class DateTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsTimestampFalse($value)
     {
-        $this->assertFalse(Date::isTimestamp($value));
+        $this->assertFalse(DateTime::isTimestamp($value));
     }
 
     public function providerIsTimestampFalse()
@@ -150,6 +177,14 @@ class DateTest extends \PHPUnit_Framework_TestCase
             ['3.14'],
             [3.14],
         ];
+    }
+
+    public function testTimezone()
+    {
+        $this->assertNotEquals(
+            $this->dateTime->set('now', 'America/Chicago')->serverDatetime(),
+            (new DateTime('now', new \DateTimeZone('Europe/Volgograd')))->serverDatetime()
+        );
     }
 
 }

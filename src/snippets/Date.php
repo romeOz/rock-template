@@ -20,6 +20,7 @@ namespace rock\template\snippets;
  * ]]
  * ```
  */
+use rock\template\date\DateTime;
 use rock\template\date\DateTimeInterface;
 use rock\template\Snippet;
 
@@ -34,14 +35,14 @@ class Date extends Snippet implements DateTimeInterface
     public $date = 'now';
     public $timezone;
 
-    /** @var \rock\template\date\Date */
+    /** @var DateTime */
     public $datetime;
 
     public function init()
     {
         parent::init();
         if (!isset($this->datetime)) {
-            $this->datetime = new \rock\template\date\Date();
+            $this->datetime = new DateTime();
         } elseif($this->datetime instanceof \Closure) {
             $this->datetime = call_user_func($this->datetime);
         }

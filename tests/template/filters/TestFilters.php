@@ -5,6 +5,7 @@ namespace rockunit\template\filters;
 
 use rock\template\ClassName;
 use rock\template\date\Date;
+use rock\template\date\DateTime;
 use rock\template\url\Url;
 
 class TestFilters
@@ -15,7 +16,7 @@ class TestFilters
     {
         list($urlManager, $date) = $params['_handlers'];
 
-        if (!$urlManager instanceof Url || !$date instanceof Date) {
+        if (!$urlManager instanceof Url || !$date instanceof DateTime) {
             return 'fail';
         }
         return $value;

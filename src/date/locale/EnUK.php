@@ -2,7 +2,7 @@
 
 namespace rock\template\date\locale;
 
-use rock\template\date\Date;
+use rock\template\date\DateTime;
 
 class EnUK extends Locale
 {
@@ -17,8 +17,8 @@ class EnUK extends Locale
     protected static $shortWeekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     protected static $formats = [
-        Date::USER_DATE_FORMAT => 'm/d/Y',
-        Date::USER_TIME_FORMAT => 'G:i',
-        Date::USER_DATETIME_FORMAT => 'm/d/Y G:i',
+        DateTime::USER_DATE_FORMAT => 'm/d/Y',
+        DateTime::USER_TIME_FORMAT => 'G:i',
+        DateTime::USER_DATETIME_FORMAT => 'm/d/Y G:i',
     ];
 }
