@@ -58,17 +58,24 @@ class Template
      */
     const POS_END = 3;
 
+    /**
+     * Extension file layout/chunk. If used [[ENGINE_PHP]], then ".php" by default
+     * @var string
+     */
     public $fileExtension = 'html';
+    /** @var int  */
     public $engine = self::ENGINE_ROCK;
-
+    /** @var array  */
     public $snippets = [];
+    /** @var array  */
     public $filters = [];
+    /** @var array  */
     public $extensions = [];
-
+    /** @var int|bool  */
     public $autoEscape = self::ESCAPE;
 
+    /** @var string */
     public $head = '<!DOCTYPE html>';
-
     /**
      * @var array the registered link tags.
      * @see registerLinkTag()
@@ -105,23 +112,24 @@ class Template
      * @see registerMetaTag()
      */
     public $metaTags = [];
-
+    /**
+     * Instance Controller where render template
+     * @var object
+     */
     public $context;
-
     /** @var \rock\cache\CacheInterface|null  */
     public $cache;
-    
-    public static $hideUnknown = true;
-
     /**
-     * Array placeholders of variables template
-     *
+     * Array global placeholders of variables template engine
      * @var array
      */
     protected static $placeholders = [];
+    /**
+     * Array local placeholders of variables template engine
+     * @var array
+     */
     protected $localPlaceholders = [];
     protected $oldPlaceholders = [];
-
     public $cachePlaceholders = [];
 
     public function init()
@@ -131,15 +139,19 @@ class Template
         $this->filters = array_merge($configs['filters'], $this->filters);
     }
 
+    /**
+     * Get default filters and snippets
+     * @return array
+     */
     public function defaultConfig()
     {
         return require(__DIR__ . '/configs.php');
     }
 
     /**
-     * Rendering (parse) template
+     * Rendering layout
      *
-     * @param string $name         - name of template (chunk, layout)
+     * @param string      $name - path to layout
      * @param array       $placeholders
      * @param object|null $context
      * @return string
@@ -169,9 +181,7 @@ class Template
 
 
     /**
-     * Rendering (parse) template
-     *
-     * @param string      $name - tpl name
+     * @param string      $name - path to layout/chunk
      * @param array       $placeholders
      * @throws Exception
      * @return string
@@ -244,9 +254,9 @@ class Template
     }
 
     /**
-     * Get chunk
+     * Rendering chunk
      *
-     * @param string $name   - name of chunk
+     * @param string      $name - path to chunk
      * @param array  $placeholders - params
      * @return string
      */
@@ -254,16 +264,12 @@ class Template
     {
         $template = clone $this;
         $template->removeAllPlaceholders();
-
         list($cacheKey, $cacheExpire, $cacheTags) = $template->calculateCacheParams($placeholders);
-
         // Get cache
         if (($resultCache = $template->getCache($cacheKey)) !== false) {
             return $resultCache;
         }
-
         $result = $template->prepareRender($name, $placeholders);
-
         // Set cache
         $template->setCache($cacheKey, $result, $cacheExpire, $cacheTags);
         return $result;
@@ -300,7 +306,6 @@ class Template
     protected function getSnippetInternal($snippet, array $params = [], $autoEscape = true)
     {
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($params);
-
         $config = [];
         if ($snippet instanceof Snippet) {
             if (!empty($params)) {
@@ -744,7 +749,12 @@ class Template
         return $result;
     }
 
-
+    /**
+     * @param string $name - name of extension
+     * @param array $params
+     * @param bool|int  $autoEscape
+     * @return mixed
+     */
     public function getExtension($name, array $params = [], $autoEscape = true)
     {
         $result = $this->_getExtensionInternal($name, $params);
@@ -757,6 +767,12 @@ class Template
 
     protected static $data = [];
 
+    /**
+     * Autoescape vars of template engine
+     * @param mixed $value
+     * @param bool|int $const
+     * @return mixed
+     */
     public function autoEscape($value, $const = true)
     {
         if (is_array($value)) {
@@ -912,7 +928,6 @@ class Template
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
     }
-
 
     /**
      * Registers a JS file.
@@ -1154,7 +1169,6 @@ class Template
 
         return empty($lines) ? '' : implode("\n", $lines);
     }
-
 
     /**
      * Renders the content to be inserted at the end of the body section.
@@ -1531,9 +1545,7 @@ class Template
     }
 
     /**
-     * Get var system
-     *
-     * @param string     $name   - name
+     * @param string     $name   - name of extension
      * @param array $params - params
      * @throws Exception
      * @return mixed
@@ -1597,7 +1609,7 @@ class Template
     }
 
     /**
-     * Get the template from the cache
+     * Get the content from the cache
      * @param string|null $key
      * @return bool
      */
