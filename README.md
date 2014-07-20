@@ -56,7 +56,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
 > if you only want local storage for caching, then you comment out the lines redis, couchbase, and memcached
 > in the file /to/path/provisioning/main.yml (**fastest way to up Vagrant**)
 
-###Installation:Te
+###Installation:
 
 1. [Install Composer](https://getcomposer.org/doc/00-intro.md#globally)
 2. ```composer create-project --prefer-dist --stability=dev romeo7/rock-template```
