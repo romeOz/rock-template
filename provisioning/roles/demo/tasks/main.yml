@@ -1,0 +1,17 @@
+- name: Create index.php
+  template: "{{ item }} owner=vagrant mode=0644"
+  with_items:
+   - src=index.php dest=/var/www/index.php
+   - src=php.php dest=/var/www/php.php
+  tags:
+    - demo
+
+- name: Copy views
+  copy: src=views dest=/var/www/ owner=vagrant mode=0644
+  tags:
+    - demo
+
+- name: Copy assets
+  copy: src=assets dest=/var/www/ owner=vagrant mode=0644
+  tags:
+    - demo

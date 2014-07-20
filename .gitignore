@@ -5,6 +5,9 @@
 vendor
 composer.lock
 ./index.php
+./php.php
+assets/*
+views/*
 *~
 
 
