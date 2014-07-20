@@ -201,7 +201,7 @@ class TemplateTest extends TemplateCommon
         );
 
         // PHP engine
-        $config['engine'] = Template::PHP;
+        $config['engine'] = Template::ENGINE_PHP;
         $config['fileExtension'] = 'php';
         $this->assertSame(
             static::removeSpace((new Template($config))->render($this->path . '/meta', ['about' => 'demo'])),
@@ -210,7 +210,7 @@ class TemplateTest extends TemplateCommon
 
         // register
         $template = new Template;
-        $template->engine = Template::PHP;
+        $template->engine = Template::ENGINE_PHP;
         $template->head = '<!DOCTYPE html>
             <!--[if !IE]>--><html class="no-js"><!--<![endif]-->';
         $template->title = 'Demo';
@@ -644,7 +644,7 @@ class TemplateTest extends TemplateCommon
 
     public function testRenderAsPHP()
     {
-        $this->template->engine = Template::PHP;
+        $this->template->engine = Template::ENGINE_PHP;
         $this->template->fileExtension = 'php';
         $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>']], true);
         $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']], true);

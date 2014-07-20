@@ -20,8 +20,8 @@ class Template
     const STRIP_TAGS = 2;
     const TO_TYPE = 4;
 
-    const ROCK = 1;
-    const PHP = 2;
+    const ENGINE_ROCK = 1;
+    const ENGINE_PHP = 2;
 
     /**
      * @event Event an event that is triggered by [[beginPage()]].
@@ -59,7 +59,7 @@ class Template
     const POS_END = 3;
 
     public $fileExtension = 'html';
-    public $engine = self::ROCK;
+    public $engine = self::ENGINE_ROCK;
 
     public $snippets = [];
     public $filters = [];
@@ -194,13 +194,13 @@ class Template
     {
         $name = static::getAlias($name);
         $path = $name .
-              '.' . ($this->engine === self::PHP ? 'php' : $this->fileExtension);
+              '.' . ($this->engine === self::ENGINE_PHP ? 'php' : $this->fileExtension);
         $path = File::normalizePath($path);
 
         if (!file_exists($path)) {
             throw new Exception(Exception::UNKNOWN_FILE, 0, ['path' => $path]);
         }
-        if ($this->engine === self::PHP) {
+        if ($this->engine === self::ENGINE_PHP) {
             $this->addMultiPlaceholders($placeholders ? : []);
             return $this->renderPhpFile($path);
         } else {
