@@ -106,12 +106,6 @@ class Template
      */
     public $metaTags = [];
 
-    /**
-     * Render header, body
-     * @var bool
-     */
-    public $enabledRenderMeta = true;
-
     public $context;
 
     /** @var \rock\cache\CacheInterface|null  */
@@ -155,26 +149,18 @@ class Template
         if (!isset($this->context)) {
             $this->context = $context;
         }
-
-        $name = static::getAlias($name);
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($placeholders);
-
         // Get cache
         if (($resultCache = $this->getCache($cacheKey)) !== false) {
             return $resultCache;
         }
-
         $result = $this->prepareRender($name, $placeholders);
-
-        if ($this->enabledRenderMeta === true) {
-            foreach (['jsFiles', 'js', 'linkTags', 'cssFiles', 'css','linkTags', 'title', 'metaTags'] as $property) {
-                if ($this->$property instanceof \Closure) {
-                    $this->$property = call_user_func($this->$property, $this);
-                }
+        foreach (['jsFiles', 'js', 'linkTags', 'cssFiles', 'css','linkTags', 'title', 'metaTags'] as $property) {
+            if ($this->$property instanceof \Closure) {
+                $this->$property = call_user_func($this->$property, $this);
             }
-            $result = implode("\n", [$this->beginPage(), $this->beginBody(), $result, $this->endBody(), $this->endPage()]);
         }
-
+        $result = implode("\n", [$this->beginPage(), $this->beginBody(), $result, $this->endBody(), $this->endPage()]);
         // Set cache
         $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags);
 
@@ -268,8 +254,18 @@ class Template
     {
         $template = clone $this;
         $template->removeAllPlaceholders();
-        $template->enabledRenderMeta = false;
-        $result = $template->render($name, $placeholders);
+
+        list($cacheKey, $cacheExpire, $cacheTags) = $template->calculateCacheParams($placeholders);
+
+        // Get cache
+        if (($resultCache = $template->getCache($cacheKey)) !== false) {
+            return $resultCache;
+        }
+
+        $result = $template->prepareRender($name, $placeholders);
+
+        // Set cache
+        $template->setCache($cacheKey, $result, $cacheExpire, $cacheTags);
         return $result;
     }
 
@@ -332,9 +328,7 @@ class Template
         }
         $snippet->template = $this;
 
-        /**
-         * Get cache
-         */
+        // Get cache
         if (($resultCache = $this->getCache($cacheKey)) !== false) {
             return $resultCache;
         }
@@ -348,9 +342,7 @@ class Template
             )
             : $result;
 
-        /**
-         * Set cache
-         */
+        //  Set cache
         $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags);
         return $result;
     }
@@ -502,7 +494,6 @@ class Template
         }
 
         $this->localPlaceholders = $this->oldPlaceholders = array_merge($this->localPlaceholders, $placeholders);
-
     }
 
     /**
@@ -516,12 +507,10 @@ class Template
         if (empty($name)) {
             return;
         }
-
         if ($global === true) {
             unset(static::$placeholders[$name]);
             return;
         }
-
         unset($this->localPlaceholders[$name]);
     }
 
@@ -537,7 +526,6 @@ class Template
             static::$placeholders = array_diff_key(static::$placeholders, array_flip($names));
             return;
         }
-
         $this->localPlaceholders = array_diff_key($this->localPlaceholders, array_flip($names));
     }
 
@@ -1219,9 +1207,7 @@ class Template
         if (!empty($matches['beforeSkip']) && !empty($matches['afterSkip'])) {
             return trim($matches[0], '{!} ');
         }
-        /**
-         * Validate: if count quotes does not parity
-         */
+        // Validate: if count quotes does not parity
         if (!Numeric::isParity(mb_substr_count($matches[0], '`', 'UTF-8'))) {
             return $matches[0];
         }
@@ -1233,17 +1219,11 @@ class Template
                 (?!`)\^(?!`) | (?!`)\>\>(?!`) | (?!`)\<\<(?!`) |
                 (?!`)\|\|(?!`) | (?!`)\&\&(?!`) | \\s+(?!`)'.$this->_getInlineConditionNames().'(?!`)\\s+ |`\\s+\?\\s+|`\\s+\:\\s+)\\s*`
             /x', [$this, 'replaceSugar'], $matches[0]);
-        /**
-         * replace `=` tpl mnemonics
-         */
+        // Replace `=` tpl mnemonics
         $matches[0] = preg_replace('/`([\!\<\>]?)[\=]+`/', '`$1&#61;`', $matches[0]);
-        /**
-         * replace `text` to ““text””
-         */
+        // Replace `text` to ““text””
         $matches[0] = preg_replace(['/=\\s*\`/', '/\`/'], ['=““', '””'], $matches[0]);
-        /**
-         * Replacement of internal recursion on {{{...}}}
-         */
+        // Replacement of internal recursion on {{{...}}}
         $i = 0;
         $dataRecursive = [];
         $matches[0] = preg_replace_callback(
@@ -1258,19 +1238,12 @@ class Template
             },
             $matches[0]
         );
-        /**
-         * Search params is variable of template
-         */
+        // Search params is variable of template
         $params = $this->_searchParams($matches[0], $dataRecursive);
-        /**
-         * Search of filters (modifiers)
-         */
+        // Search of filters (modifiers)
         $filters = $this->_searchFilters($matches[0], $dataRecursive);
-
         $matches['name'] = trim($matches['name']);
-        /**
-         * Get cache
-         */
+        // Get cache
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($params);
         if (($resultCache = $this->getCache($cacheKey)) !== false) {
             return $resultCache;
@@ -1278,7 +1251,6 @@ class Template
 
         $params = Serialize::unserializeRecursive($params);
         $filters = Serialize::unserializeRecursive($filters);
-
         $escape = !$matches['escape'];
 
         // chunk
@@ -1332,9 +1304,7 @@ class Template
             //$result = null;
         }
 
-        /**
-         * Set cache
-         */
+        // Set cache
         $this->setCache(
             $cacheKey,
             $result,
@@ -1446,19 +1416,13 @@ class Template
                 continue;
             }
             $valueParams = mb_substr($dataRecursive[trim($matches['value'][$i])], 2, -2, 'UTF-8');
-            /**
-             * Search prefix
-             */
+            // Search prefix
             $valueParams = $this->_searchPrefix($nameParams, $valueParams);
-            /**
-             * to type
-             */
+            // to type
             if (is_string($valueParams)) {
                 $valueParams = Helper::toType(str_replace('&#61;', '=', $valueParams));
             }
-            /**
-             * If multiple placeholders with the same name, then create to array
-             */
+            // If multiple placeholders with the same name, then create to array
             if (isset($result[$nameParams])) {
                 if (is_array($result[$nameParams])) {
                     $result[$nameParams][] = $valueParams;
@@ -1485,9 +1449,7 @@ class Template
     private function _searchPrefix($name, $value)
     {
         $matches = [];
-        /**
-         * Validate: not replace is @INLINE exists or parameters then/else
-         */
+        // Validate: not replace is @INLINE exists or parameters then/else
         preg_match('/\@(?P<prefix>(?:INLINE|FILE)).+/s', $value, $matches);
         if ((!isset($matches['prefix']) || strtolower($matches['prefix']) !== 'inline')
             && !in_array($name, ['then', 'else'], true)
@@ -1507,9 +1469,7 @@ class Template
      */
     private function _searchFilters($value, array $dataRecursive)
     {
-        /**
-         * Search of filters (modifiers)
-         */
+        // Search of filters (modifiers)
         preg_match_all(
             '/
                 \:
@@ -1538,9 +1498,7 @@ class Template
 
     private function _searchParamsByFilters(array $matches, array $array_recursive, $i)
     {
-        /**
-         * Parsing params of filter
-         */
+        // Parsing params of filter
         preg_match_all(
             '/
                 \&
@@ -1560,9 +1518,7 @@ class Template
                     continue;
                 }
                 $result[$name] = mb_substr($array_recursive[trim($params['values'][$j])], 2, -2, 'UTF-8');
-                /**
-                 * Search prefix
-                 */
+                // Search prefix
                 $result[$name] = $this->_searchPrefix($name, $result[$name]);
                 if (is_string($result[$name])) {
                     $result[$name] = Helper::toType($result[$name]);
