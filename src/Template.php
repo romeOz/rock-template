@@ -246,7 +246,7 @@ class Template
                 (?P<beforeSkip>\{\!\\s*)?\[\[
                 (?P<escape>\!)?
                 (?P<type>[\#\%\~]?|\+{1,2}|\*{1,2}|\${1,2})					# search type of variable template
-                (?P<name>[\\w\-\\\.@]+)							# name of variable template [\w, -, \, .]
+                (?P<name>[\\w\-\/\\\.@]+)							# name of variable template [\w, -, \, .]
                 (?:[^\[\]]++ | \[(?!\[) | \](?!\]) | (?R))*		# possible recursion
                 \]\](?P<afterSkip>\\s*\!\})?
             /iux',
