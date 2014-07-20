@@ -254,7 +254,7 @@ class Pagination extends Snippet
         if (!$pageLast = (int)$dataNav['pageLast']) {
             return null;
         }
-        $pageLastName = !empty($this->pageLastName) ? $this->pageLastName : 'pageLast';
+        $pageLastName = !empty($this->pageLastName) ? $this->pageLastName : 'page last';
         $this->pageArgs[$pageVar] = $pageLast;
         $this->urlManager->reset();
 
