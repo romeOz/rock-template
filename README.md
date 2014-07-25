@@ -79,8 +79,8 @@ Hello <b>[[+foo]]</b>
 Documentation
 -------------------
 
- * [Guide by Rock engine](https://github.com/romeo7/rock-template/docs/rock.md)
- * [Guide by PHP engine](https://github.com/romeo7/rock-template/docs/php.md)
+ * [Guide by Rock engine](https://github.com/romeo7/rock-template/blob/master/docs/rock.md)
+ * [Guide by PHP engine](https://github.com/romeo7/rock-template/blob/master/docs/php.md)
 
 Demo & Tests
 -------------------
