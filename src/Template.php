@@ -1128,6 +1128,7 @@ class Template
     {
         $lines = [];
         $lines[] = $this->head;
+        $lines[] = '<head>';
         $lines[] = Html::tag('title', $this->title);
         if (!empty($this->metaTags)) {
             $lines[] = implode("\n", $this->metaTags);
@@ -1148,7 +1149,7 @@ class Template
         if (!empty($this->js[self::POS_HEAD])) {
             $lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), ['type' => 'text/javascript']);
         }
-
+        $lines[] = '</head>';
         return empty($lines) ? '' : implode("\n", $lines);
     }
 
