@@ -143,7 +143,7 @@ class Pagination extends Snippet
         $pageLastName = $this->calculateLastPage($dataNav, $pageVar);
 
         return $this->template->replaceParamByPrefix(
-            isset($this->pageNavTpl) ? $this->pageNavTpl : '@views/nav/main',
+            isset($this->pageNavTpl) ? $this->pageNavTpl : '@rock.views/nav/main',
             [
                 'num' => $num,
                 'pageFirst' => $pageFirstName,
@@ -205,7 +205,7 @@ class Pagination extends Snippet
                 $result .=
                     $this->template->replaceParamByPrefix(
                         isset($this->pageActiveTpl) ? $this->pageActiveTpl
-                            : '@views/nav/numActive',
+                            : '@rock.views/nav/numActive',
                         [
                             'num' => $num,
                             'url' => $url
@@ -218,7 +218,7 @@ class Pagination extends Snippet
              */
             $result .=
                 $this->template->replaceParamByPrefix(
-                    isset($this->pageNumTpl) ? $this->pageNumTpl : '@views/nav/num',
+                    isset($this->pageNumTpl) ? $this->pageNumTpl : '@rock.views/nav/num',
                     [
                         'num' => $num,
                         'url' => $url
@@ -239,7 +239,7 @@ class Pagination extends Snippet
         $this->urlManager->reset();
 
         return $this->template->replaceParamByPrefix(
-            isset($this->pageFirstTpl) ? $this->pageFirstTpl : '@views/nav/first',
+            isset($this->pageFirstTpl) ? $this->pageFirstTpl : '@rock.views/nav/first',
             [
                 'url' => $this->urlManager
                         ->addArgs($this->pageArgs)
@@ -259,7 +259,7 @@ class Pagination extends Snippet
         $this->urlManager->reset();
 
         return $this->template->replaceParamByPrefix(
-            isset($this->pageLastTpl) ? $this->pageLastTpl : '@views/nav/last',
+            isset($this->pageLastTpl) ? $this->pageLastTpl : '@rock.views/nav/last',
             [
                 'url' => $this->urlManager
                         ->addArgs($this->pageArgs)

@@ -962,7 +962,7 @@ class Template
      */
     public static $aliases = [
         '@rock' => __DIR__,
-        '@views' => '@rock/views'
+        '@rock.views' => '@rock/views'
     ];
 
     /**
