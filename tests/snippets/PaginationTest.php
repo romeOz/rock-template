@@ -36,10 +36,11 @@ class PaginationTest extends TemplateCommon
         ];
         $this->assertEmpty($this->template->getSnippet(Pagination::className(), $params));
 
-        // with args
+        // with args + anchor
         $params = [
             'array' => \rock\template\helpers\Pagination::get(7, null, 5, SORT_DESC),
-            'pageArgs' => 'view=all&sort=desc'
+            'pageArgs' => 'view=all&sort=desc',
+            'pageAnchor' => 'name'
 
         ];
 

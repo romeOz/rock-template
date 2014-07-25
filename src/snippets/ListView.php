@@ -100,6 +100,7 @@ class ListView extends Snippet
      *          => pageLimit        - count button of navigation
      *          => pageVar          - name url-argument of navigation
      *          => pageArgs         - url-arguments of navigation
+     *          => pageAnchor       - url-anchor of navigation
      *          => pageNavTpl       - wrapper template of navigation
      *          => pageNumTpl       - template for disabled buttons
      *          => pageActiveTpl    - template for enabled button
@@ -228,6 +229,7 @@ class ListView extends Snippet
             'pageFirstTpl',
             'pageLastTpl',
             'pageArgs',
+            'pageAnchor'
         ];
         $nav = $this->template->getSnippet('Pagination', ArrayHelper::intersectByKeys($this->nav, $keys));
         //$this->template->removeMultiPlaceholders(array_keys($navParams));

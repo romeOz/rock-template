@@ -90,6 +90,7 @@ class Pagination extends Snippet
      * @var
      */
     public $pageArgs;
+    public $pageAnchor;
 
     public $autoEscape = false;
 
@@ -197,7 +198,7 @@ class Pagination extends Snippet
         foreach ($dataNav['pageDisplay'] as $num) {
             $this->pageArgs[$pageVar] = $num;
             $this->urlManager->reset();
-            $url = $this->urlManager->addArgs($this->pageArgs)->get();
+            $url = $this->urlManager->addArgs($this->pageArgs)->addAnchor($this->pageAnchor)->get();
             /**
              * for active page
              */
@@ -243,6 +244,7 @@ class Pagination extends Snippet
             [
                 'url' => $this->urlManager
                         ->addArgs($this->pageArgs)
+                        ->addAnchor($this->pageAnchor)
                         ->get(),
                 'pageFirstName' => $pageFirstName
             ]
@@ -263,6 +265,7 @@ class Pagination extends Snippet
             [
                 'url' => $this->urlManager
                         ->addArgs($this->pageArgs)
+                        ->addAnchor($this->pageAnchor)
                         ->get(),
                 'pageLastName' => $pageLastName
             ]
