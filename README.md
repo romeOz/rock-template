@@ -16,8 +16,8 @@ Features
  * The variety of filters (arithmetic/logic operations, conditions, string, date, and url)
  * Custom autoescaping
  * Support adding/customization filters and snippets
- * There is a possibility of adding extensions
- * Caching all entities templating engine (suggest [Rock Cache](https://github.com/romeo7/rock-cache))
+ * There is a possibility of adding custom extensions
+ * Caching all entities template engine (suggest [Rock Cache](https://github.com/romeo7/rock-cache))
 
 Installation
 -------------------
@@ -36,6 +36,52 @@ In your composer.json:
 }
 ```
 
+Quick Start
+-------------------
+
+###PHP engine
+
+```php
+use rock\template\Template;
+
+$template = new Template;
+$template->engine = Template::ENGINE_PHP;
+
+echo $template->render('/to/path/layout', ['foo' => 'world!!!']);
+```
+
+Contents layout.php:
+
+```php
+<?php
+/** @var \rock\template\Template $this */
+?>
+
+Hello <b><?=$this->foo?></b>
+
+```
+
+###Rock engine
+
+```php
+use rock\template\Template;
+
+echo (new Template)->render('/to/path/layout', ['foo' => 'world!!!']);
+```
+
+Contents layout.html:
+
+```html
+Hello <b>[[+foo]]</b>
+
+```
+
+Documentation
+-------------------
+
+ * [Guide by Rock engine](https://github.com/romeo7/rock-template/docs/rock.md)
+ * [Guide by PHP engine](https://github.com/romeo7/rock-template/docs/php.md)
+
 Demo & Tests
 -------------------
 
@@ -48,7 +94,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
  * PHP-FPM 5.5
  * Composer
  * For caching
-    * Couhbase 2.2.0 ( + pecl couchbase-1.2.2)
+    * Couchbase 2.2.0 ( + pecl couchbase-1.2.2)
     * Redis 2.8 ( + php5-redis)
     * Memcached 1.4.14 ( + php5_memcached, php5_memcache)
  * Local IP loop on Host machine /etc/hosts and Virtual hosts in Nginx already set up!
