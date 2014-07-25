@@ -3,7 +3,6 @@ namespace rock\template\filters;
 
 use rock\template\ClassName;
 use rock\template\date\DateTime;
-use rock\template\Exception;
 use rock\template\helpers\ArrayHelper;
 use rock\template\helpers\Helper;
 use rock\template\helpers\Json;
@@ -26,19 +25,18 @@ class BaseFilter
      */
     public static function unserialize($value, array $params)
     {
-        if (empty($value) || empty($params['key'])) {
+        if (empty($value)) {
             return null;
         }
 
-        $result = ArrayHelper::getValue(
-             Serialize::unserialize($value, false),
-             explode(Helper::getValue($params['separator'], '.'), $params['key'])
-        );
-        if (is_array($result)) {
-            return null;
+        if (!empty($params['key'])) {
+           return ArrayHelper::getValue(
+                Serialize::unserialize($value, false),
+                explode(Helper::getValue($params['separator'], '.'), $params['key'])
+            );
         }
 
-        return $result;
+        return Serialize::unserialize($value, false);
     }
 
     /**
@@ -137,67 +135,5 @@ class BaseFilter
             return null;
         }
         return Json::encode($array) ? : null;
-    }
-
-    /**
-     * Converting json-object to array
-     *
-     * @param string $value - json-object
-     * @return array
-     */
-    public static function jsonToArray($value)
-    {
-        return Json::decode($value);
-    }
-
-    /**
-     * The value is calculated by the formula
-     * @param float|int|number $value
-     * @param array $params
-     *                  => operator - arithmetic and bitwise operators: *, **, +, -, /, %, |, &, ^, <<, >>
-     *                  => operand
-     * @return float|int|number
-     * @throws \rock\template\Exception
-     *
-     * ```php
-     * (new \rock\Template())->replace('[[+num:formula&operator=`*`&operand=`4`]]', ['num'=> 3]); // 12
-     *
-     * // sugar
-     * (new \rock\Template())->replace('[[+num * `4`]]', ['num'=> 3]); // 12
-     * ```
-     */
-    public static function formula($value, array $params = [])
-    {
-        if (empty($params['operator']) || !isset($params['operand'])) {
-            return $value;
-        }
-        switch (trim($params['operator'])) {
-            case '*':
-                return $value * $params['operand'];
-            case '/':
-                return $value / $params['operand'];
-            case '+':
-                return $value + $params['operand'];
-            case '-':
-                return $value - $params['operand'];
-            case '**':
-                return pow($value, $params['operand']);
-            case 'mod':
-            case '%':
-                return $value % $params['operand'];
-            case '|':
-                return $value | $params['operand'];
-            case '&':
-                return $value & $params['operand'];
-            case '^':
-            case 'xor':
-                return $value ^ $params['operand'];
-            case '<<':
-                return $value << $params['operand'];
-            case '>>':
-                return $value >> $params['operand'];
-        }
-
-        throw new Exception("Unknown operator: {$params['operator']}");
     }
 }

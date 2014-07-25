@@ -289,12 +289,12 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace('[[!+title:unserialize&key=`foo.bar`]]', ['title'=> json_encode(['baz' => 'baz_text', 'foo' => ['bar' => 'bar_text']])]), 'bar_text');
         $this->template->removeAllPlaceholders();
 
-        // unserialize + input null
-        $this->assertSame($this->template->replace('[[!+title:unserialize&key=`foo.bar`]]', ['title'=> null]), '');
+        // unserialize + input array + size
+        $this->assertSame($this->template->replace('[[!+title:toArray:size]]', ['title'=> '{"bar" : {"subbar" : "test"}}']), '1');
         $this->template->removeAllPlaceholders();
 
-        // unserialize + output array
-        $this->assertSame($this->template->replace('[[!+title:unserialize&key=`foo`]]', ['title'=> serialize(['baz' => 'baz_text', 'foo' => ['bar' => 'bar_text']])]), '');
+        // unserialize + input null
+        $this->assertSame($this->template->replace('[[!+title:unserialize&key=`foo.bar`]]', ['title'=> null]), '');
         $this->template->removeAllPlaceholders();
 
         // truncate
@@ -345,11 +345,11 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace('[[+num:isParity&then=`success`&else=`fail`]]', ['num'=> '3']), 'fail');
         $this->template->removeAllPlaceholders();
 
-        // to positive fail
+        // to positive
         $this->assertSame($this->template->replace('[[+num:positive]]', ['num'=> '7']), '7');
         $this->template->removeAllPlaceholders();
 
-        // to positive fail
+        // to positive
         $this->assertSame($this->template->replace('[[+num:positive]]', ['num'=> '-7']), '0');
         $this->template->removeAllPlaceholders();
 

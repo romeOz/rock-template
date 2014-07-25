@@ -47,4 +47,55 @@ class NumericFilter
     {
         return Numeric::toPositive($value);
     }
-} 
+
+    /**
+     * The value is calculated by the formula
+     *
+     * @param float|int|number $value
+     * @param array $params
+     *                  => operator - arithmetic and bitwise operators: *, **, +, -, /, %, |, &, ^, <<, >>
+     *                  => operand
+     * @return float|int|number
+     * @throws \rock\template\Exception
+     *
+     * ```php
+     * (new \rock\Template())->replace('[[+num:formula&operator=`*`&operand=`4`]]', ['num'=> 3]); // 12
+     *
+     * // sugar
+     * (new \rock\Template())->replace('[[+num * `4`]]', ['num'=> 3]); // 12
+     * ```
+     */
+    public static function formula($value, array $params = [])
+    {
+        if (empty($params['operator']) || !isset($params['operand'])) {
+            return $value;
+        }
+        switch (trim($params['operator'])) {
+            case '*':
+                return $value * $params['operand'];
+            case '/':
+                return $value / $params['operand'];
+            case '+':
+                return $value + $params['operand'];
+            case '-':
+                return $value - $params['operand'];
+            case '**':
+                return pow($value, $params['operand']);
+            case 'mod':
+            case '%':
+                return $value % $params['operand'];
+            case '|':
+                return $value | $params['operand'];
+            case '&':
+                return $value & $params['operand'];
+            case '^':
+            case 'xor':
+                return $value ^ $params['operand'];
+            case '<<':
+                return $value << $params['operand'];
+            case '>>':
+                return $value >> $params['operand'];
+        }
+        throw new Exception("Unknown operator: {$params['operator']}");
+    }
+}

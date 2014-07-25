@@ -17,6 +17,20 @@ abstract class StringFilter
     use ClassName;
 
     /**
+     * Size string or array
+     * @param array|string $value
+     * @return int
+     */
+    public static function size($value)
+    {
+        if (is_string($value)) {
+            return mb_strlen($value, 'UTF-8');
+        }
+
+        return count($value);
+    }
+
+    /**
      * Trim by pattern
      *
      * @param string $value

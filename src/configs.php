@@ -42,6 +42,9 @@ $execute = function(){
 
 return [
     'filters' => [
+        'size' => [
+            'class' => StringFilter::className(),
+        ],
         'trimPattern' => [
             'class' => StringFilter::className(),
         ],
@@ -76,10 +79,7 @@ return [
             'class' => NumericFilter::className(),
         ],
         'formula' => [
-            'class' => BaseFilter::className(),
-        ],
-        'arrayToString' => [
-            'class' => BaseFilter::className(),
+            'class' => NumericFilter::className(),
         ],
         'unserialize' => [
             'class' => BaseFilter::className(),
@@ -110,10 +110,11 @@ return [
             'class' => BaseFilter::className(),
         ],
         'jsonToArray' => [
+            'method' => 'unserialize',
             'class' => BaseFilter::className(),
         ],
         'toArray' => [
-            'method' => 'jsonToArray',
+            'method' => 'unserialize',
             'class' => BaseFilter::className(),
         ],
         'notEmpty' => [

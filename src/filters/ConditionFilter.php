@@ -76,7 +76,7 @@ abstract class ConditionFilter
         'gt' => ['isgreaterthan', 'greaterthan', 'isgt', 'gt'],
         'lte' => ['equaltoorlessthan', 'lessthanorequalto', 'el', 'le', 'islte', 'lte'],
         'lt' => ['islowerthan', 'islessthan', 'lowerthan', 'lessthan', 'islt', 'lt'],
-        'inarray' => ['inarray', 'in_array'],
+        'inarray' => ['inarray', 'in_array','in_arr'],
 
     ];
 
