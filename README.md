@@ -13,7 +13,7 @@ Features
 -------------------
 
  * Supports native PHP engine and declarative MODx-like syntax (placeholders, chunk, snippet,...)
- * The variety of filters (arithmetic/logic operations, conditions, string, date, and url)
+ * The variety of filters (arithmetic/bitwise operations, conditions, string, date, and url)
  * Custom autoescaping
  * Support adding/customization filters and snippets
  * There is a possibility of adding custom extensions
@@ -58,7 +58,6 @@ Contents layout.php:
 ?>
 
 Hello <b><?=$this->foo?></b>
-
 ```
 
 ###Rock engine
@@ -73,7 +72,6 @@ Contents layout.html:
 
 ```html
 Hello <b>[[+foo]]</b>
-
 ```
 
 Documentation
