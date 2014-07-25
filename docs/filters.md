@@ -3,43 +3,43 @@ Filters
 
 An filter must start with the ```:``` character. Used filter parameters ``` &is=`null` ``` are automatically converted to the type.
 
- * cascade
- * conditions
- * string
-     * size
-     * truncate
-     * truncateWords
-     * lower
-     * upper
-     * upperFirst
-     * trimPattern
-     * contains
-     * encode
-     * decode
- * numeric
-     * isParity
-     * positive
- * arithmetic operations
+ * [cascade](#cascade)
+ * [conditions](#conditions)
+ * [string](#string)
+     * [size](#size)
+     * [truncate](#truncate)
+     * [truncateWords](#truncatewords)
+     * [lower](#lower)
+     * [upper](#upper)
+     * [upperFirst](#upperfirst)
+     * [trimPattern](#trimpattern)
+     * [contains](#contains)
+     * [encode](#encode)
+     * [decode](#decode)
+ * [numeric](#numeric)
+     * [isParity](#isparity)
+     * [positive](#positive)
+ * [arithmetic operations](#arithmetic-operations)
      * addition
      * negation
      * multiplication
      * exponential expression
      * division
      * modulus
- * bitwise operations
+ * [bitwise operations](#bitwise-operations)
     * or
     * and
     * xor
     * shift the bits to the left
     * shift the bits to the right
- * other
-     * url
-     * date
-     * toJson
-     * toArray
-     * replaceTpl
-     * php-function
- * custom filter
+ * [other](#other)
+     * [url](#url)
+     * [date](#date)
+     * [toJson](#tojson)
+     * [toArray](#toarray)
+     * [replaceTpl](#replaceTpl)
+     * [php-function](#php-function)
+ * [custom filter](#custom-filter)
 
 Cascade
 ------------------
@@ -51,10 +51,9 @@ $replace =
     '[[+foo
        :unserialize
             &key=`bar.subbar`
-    :size
-
+        :size
     ]]';
-echo (new Template)->replace($replace, ['foo' => '{"bar" : {"subbar" : "test"}}']); // result 4
+echo (new Template)->replace($replace, ['foo' => '{"bar" : {"subbar" : "test"}}']); // result: 4
 ```
 A situation may arise when, after applying cascade filters, variable will need to check on the condition.
 
@@ -66,7 +65,7 @@ A situation may arise when, after applying cascade filters, variable will need t
     && `[[+foo:unserialize&key=`bar.subbar`:size]]`
 ]]
 ```
-To doesn't to apply filters again, in the conditions settings, available placeholder [[+output]]
+To doesn't to apply filters again, in the conditions settings, available placeholder ```[[+output]]```
 
 ```html
 [[+foo
@@ -180,56 +179,56 @@ Aliases: ```inarray```, ```in_array```, ```in_arr```
 String
 ------------------
 
-###Size
+###size
 
 ```php
 $replace = '[[+foo:size]]';
-echo (new Template)->replace($replace, ['foo' => 'test']); // result 4
+echo (new Template)->replace($replace, ['foo' => 'test']); // result: 4
 ```
 
-###Truncate
+###truncate
 
 ```php
 $replace = '[[+foo:truncate&length=`5`]]';
-echo (new Template)->replace($replace, ['foo' => 'Hello world']); // result 'Hello...'
+echo (new Template)->replace($replace, ['foo' => 'Hello world']); // result: Hello...
 ```
 
-###TruncateWords
+###truncateWords
 
 ```php
 $replace = '[[+foo:truncateWords&length=`6`]]';
-echo (new Template)->replace($replace, ['foo' => 'Hello world']); // result 'Hello...'
+echo (new Template)->replace($replace, ['foo' => 'Hello world']); // result: Hello...
 ```
 
-###Lower
+###lower
 
 ```php
 $replace = '[[+foo:lower]]';
-echo (new Template)->replace($replace, ['foo' => 'Hello World']); // result 'hello world'
+echo (new Template)->replace($replace, ['foo' => 'Hello World']); // result: hello world
 ```
 
-###Upper
+###upper
 
 ```php
 $replace = '[[+foo:upper]]';
-echo (new Template)->replace($replace, ['foo' => 'Hello World']); // result 'HELLO WORLD'
+echo (new Template)->replace($replace, ['foo' => 'Hello World']); // result: HELLO WORLD
 ```
 
-###UpperFirst
+###upperFirst
 
 ```php
 $replace = '[[+foo:upperFirst]]';
-echo (new Template)->replace($replace, ['foo' => 'hello world']); // result 'Hello world'
+echo (new Template)->replace($replace, ['foo' => 'hello world']); // result: Hello world
 ```
 
-###TrimPattern
+###trimPattern
 
 ```php
 $replace = '[[+foo:trimPattern&pattern=`/l{2}/`]]';
-echo (new Template)->replace($replace, ['foo' => 'hello world']); // result 'weo world'
+echo (new Template)->replace($replace, ['foo' => 'hello world']); // result: weo world
 ```
 
-###Contains
+###contains
 
 > Note: supported ```[[+output]]```
 
@@ -237,14 +236,26 @@ Success:
 
 ```php
 $replace = '[[+foo:contains&is=`Wo`&then=`[[+foo]]`]]';
-echo (new Template)->replace($replace, ['foo' => 'Hello World']); // result 'hello world'
+echo (new Template)->replace($replace, ['foo' => 'Hello World']); // result: hello world
 ```
 
 Fail:
 
 ```php
 $replace = '[[+foo:contains&is=`wo`&then=`[[+foo]]`]]';
-echo (new Template)->replace($replace, ['foo' => 'Hello World']); // result ''
+echo (new Template)->replace($replace, ['foo' => 'Hello World']); // result: ''
+```
+
+###encode
+```php
+$replace = '[[+foo:encode]]';
+echo (new Template)->replace($replace, ['foo' => '<b>test</b>']); // result: &lt;b&gt;test&lt;/b&gt;
+```
+
+###decode
+```php
+$replace = '[[+foo:decode]]';
+echo (new Template)->replace($replace, ['foo' => '&lt;b&gt;test&lt;/b&gt;']); // result: <b>test</b>
 ```
 
 Numeric
@@ -254,14 +265,14 @@ Numeric
 
 ```php
 $replace = '[[+num:isParity&then=`success`]]';
-echo (new Template)->replace($replace, ['foo' => 2]); // result 'success'
+echo (new Template)->replace($replace, ['foo' => 2]); // result: success
 ```
 
-###Positive
+###positive
 
 ```php
 $replace = '[[+num:positive]]';
-echo (new Template)->replace($replace, ['foo' => -7]); // result 0
+echo (new Template)->replace($replace, ['foo' => -7]); // result: 0
 ```
 
 Arithmetic operations
@@ -298,7 +309,7 @@ Supported operations: ```|```, ```&```, ```^```, ```<<```, ```>>```
 Other
 ------------
 
-###Url
+###url
 Alias: ```modifyUrl```
 
 ```php
@@ -319,7 +330,7 @@ If url is empty, then get dummy ```#```.
 ```php
 $replace = '[[+url:modifyUrl]]';
 
-echo (new Template)->replace($replace,['url'=> '']); // result: '#'
+echo (new Template)->replace($replace,['url'=> '']); // result: #
 ```
 
 ###date
@@ -411,4 +422,4 @@ $config = [
 ];
 ```
 
-Now to the filter can be accessed by two names: ```:customFilter``` and ```:custom```
+Now to the filter can be accessed by two names: ```:customFilter``` and ```:custom```.

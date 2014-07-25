@@ -1,13 +1,13 @@
 Rock engine
 =================
 
- * Aliases for path/url/namespace
- * [Placeholders](./#placeholders)
- * [Chunk](./#chunk)
- * [Filters](./#filters)
- * [Snippet](./#snippet)
- * [Autoescape](./#filters)
- * [Caching](./#caching)
+ * [Aliases for path/url/namespace](#aliases-for-pathurlnamespace)
+ * [Placeholders](#placeholders)
+ * [Chunk](#chunk)
+ * [Filters](#filters)
+ * [Snippet](#snippet)
+ * [Autoescape](#filters)
+ * [Caching](#caching)
 
 Aliases for path/url/namespace
 -----------------
@@ -67,7 +67,7 @@ Render
 echo (new Template)->replace('Hello <b>[[+foo]]</b>', ['foo' => 'world!!!']);
 ```
 
-###Render
+###Render layout
 
 ```php
 echo (new Template)->render('/to/path/layout', ['foo' => 'world!!!']);
@@ -204,13 +204,11 @@ echo (new Template)->replace('[[+foo]] <b>[[+bar]]</b> [[++baz]]', ['bar' => 'wo
 ```
 
 Result:
-
 ```html
 Hello <b>world!!!</b> Test
 ```
 
 If placeholder is an array:
-
 ```html
 [[+bar.subbar]]
 ```
@@ -240,4 +238,4 @@ Smart adding placeholders in the chunk
 [Filters](https://github.com/romeo7/rock-template/blob/master/docs/filters.md)
 -----------------
 
-**[See](https://github.com/romeo7/rock-template/blob/master/docs/filters.md)**
+**[See filters](https://github.com/romeo7/rock-template/blob/master/docs/filters.md)**
