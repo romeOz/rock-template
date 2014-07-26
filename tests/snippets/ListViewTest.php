@@ -42,12 +42,12 @@ class ListViewTest extends TemplateCommon
         $params['wrapperTpl'] = "@INLINE[[!+output]]\n[[+countItems]]";
         $this->assertSame($this->removeSpace($this->template->getSnippet(ListView::className(), $params)), $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')));
 
-        // navigation
-        $params['nav']['array'] = Pagination::get(count($params['array']), 1, 1, SORT_DESC);
-        $params['nav']['pageVar'] = 'num';
-        $params['nav']['toPlaceholder'] = 'navigation';
+        // pagination
+        $params['pagination']['array'] = Pagination::get(count($params['array']), 1, 1, SORT_DESC);
+        $params['pagination']['pageVar'] = 'num';
+        $params['pagination']['toPlaceholder'] = 'pagination';
         $this->assertSame($this->removeSpace($this->template->getSnippet(ListView::className(), $params)), $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')));
-        $this->assertNotEmpty($this->template->getPlaceholder('navigation', false, true));
+        $this->assertNotEmpty($this->template->getPlaceholder('pagination', false, true));
     }
 
 
@@ -66,7 +66,7 @@ class ListViewTest extends TemplateCommon
             trim($this->template->replace('
                 [[ListView?array=`[]`]]
             ')),
-            'content is empty'
+            ''
         );
 
         // array is empty  + custom error message
@@ -89,20 +89,20 @@ class ListViewTest extends TemplateCommon
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'))
         );
 
-        // navigation
+        // pagination
         $this->assertSame(
             $this->removeSpace($this->template->replace('
                 [[ListView
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
                     ?wrapperTpl=`'. $this->path . '/wrapper`
-                    ?nav=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "navigation"}`
+                    ?pagination=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "pagination"}`
                 ]]
             ')),
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'))
         );
 
-        $this->assertNotEmpty($this->template->getPlaceholder('navigation', false, true));
+        $this->assertNotEmpty($this->template->getPlaceholder('pagination', false, true));
     }
 
 
@@ -135,7 +135,7 @@ class ListViewTest extends TemplateCommon
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
                     ?wrapperTpl=`'. $this->path . '/wrapper`
-                    ?nav=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "navigation"}`
+                    ?pagination=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "pagination"}`
                     ?cacheKey=`list`
                 ]]
             ')),
@@ -151,14 +151,14 @@ class ListViewTest extends TemplateCommon
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
                     ?wrapperTpl=`'. $this->path . '/wrapper`
-                    ?nav=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "navigation"}`
+                    ?pagination=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "pagination"}`
                     ?cacheKey=`list`
                 ]]
             ')),
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'))
         );
         $this->assertTrue($cache->has('list'));
-        $this->assertNotEmpty($this->template->getPlaceholder('navigation', false, true));
+        $this->assertNotEmpty($this->template->getPlaceholder('pagination', false, true));
     }
 
     /**
@@ -175,7 +175,7 @@ class ListViewTest extends TemplateCommon
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
                     ?wrapperTpl=`'. $this->path . '/wrapper`
-                    ?nav=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "navigation"}`
+                    ?pagination=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "pagination"}`
                     ?cacheKey=`list`
                     ?cacheExpire=`1`
                 ]]

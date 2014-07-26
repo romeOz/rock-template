@@ -82,7 +82,7 @@ class Pagination extends Snippet
 
     public $pageLastTpl;
 
-    public $pageNavTpl;
+    public $wrapperTpl;
 
     /**
      * url-arguments
@@ -120,7 +120,7 @@ class Pagination extends Snippet
         ) {
             return null;
         }
-        $dataNav = $this->array;
+        $data = $this->array;
         /**
          * if exits args-url
          */
@@ -128,29 +128,29 @@ class Pagination extends Snippet
             return null;
         }
         /**
-         * set name of arg-url by navigate
+         * set name of arg-url by pagination
          */
         $pageVar = !empty($this->pageVar)
             ? $this->pageVar
-            : (!empty($dataNav['pageVar'])
-                ? $dataNav['pageVar']
+            : (!empty($data['pageVar'])
+                ? $data['pageVar']
                 : \rock\template\helpers\Pagination::PAGE_VAR
             );
         /**
          * Numeration
          */
-        $num = $this->calculateNum($dataNav, $pageVar);
-        $pageFirstName = $this->calculateFirstPage($dataNav, $pageVar);
-        $pageLastName = $this->calculateLastPage($dataNav, $pageVar);
+        $num = $this->calculateNum($data, $pageVar);
+        $pageFirstName = $this->calculateFirstPage($data, $pageVar);
+        $pageLastName = $this->calculateLastPage($data, $pageVar);
 
         return $this->template->replaceParamByPrefix(
-            isset($this->pageNavTpl) ? $this->pageNavTpl : '@rock.views/nav/main',
+            isset($this->wrapperTpl) ? $this->wrapperTpl : '@rock.views/pagination/wrapper',
             [
                 'num' => $num,
                 'pageFirst' => $pageFirstName,
                 'pageLast' => $pageLastName,
-                'pageCurrent' => Helper::getValue($dataNav['pageCurrent']),
-                'countMore' => Helper::getValue($dataNav['countMore'])
+                'pageCurrent' => Helper::getValue($data['pageCurrent']),
+                'countMore' => Helper::getValue($data['countMore'])
             ]
         );
     }
@@ -192,21 +192,21 @@ class Pagination extends Snippet
         return true;
     }
 
-    protected function calculateNum(array $dataNav, $pageVar)
+    protected function calculateNum(array $data, $pageVar)
     {
         $result = '';
-        foreach ($dataNav['pageDisplay'] as $num) {
+        foreach ($data['pageDisplay'] as $num) {
             $this->pageArgs[$pageVar] = $num;
             $this->urlManager->reset();
             $url = $this->urlManager->addArgs($this->pageArgs)->addAnchor($this->pageAnchor)->get();
             /**
              * for active page
              */
-            if ((int)$dataNav['pageCurrent'] === (int)$num) {
+            if ((int)$data['pageCurrent'] === (int)$num) {
                 $result .=
                     $this->template->replaceParamByPrefix(
                         isset($this->pageActiveTpl) ? $this->pageActiveTpl
-                            : '@rock.views/nav/numActive',
+                            : '@rock.views/pagination/numActive',
                         [
                             'num' => $num,
                             'url' => $url
@@ -219,7 +219,7 @@ class Pagination extends Snippet
              */
             $result .=
                 $this->template->replaceParamByPrefix(
-                    isset($this->pageNumTpl) ? $this->pageNumTpl : '@rock.views/nav/num',
+                    isset($this->pageNumTpl) ? $this->pageNumTpl : '@rock.views/pagination/num',
                     [
                         'num' => $num,
                         'url' => $url
@@ -230,9 +230,9 @@ class Pagination extends Snippet
         return $result;
     }
 
-    protected function calculateFirstPage(array $dataNav, $pageVar)
+    protected function calculateFirstPage(array $data, $pageVar)
     {
-        if (!$pageFirst = (int)$dataNav['pageFirst']) {
+        if (!$pageFirst = (int)$data['pageFirst']) {
             return null;
         }
         $pageFirstName = !empty($this->pageFirstName) ? $this->pageFirstName : 'page first';
@@ -240,7 +240,7 @@ class Pagination extends Snippet
         $this->urlManager->reset();
 
         return $this->template->replaceParamByPrefix(
-            isset($this->pageFirstTpl) ? $this->pageFirstTpl : '@rock.views/nav/first',
+            isset($this->pageFirstTpl) ? $this->pageFirstTpl : '@rock.views/pagination/first',
             [
                 'url' => $this->urlManager
                         ->addArgs($this->pageArgs)
@@ -251,9 +251,9 @@ class Pagination extends Snippet
         );
     }
 
-    protected function calculateLastPage(array $dataNav, $pageVar)
+    protected function calculateLastPage(array $data, $pageVar)
     {
-        if (!$pageLast = (int)$dataNav['pageLast']) {
+        if (!$pageLast = (int)$data['pageLast']) {
             return null;
         }
         $pageLastName = !empty($this->pageLastName) ? $this->pageLastName : 'page last';
@@ -261,7 +261,7 @@ class Pagination extends Snippet
         $this->urlManager->reset();
 
         return $this->template->replaceParamByPrefix(
-            isset($this->pageLastTpl) ? $this->pageLastTpl : '@rock.views/nav/last',
+            isset($this->pageLastTpl) ? $this->pageLastTpl : '@rock.views/pagination/last',
             [
                 'url' => $this->urlManager
                         ->addArgs($this->pageArgs)

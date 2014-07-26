@@ -66,6 +66,9 @@ abstract class Snippet
                 if (!class_exists($function[0])) {
                     throw new Exception(Exception::UNKNOWN_CLASS, 0, ['class' => $function[0]]);
                 }
+                if (is_string($function[0])) {
+                    $function[0] = new $function[0];
+                }
                 return call_user_func_array($function, $params);
             }
         }

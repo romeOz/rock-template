@@ -21,10 +21,10 @@ use rock\template\Snippet;
  * [[ListView
  *      ?call=`\foo\FooController.getAll`
  *      ?tpl=`/to/path/chunk_item`
- *      ?wrapperTpl=`@INLINE<p>[[+output]][[++navigation]]</p>`
- *      ?nav=`{
+ *      ?wrapperTpl=`@INLINE<p>[[+output]][[++pagination]]</p>`
+ *      ?pagination=`{
  *              "call" : "\\foo\\FooController.getPagination",
- *              "toPlaceholder" : "navigation"
+ *              "toPlaceholder" : "pagination"
  *      }`
  * ]]
  * ```
@@ -48,7 +48,7 @@ use rock\template\Snippet;
  *
  * $params = [
  *      'array' => $items
- *      'nav' => [
+ *      'pagination' => [
  *          'array' => \rock\template\helpers\Pagination::get(count($items), (int)$_GET['page'])
  *      ]
  * ];
@@ -60,13 +60,14 @@ use rock\template\Snippet;
 class ListView extends Snippet
 {
     /**
-     * Array for parsing
+     * The data as an array
      *
      * @var array
      */
-    public $array;
+    public $array = [];
 
     /**
+     * The data as an call
      * May be a callable, snippet, and instance
      *
      * ```
@@ -93,23 +94,23 @@ class ListView extends Snippet
     public $addPlaceholders = [];
 
     /**
-     * params Navigate
-     *          => array         - data of navigate
-     *          => call             -
-     *          => toPlaceholder    - navigate to placeholder (name of placeholder)
-     *          => pageLimit        - count button of navigation
-     *          => pageVar          - name url-argument of navigation
-     *          => pageArgs         - url-arguments of navigation
-     *          => pageAnchor       - url-anchor of navigation
-     *          => pageNavTpl       - wrapper template of navigation
-     *          => pageNumTpl       - template for disabled buttons
-     *          => pageActiveTpl    - template for enabled button
+     * Params pagination
+     *          => array            - data of pagination as an array
+     *          => call             - data of pagination as an call
+     *          => toPlaceholder    - the name of global placeholder to adding the pagination
+     *          => pageLimit        - count buttons of pagination
+     *          => pageVar          - name url-argument of pagination ("page" by default)
+     *          => pageArgs         - url-arguments of pagination
+     *          => pageAnchor       - url-anchor of pagination
+     *          => wrapperTpl       - wrapper template of pagination
+     *          => pageNumTpl       - template for buttons
+     *          => pageActiveTpl    - template for active button
      *          => pageFirstTpl     - template for button "first"
      *          => pageLastTpl      - template for button  "end"
      *
      * @var array
      */
-    public $nav = [];
+    public $pagination = [];
 
     /**
      * Prepare item
@@ -140,7 +141,7 @@ class ListView extends Snippet
     public $wrapperTpl;
 
     /**
-     * result to placeholder (name of placeholder)
+     * result to global placeholder (name of global placeholder)
      *
      * @var string
      */
@@ -151,10 +152,10 @@ class ListView extends Snippet
      *
      * @var string
      */
-    public $errorText;
+    public $errorText = '';
 
     /**
-     * @var int|bool|null
+     * @var int|bool
      */
     public $autoEscape = false;
         
@@ -166,7 +167,7 @@ class ListView extends Snippet
             return $this->getError();
         }
         $this->calculateArray();
-        $this->calculateNavigate();
+        $this->calculatePagination();
         if (empty($this->array) || !is_array($this->array)) {
             return null;
         }
@@ -180,10 +181,6 @@ class ListView extends Snippet
      */
     protected function getError()
     {
-        if (!isset($this->errorText)) {
-            $this->errorText = 'content is empty';
-        }
-
         return $this->errorText;
     }
 
@@ -199,31 +196,31 @@ class ListView extends Snippet
     }
 
     /**
-     * Adding navigation
+     * Adding pagination
      *
      * @return void
      */
-    protected function calculateNavigate()
+    protected function calculatePagination()
     {
-        if (empty($this->nav['array']) && empty($this->nav['call'])) {
+        if (empty($this->pagination['array']) && empty($this->pagination['call'])) {
             return;
         }
-        if (empty($this->nav['pageSort'])) {
-            $this->nav['pageSort'] = SORT_DESC;
+        if (empty($this->pagination['pageSort'])) {
+            $this->pagination['pageSort'] = SORT_DESC;
         }
-        if (empty($this->nav['pageLimit'])) {
-            $this->nav['pageLimit'] = \rock\template\helpers\Pagination::PAGE_LIMIT;
+        if (empty($this->pagination['pageLimit'])) {
+            $this->pagination['pageLimit'] = \rock\template\helpers\Pagination::PAGE_LIMIT;
         }
 
-        if (isset($this->nav['call'])) {
-            $this->nav['array'] = $this->callFunction($this->nav['call']);
+        if (isset($this->pagination['call'])) {
+            $this->pagination['array'] = $this->callFunction($this->pagination['call']);
         }
 
         $keys = [
             'array',
             'pageVar',
             'pageArgs',
-            'pageNavTpl',
+            'wrapperTpl',
             'pageNumTpl',
             'pageActiveTpl',
             'pageFirstTpl',
@@ -231,14 +228,13 @@ class ListView extends Snippet
             'pageArgs',
             'pageAnchor'
         ];
-        $nav = $this->template->getSnippet('Pagination', ArrayHelper::intersectByKeys($this->nav, $keys));
-        //$this->template->removeMultiPlaceholders(array_keys($navParams));
-        if (!empty($this->nav['toPlaceholder'])) {
-            $this->template->addPlaceholder($this->nav['toPlaceholder'], $nav, true);
-            $this->template->cachePlaceholders[$this->nav['toPlaceholder']] = $nav;
+        $pagination = $this->template->getSnippet('Pagination', ArrayHelper::intersectByKeys($this->pagination, $keys));
+        if (!empty($this->pagination['toPlaceholder'])) {
+            $this->template->addPlaceholder($this->pagination['toPlaceholder'], $pagination, true);
+            $this->template->cachePlaceholders[$this->pagination['toPlaceholder']] = $pagination;
             return;
         }
-        $this->template->addPlaceholder('nav', $nav);
+        $this->template->addPlaceholder('pagination', $pagination);
     }
 
 
@@ -277,10 +273,10 @@ class ListView extends Snippet
         if (!empty($this->wrapperTpl)) {
             $result = $this->renderWrapperTpl($result, $addPlaceholders);
         }
-        // Adding navigation
-        $result .= $this->template->getPlaceholder('nav', false);
+        // Concat pagination
+        $result .= $this->template->getPlaceholder('pagination', false);
         // Deleting placeholders
-        $this->template->removePlaceholder('nav');
+        $this->template->removePlaceholder('pagination');
         $this->template->removeMultiPlaceholders(array_keys($addPlaceholders));
         // To placeholder
         if (!empty($this->toPlaceholder)) {
@@ -308,7 +304,7 @@ class ListView extends Snippet
             return;
         }
         $this->prepare['params'] = Helper::getValue($this->prepare['params'], []);
-        $this->prepare['params']['data'] = $placeholders;
+        $this->prepare['params']['placeholders'] = $placeholders;
         $this->prepare['params']['autoEscape'] = false;
         $placeholders = $this->callFunction($this->prepare['call'], $this->prepare['params']);
     }

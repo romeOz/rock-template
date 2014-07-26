@@ -20,7 +20,7 @@ $params = [
     'array' => $list,
     'tpl' => '@demo.views/chunks/item',
     'wrapperTpl' => '@INLINE<div>[[!+output]]</div>',
-    'nav' => [
+    'pagination' => [
         'array' => \rock\template\helpers\Pagination::get(count($list), $currentPage, 1, SORT_DESC),
         'pageVar' => 'num',
     ]
@@ -70,7 +70,7 @@ $params = [
     'array' => $this->list,
     'tpl' => '@views/chunks/item',
     'wrapperTpl' => '@INLINE&lt;div&gt;[[!+output]]&lt;/div&gt;',
-    'nav' => [
+    'pagination' => [
         'array' => $this->pagination,
         'pageVar' => 'num',
     ]

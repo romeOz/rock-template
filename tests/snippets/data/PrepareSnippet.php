@@ -7,10 +7,10 @@ use rock\template\Snippet;
 
 class PrepareSnippet extends Snippet
 {
-    public $data;
+    public $placeholders;
 
     public function get()
     {
-        return $this->data;
+        return $this->placeholders;
     }
 } 

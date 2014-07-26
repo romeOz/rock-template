@@ -4,6 +4,6 @@
     ?tpl=`@rockunit.tpl/item`
     ?wrapperTpl=`@INLINE[[!+output]]
 [[+countItems]]`
-    ?nav=`{"call" : "context.getPagination", "toPlaceholder" : "navigation"}`
+    ?pagination=`{"call" : "context.getPagination", "toPlaceholder" : "pagination"}`
 ]]
-[[!++navigation]]
+[[!++pagination]]

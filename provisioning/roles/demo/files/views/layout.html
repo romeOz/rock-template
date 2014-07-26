@@ -84,7 +84,7 @@ $replace =
     ?array = `[[!+list:toJson]]`
     ?tpl = `@views/chunks/item`
     ?wrapperTpl = `@INLINE&lt;div&gt;[[!+output]]&lt;/div&gt;`
-    ?nav=`{
+    ?pagination=`{
         "array" : [[!+pagination:toJson]],
         "pageVar" : "num"
     }`
@@ -114,7 +114,7 @@ echo (new Template())->replace($replace, $params);<!--
                     ?array = `[[!+demo.list:toJson]]`
                     ?tpl = `@demo.views/chunks/item`
                     ?wrapperTpl = `@INLINE<div>[[!+output]]</div>`
-                    ?nav=`{
+                    ?pagination=`{
                         "array" : [[!+demo.pagination:toJson]],
                         "pageVar" : "num"
                     }`
@@ -163,7 +163,7 @@ echo (new FooController)->actionIndex();<!--
     ?call = `context.getList`
     ?tpl = `@views/chunks/item`
     ?wrapperTpl = `@INLINE&lt;div&gt;[[!+output]]&lt;/div&gt;`
-    ?nav=`{
+    ?pagination=`{
        "call" : "context.getPagination",
        "pageVar" : "num"
     }`
