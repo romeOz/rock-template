@@ -3,12 +3,11 @@
 namespace rockunit\template;
 
 
-use rock\template\date\DateTime;
 use rock\template\Exception;
+use rock\template\filters\BaseFilter;
 use rock\template\helpers\String;
 use rock\template\Template;
 use rock\template\url\Url;
-use rockunit\template\filters\TestFilters;
 use rockunit\template\snippets\NullSnippet;
 use rockunit\template\snippets\TestSnippet;
 
@@ -409,11 +408,11 @@ class TemplateTest extends TemplateCommon
         $replace = '[[+date:modifyDate]]';
         $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '2012-02-12 15:01:00');
         $this->template->removeAllPlaceholders();
-//
-//        // modify date + input null
-//        $replace = '[[+date:modifyDate]]';
-//        $this->assertSame($this->template->replace($replace, ['date'=> 'null']), '');
-//        $this->template->removeAllPlaceholders();
+
+        // modify date + input null
+        $replace = '[[+date:modifyDate]]';
+        $this->assertSame($this->template->replace($replace, ['date'=> 'null']), '');
+        $this->template->removeAllPlaceholders();
 
         // arrayToJson
         $replace = '[[+array:arrayToJson]]';
@@ -482,6 +481,25 @@ class TemplateTest extends TemplateCommon
 
         $this->setExpectedException(Exception::className());
         $this->template->replace('[[+num:formula&operator=`<!<!<`&operand=`4`]]', ['num'=> 2]);
+    }
+
+
+    public function testUrlFilter()
+    {
+        $this->template->filters['url'] = [
+            'method' => 'modifyUrl',
+            'class' => BaseFilter::className(),
+            'urlManager' => function(){return new Url;}
+        ];
+
+        $replace = '[[+url:modifyUrl
+                        &args=`{"page" : 1}`
+                        &beginPath=`/parts`
+                        &endPath=`/news/`
+                        &anchor=`name`
+                        &const=`32`
+                     ]]';
+        $this->assertSame($this->template->replace($replace, ['url'=> '/categories/?view=all']), 'http://site.com/parts/categories/news/?page=1#name');
     }
 
     public function testOutputArrayException()

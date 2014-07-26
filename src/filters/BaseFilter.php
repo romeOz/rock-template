@@ -77,21 +77,29 @@ class BaseFilter
      * Modify url
      *
      * @param string $url
-     * @param array  $params    - params
-     *                          => args        - add args-url
-     *                          => scheme      - scheme
-     *                          => beginPath     - add string to begin
-     *                          => endPath       - add string to end
-     *                          => const
-     *                          => urlManager - instance [[\rock\template\url\Url]]
+     * @param array  $params - params
+     *                  => args        - add args-url
+     *                  => scheme      - scheme
+     *                  => beginPath     - add string to begin
+     *                  => endPath       - add string to end
+     *                  => const
+     *                  => \Closure|\rock\template\url\Url urlManager
+     * @param \rock\template\Template $template
      * @return string
      */
-    public static function modifyUrl($url, array $params = [])
+    public static function modifyUrl($url, array $params = [], Template $template)
     {
         if (empty($url)) {
             return '#';
         }
-        $urlManager = isset($params['urlManager']) ? $params['urlManager'] : new Url();
+        if (isset($params['urlManager'])) {
+            if ($params['urlManager'] instanceof \Closure) {
+                $params['urlManager'] = call_user_func($params['urlManager'], $template);
+            }
+            $urlManager = $params['urlManager'];
+        } else {
+            $urlManager = new Url;
+        }
         $urlManager->set($url);
         if (isset($params['removeAllArgs'])) {
             $urlManager->removeAllArgs();
