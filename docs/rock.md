@@ -6,7 +6,7 @@ Rock engine
  * [Chunk](#chunk)
  * [Filters](#filters)
  * [Snippet](#snippet)
- * [Autoescape](#filters)
+ * [Autoescape](#autoescape)
  * [Caching](#caching)
 
 Aliases for path/url/namespace

@@ -343,7 +343,7 @@ echo (new Template)->replace($replace,['date'=> '2012-02-12 15:01']); // result:
 ```
 
 ###toJson
-Alias: ```ArrayToJson```
+Alias: ```arrayToJson```
 
 ```php
 $replace = '[[+array:toJson]]';
