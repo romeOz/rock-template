@@ -68,12 +68,8 @@ class BaseFilter
         if (empty($date)) {
             return null;
         }
-        if (empty($params['format'])) {
-            $params['format'] = DateTime::ISO_DATETIME_FORMAT;
-        }
-        /** @var DateTime $datetime */
-        $datetime = isset($params['_handlers']) ? $params['_handlers'] : new DateTime();
-        return $datetime->set($date)->format($params['format']);
+        return (new DateTime($date, Helper::getValue($params['timezone']), Helper::getValue($params['config'], [])))
+            ->format(Helper::getValue($params['format']));
     }
 
 
@@ -87,6 +83,7 @@ class BaseFilter
      *                          => beginPath     - add string to begin
      *                          => endPath       - add string to end
      *                          => const
+     *                          => urlManager - instance [[\rock\template\url\Url]]
      * @return string
      */
     public static function modifyUrl($url, array $params = [])
@@ -94,7 +91,7 @@ class BaseFilter
         if (empty($url)) {
             return '#';
         }
-        $urlManager = isset($params['_handlers']) ? $params['_handlers'] : new Url();
+        $urlManager = isset($params['urlManager']) ? $params['urlManager'] : new Url();
         $urlManager->set($url);
         if (isset($params['removeAllArgs'])) {
             $urlManager->removeAllArgs();

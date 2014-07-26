@@ -8,21 +8,12 @@ use rock\template\date\locale\Ru;
 
 class DateTimeTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var  DateTime */
-    protected $dateTime;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->dateTime = new DateTime;
-    }
-
     /**
      * @dataProvider providerData
      */
     public function testGetTimestamp($time)
     {
-        $this->assertSame($this->dateTime->set($time)->getTimestamp(), 595296000);
+        $this->assertSame((new DateTime($time))->getTimestamp(), 595296000);
     }
 
     public function providerData()
@@ -36,38 +27,40 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 
     public function testFormat()
     {
-        $this->assertSame($this->dateTime->format('j  n  Y'), date('j  n  Y'));
-        $this->assertSame($this->dateTime->format(), date('Y-m-d'));
+        $this->assertSame((new DateTime)->format('j  n  Y'), date('j  n  Y'));
+        $this->assertSame((new DateTime)->format(), date('Y-m-d H:i:s'));
     }
 
     public function testDefaultFormat()
     {
-        $this->assertSame($this->dateTime->serverDate(), date('Y-m-d'));
-        $this->assertSame($this->dateTime->serverTime(), date('H:i:s'));
-        $this->assertSame($this->dateTime->serverDatetime(), date('Y-m-d H:i:s'));
+        $this->assertSame((new DateTime)->serverDate(), date('Y-m-d'));
+        $this->assertSame((new DateTime)->serverTime(), date('H:i:s'));
+        $this->assertSame((new DateTime)->serverDatetime(), date('Y-m-d H:i:s'));
 
         // set default format
-        $this->dateTime->setDeafultFormat('j  n  Y');
-        $this->assertSame($this->dateTime->format(), date('j  n  Y'));
+        $dateTime = new DateTime;
+        $dateTime->setDeafultFormat('j  n  Y');
+        $this->assertSame($dateTime->format(), date('j  n  Y'));
 
         // unknown format
         $this->setExpectedException(Exception::className());
-        $this->dateTime->unknown();
+        (new DateTime)->unknown();
     }
 
     public function testLocal()
     {
-        $this->dateTime->setLocale('ru');
-        $this->assertSame($this->dateTime->set('1988-11-12')->format('j  F  Y'), '12  ноября  1988');
-        $this->assertSame($this->dateTime->set('1988-11-12')->format('j  M  Y'), '12  ноя  1988');
-        $this->assertSame($this->dateTime->set('1988-11-12')->format('j  l  Y'), '12  суббота  1988');
-        $this->assertSame($this->dateTime->set('1988-11-12')->format('j  D  Y'), '12  Сб  1988');
-        $this->assertTrue($this->dateTime->getLocale() instanceof Ru);
+        $dateTime = new DateTime('1988-11-12');
+        $dateTime->setLocale('ru');
+        $this->assertSame($dateTime->format('j  F  Y'), '12  ноября  1988');
+        $this->assertSame($dateTime->format('j  M  Y'), '12  ноя  1988');
+        $this->assertSame($dateTime->format('j  l  Y'), '12  суббота  1988');
+        $this->assertSame($dateTime->format('j  D  Y'), '12  Сб  1988');
+        $this->assertTrue($dateTime->getLocale() instanceof Ru);
 
-        $this->assertNotEmpty($this->dateTime->getLocale()->getFormats());
-        $this->assertNotEmpty($this->dateTime->getLocale()->getMonths());
-        $this->assertNotEmpty($this->dateTime->getLocale()->getWeekDays());
-        $this->assertNotEmpty($this->dateTime->getLocale()->getShortWeekDays());
+        $this->assertNotEmpty($dateTime->getLocale()->getFormats());
+        $this->assertNotEmpty($dateTime->getLocale()->getMonths());
+        $this->assertNotEmpty($dateTime->getLocale()->getWeekDays());
+        $this->assertNotEmpty($dateTime->getLocale()->getShortWeekDays());
     }
 
     public function testAddCustomFormat()
@@ -80,27 +73,28 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 
     public function testAddFormatOption()
     {
-        $this->dateTime->addFormatOption('ago', function (DateTime $datetime) {
+        $datetime = new DateTime('1988-11-12');
+        $datetime->addFormatOption('ago', function (DateTime $datetime) {
             return floor((time() - $datetime->getTimestamp()) / 86400) . ' days ago';
         });
-        $ago = floor((time() - $this->dateTime->set('1988-11-12')->getTimestamp()) / 86400);
-        $this->assertSame($this->dateTime->set('1988-11-12')->format('d F Y, ago'), "12 November 1988, {$ago} days ago");
+        $ago = floor((time() - $datetime->getTimestamp()) / 86400);
+        $this->assertSame($datetime->format('d F Y, ago'), "12 November 1988, {$ago} days ago");
 
         // duplicate
-        $this->dateTime->addFormatOption('ago', function (DateTime $datetime) {
+        $datetime->addFormatOption('ago', function (DateTime $datetime) {
             return floor((time() - $datetime->getTimestamp()) / 86400) . ' days ago';
         });
     }
 
     public function testDiff()
     {
-        $dateTime = $this->dateTime->set('1988-11-12');
+        $dateTime = new DateTime('1988-11-12');
         $this->assertSame($dateTime->diff(time())->w, (int)floor($dateTime->diff(time())->days / 7));
 
-        $dateInterval = $this->dateTime->diff('1988-11-12');
+        $dateInterval = $dateTime->diff('1988-11-12');
         $this->assertSame($dateInterval->w, (int)floor($dateInterval->days / 7) * -1);
 
-        $dateInterval = $this->dateTime->diff('1988-11-12', true);
+        $dateInterval = $dateTime->diff('1988-11-12', true);
         $this->assertSame($dateInterval->w, (int)floor($dateInterval->days / 7));
     }
 
@@ -187,7 +181,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     public function testTimezone()
     {
         $this->assertNotEquals(
-            $this->dateTime->set('now', 'America/Chicago')->serverDatetime(),
+            (new DateTime('now', 'America/Chicago'))->serverDatetime(),
             (new DateTime('now', new \DateTimeZone('Europe/Volgograd')))->serverDatetime()
         );
     }

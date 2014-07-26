@@ -687,25 +687,11 @@ class Template
             }
             foreach ($params as $_params) {
                 if (isset($this->filters[$method]['class'])) {
-                    $class = $this->filters[$method]['class'];
-                    if (isset($this->filters[$method]['handlers'])) {
-                        $_params['_handlers'] = $this->filters[$method]['handlers'];
-                        if (is_array($_params['_handlers'])) {
-                            $_params['_handlers'] = array_map(
-                                function($value){
-                                    if ($value instanceof \Closure) {
-                                        return call_user_func($value, $this);
-                                    }
-                                    return $value;
-                                },
-                                $_params['_handlers']
-                            );
-                        } elseif ($_params['_handlers'] instanceof \Closure) {
-                            $_params['_handlers'] = call_user_func($_params['_handlers'], $this);
-                        }
-                    }
-                    $method  = Helper::getValue($this->filters[$method]['method'], $method);
-                    $value = call_user_func([$class, $method], $value, $_params, $this);
+                    $filterParams = $this->filters[$method];
+                    $class = $filterParams['class'];
+                    $method  = Helper::getValue($filterParams['method'], $method);
+                    unset($filterParams['class'], $filterParams['method']);
+                    $value = call_user_func([$class, $method], $value, array_merge($filterParams, $_params), $this);
                 } elseif (function_exists($method)) {
                     $value = call_user_func_array($method, array_merge([$value], $_params));
                 } else {

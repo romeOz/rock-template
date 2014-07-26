@@ -59,12 +59,6 @@ class ForSnippet extends Snippet
         if (!empty($this->wrapperTpl)) {
             $result = $this->template->replaceParamByPrefix($this->wrapperTpl, ['output' => $result]);
         }
-//        /**
-//         *  Deleting placeholders
-//         */
-//        if (!empty($this->addPlaceholders)) {
-//            $this->Rock->template->removeMultiPlaceholders(array_keys($this->addPlaceholders));
-//        }
 
         return $result;
     }

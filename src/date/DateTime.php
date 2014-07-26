@@ -16,7 +16,7 @@ class DateTime extends \DateTime implements DateTimeInterface
         ObjectTrait::__construct as parentConstruct;
     }
 
-    const DEFAULT_FORMAT = 'Y-m-d';
+    const DEFAULT_FORMAT = 'Y-m-d H:i:s';
 
     public $format = self::DEFAULT_FORMAT;
 
@@ -66,21 +66,6 @@ class DateTime extends \DateTime implements DateTimeInterface
                 $this->addFormatOption($alias, $callback);
             }
         }
-    }
-
-    /**
-     * @param string|int       $time
-     * @param string|\DateTimeZone $timezone
-     * @return DateTime
-     */
-    public function set($time = 'now', $timezone = null)
-    {
-        $config = [
-            'format' => $this->format,
-            'formats' => $this->formats,
-            'locale' => $this->locale
-        ];
-        return new static($time, $timezone, $config);
     }
 
     /**

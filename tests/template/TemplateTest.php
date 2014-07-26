@@ -409,11 +409,11 @@ class TemplateTest extends TemplateCommon
         $replace = '[[+date:modifyDate]]';
         $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '2012-02-12 15:01:00');
         $this->template->removeAllPlaceholders();
-
-        // modify date + input null
-        $replace = '[[+date:modifyDate]]';
-        $this->assertSame($this->template->replace($replace, ['date'=> 'null']), '');
-        $this->template->removeAllPlaceholders();
+//
+//        // modify date + input null
+//        $replace = '[[+date:modifyDate]]';
+//        $this->assertSame($this->template->replace($replace, ['date'=> 'null']), '');
+//        $this->template->removeAllPlaceholders();
 
         // arrayToJson
         $replace = '[[+array:arrayToJson]]';
@@ -482,24 +482,6 @@ class TemplateTest extends TemplateCommon
 
         $this->setExpectedException(Exception::className());
         $this->template->replace('[[+num:formula&operator=`<!<!<`&operand=`4`]]', ['num'=> 2]);
-    }
-
-    public function testFilterHandlers()
-    {
-        $config = [
-            'filters' => [
-                'foo' => [
-                    'class' => TestFilters::className(),
-                    'handlers' => [
-                        function(){
-                            return new Url();
-                        },
-                        new DateTime()
-                    ]
-                ]
-            ]
-        ];
-        $this->assertSame((new Template($config))->replace('[[+value:foo]]', ['value' => 'test']), 'test');
     }
 
     public function testOutputArrayException()

@@ -11,9 +11,8 @@ use rock\template\snippets\ListView;
 use rock\template\snippets\Pagination;
 use rock\template\snippets\Url;
 
-$datetime = function(){
-    $datetime = new \rock\template\date\DateTime;
-    $datetime->formats = [
+$datetimeConfig = [
+    'formats' => [
         'mysql' => \rock\template\date\DateTime::ISO_DATETIME_FORMAT,
         'dmy'   => function(\rock\template\date\DateTime $dateTime){
                 $nowYear  = date('Y');
@@ -30,9 +29,8 @@ $datetime = function(){
                     ? $dateTime->format('j F Y H:i')
                     : $dateTime->format('j F H:i');
             },
-    ];
-    return $datetime;
-};
+    ]
+];
 
 $execute = function(){
     $execute = new CacheExecute();
@@ -89,11 +87,11 @@ return [
         ],
         'modifyDate' => [
             'class' => BaseFilter::className(),
-            'handlers' => $datetime
+            'config' => $datetimeConfig
         ],
         'date' => [
             'class' => BaseFilter::className(),
-            'handlers' => $datetime
+            'config' => $datetimeConfig
         ],
         'modifyUrl' => [
             'class' => BaseFilter::className(),
@@ -139,7 +137,7 @@ return [
         ],
         'Date' => [
             'class'        => \rock\template\snippets\Date::className(),
-            'datetime' => $datetime
+            'config' => $datetimeConfig
         ],
         'For' => [
             'class'        => ForSnippet::className(),

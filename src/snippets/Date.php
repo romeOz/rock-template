@@ -31,29 +31,13 @@ class Date extends Snippet implements DateTimeInterface
      * format of date
      * @var string
      */
-    public $format;
+    public $format = DateTime::DEFAULT_FORMAT;
     public $date = 'now';
     public $timezone;
-
-    /** @var DateTime */
-    public $datetime;
-
-    public function init()
-    {
-        parent::init();
-        if (!isset($this->datetime)) {
-            $this->datetime = new DateTime();
-        } elseif($this->datetime instanceof \Closure) {
-            $this->datetime = call_user_func($this->datetime);
-        }
-    }
+    public $config = [];
 
     public function get()
     {
-        if (empty($this->format)) {
-            $this->format = self::ISO_DATETIME_FORMAT;
-        }
-
-        return $this->datetime->set($this->date, $this->timezone)->format($this->format);
+        return (new DateTime($this->date, $this->timezone, $this->config))->format($this->format);
     }
 }
