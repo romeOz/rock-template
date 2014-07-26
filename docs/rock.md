@@ -5,7 +5,7 @@ Rock engine
  * [Placeholders](#placeholders)
  * [Chunk](#chunk)
  * [Filters](#filters)
- * [Snippet](#snippet)
+ * [Snippets](https://github.com/romeo7/rock-template/blob/master/docs/snippets/readme.md)
  * [Autoescape](#autoescape)
  * [Caching](#caching)
 
