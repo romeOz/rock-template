@@ -133,7 +133,7 @@ Possible value:
 Caching
 ------------------
 
-You can caching any entity templating engine.
+You can caching any entity template engine.
 
 ###Include
 
@@ -194,7 +194,9 @@ $result = $template->getPlaceholder('placeholder');
 $result .= $template->getSnippet('ListView');
 
 // set cache
-$cache->set('list', 3600);
+$cache->set('list', $result, 3600);
 
 return $result;
 ```
+
+More detailed information see [Rock cache](https://github.com/romeo7/rock-cache/).

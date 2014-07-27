@@ -33,7 +33,7 @@ echo $template->getSnippet('ListView');
 Custom snippet
 ----------------
 
-Adding to existing filters:
+Adding to existing snippets:
 
 ```php
 use rock\template\Snippet;
@@ -85,4 +85,4 @@ class CustomSnippet extends Snippet
 }
 ```
 
-For further information [see "Autoescape"](https://github.com/romeo7/rock-template/blob/master/docs/rock.md#autoescape)
+More detailed information [see "Autoescape"](https://github.com/romeo7/rock-template/blob/master/docs/rock.md#autoescape)

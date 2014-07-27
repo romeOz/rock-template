@@ -189,7 +189,7 @@ Text located between `{! ... !}` will not be replaced.
 Caching
 ------------------
 
-You can caching any entity templating engine.
+You can caching any entity template engine.
 
 ###Include
 
@@ -234,3 +234,5 @@ The parameters to use for caching:
     ?cacheTags=`["articles", "news"]`
 ]]
 ```
+
+More detailed information see [Rock cache](https://github.com/romeo7/rock-cache/).

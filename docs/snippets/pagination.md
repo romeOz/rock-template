@@ -18,9 +18,9 @@ The data returned `\rock\template\helpers\Pagination::get()`.
 The data as an call. May be an callable, snippet, or instance.
 
 ```html
-[[ListView?call=`\foo\FooController.getPagination`]]
-[[ListView?call=`context.getPagination`]]
-[[ListView?call=`FooSnippet`]]
+[[Pagination?call=`\foo\FooController.getPagination`]]
+[[Pagination?call=`context.getPagination`]]
+[[Pagination?call=`FooSnippet`]]
 ```
 or
 
