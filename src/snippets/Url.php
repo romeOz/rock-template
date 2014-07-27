@@ -24,21 +24,61 @@ use rock\template\url\UrlInterface;
 class Url extends Snippet implements UrlInterface
 {
     public $url;
+    /**
+     * Set args.
+     * @var array
+     */
     public $args;
+    /**
+     * Adding args.
+     * @var array
+     */
     public $addArgs;
+    /**
+     * Adding anchor.
+     * @var string
+     */
     public $anchor;
-    public $selfHost;
+    /**
+     * Concat to begin URL.
+     * @var string
+     */
     public $beginPath;
+    /**
+     * Concat to end URL.
+     * @var string
+     */
     public $endPath;
+    /**
+     * Selective removing arguments.
+     * @var array
+     */
     public $removeArgs;
+    /**
+     * Removing all arguments.
+     * @var bool
+     */
     public $removeAllArgs;
+    /**
+     * Removing anchor.
+     * @var bool
+     */
     public $removeAnchor;
+    /**
+     * @var int
+     * @see UrlInterface
+     */
     public $const;
-
-    public $autoEscape = Template::STRIP_TAGS;
+    /**
+     * Self host
+     * @var bool
+     */
+    public $selfHost;
 
     /** @var \rock\template\url\Url */
     public $urlManager;
+
+    public $autoEscape = Template::STRIP_TAGS;
 
 
     public function init()
@@ -49,6 +89,8 @@ class Url extends Snippet implements UrlInterface
         } elseif($this->urlManager instanceof \Closure) {
             $this->urlManager = call_user_func($this->urlManager, $this);
         }
+
+        $this->urlManager = new $this->urlManager;
     }
 
     public function get()

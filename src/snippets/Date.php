@@ -28,11 +28,15 @@ use rock\template\Snippet;
 class Date extends Snippet implements DateTimeInterface
 {
     /**
-     * format of date
+     * Datetime. `now` by default.
+     * @var string
+     */
+    public $date = 'now';
+    /**
+     * Format of datetime.
      * @var string
      */
     public $format = DateTime::DEFAULT_FORMAT;
-    public $date = 'now';
     public $timezone;
     public $config = [];
 

@@ -24,22 +24,30 @@ class ForSnippet extends Snippet
     public $count;
 
     /**
-     * Wrapped to template. Path to chunk or [[@INLINE]] html-elements
-     * @var string
-     */
-    public $tpl;
-
-    /**
-     * Added external placeholders
+     * Adding external placeholders in `tpl` and `wrapperTpl`.
      * @var array
      */
     public $addPlaceholders = [];
 
     /**
-     * Wrapped to wrapper-template. Path to chunk or [[@INLINE]] html-elements
+     * Wrapper for item. You can specify the path to chunk ```?tpl=`/to/path/chunk```/```?tpl=`@views/chunk``` or
+     * on the spot to specify a template ``` ?tpl=`@INLINE<b>[[+title]]</b>` ```.
+     *
+     * @var string
+     */
+    public $tpl;
+
+    /**
+     * Wrapper for all items. You can specify the path to chunk ```?wrapperTpl=`/to/path/chunk```/```?tpl=`@views/chunk``` or
+     * on the spot to specify a template ``` ?wrapperTpl=`@INLINE<p>[[+output]]</p>` ```.
      * @var string
      */
     public $wrapperTpl;
+
+    /**
+     * @var int|bool
+     */
+    public $autoEscape = false;
 
 
     public function get()

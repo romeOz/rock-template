@@ -10,9 +10,9 @@ use rock\template\Snippet;
 /**
  * Snippet "Formula"
  *
- * ```
+ * ```html
  * [[Formula
- *      ?subject=`(int):pageCurrent - 1`
+ *      ?subject=`:pageCurrent - 1`
  *      ?operands=`{"pageCurrent" : "[[+pageCurrent]]"}`
  * ]]
  * ```
@@ -20,8 +20,8 @@ use rock\template\Snippet;
 class Formula extends Snippet
 {
     /**
-     * formula (disallow html/php-tags)
-     * @var
+     * Subject (strip html/php-tags). E.g `:pageCurrent - 1`
+     * @var string
      */
     public $subject;
     public $operands;

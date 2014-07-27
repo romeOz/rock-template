@@ -87,9 +87,9 @@ class ListView extends Snippet
     public $call;
 
     /**
-     * Adding placeholders
+     * Adding external placeholders in `tpl` and `wrapperTpl`.
      *
-     * @var
+     * @var array
      */
     public $addPlaceholders = [];
 

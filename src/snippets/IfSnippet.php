@@ -11,7 +11,7 @@ use rock\template\Snippet;
  * Snippet "IfSnippet"
  *
  * [[If
- *      ?subject=`((int):foo > 1) && ((int):foo < 3)`
+ *      ?subject=`:foo > 1 && :foo < 3`
  *      ?operands=`{"foo" : "[[+foo]]"}`
  *      ?then=`success`
  *      ?else=`fail`
@@ -20,21 +20,30 @@ use rock\template\Snippet;
 class IfSnippet extends Snippet
 {
     /**
-     * condition (disallow html/php-tags)
+     * Condition (strip html/php-tags). E.g `:foo > 1 && :foo < 3`
      * @var string
      */
     public $subject;
 
-    public $operands = [];
-    public $then;
-    public $else;
     /**
-     * Added external placeholders
+     * Compliance of the operand to the placeholder. E.g. `{"foo" : "[[+foo]]"}`
+     * @var array
+     */
+    public $operands = [];
+
+    /** @var  string */
+    public $then;
+
+    /** @var  string */
+    public $else;
+
+    /**
+     * Adding external placeholders in `tpl` and `wrapperTpl`.
      * @var array
      */
     public $addPlaceholders = [];
 
-    /** @var Execute */
+    /** @var Execute|\Closure|string */
     public $execute;
 
     public function init()
@@ -45,6 +54,8 @@ class IfSnippet extends Snippet
         } elseif($this->execute instanceof \Closure) {
             $this->execute = call_user_func($this->execute, $this);
         }
+
+        $this->execute = new $this->execute;
     }
 
     public function get()

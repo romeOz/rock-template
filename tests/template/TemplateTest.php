@@ -668,9 +668,6 @@ class TemplateTest extends TemplateCommon
                     }
             ]
         );
-        return new \rock\cache\CacheFile([
-                                               'enabled' => true,
-                                               'adapter' => $adapter,
-                                           ]);
+        return new \rock\cache\CacheFile(['enabled' => true, 'adapter' => $adapter]);
     }
 }
