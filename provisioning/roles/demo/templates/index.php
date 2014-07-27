@@ -1,6 +1,5 @@
 <?php
 use rock\template\helpers\Pagination;
-use rock\template\snippets\ListView;
 use rock\template\Template;
 
 include_once(__DIR__ . '/vendor/autoload.php');

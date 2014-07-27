@@ -23,6 +23,7 @@ $params = [
     'pagination' => [
         'array' => \rock\template\helpers\Pagination::get(count($list), $currentPage, 1, SORT_DESC),
         'pageVar' => 'num',
+        'pageAnchor' => 'pagination'
     ]
 ];
 
@@ -78,13 +79,8 @@ $params = [
 ?&gt;
 &lt;?=$this->getSnippet('ListView', $params)?&gt;<!--
                 --></code></pre>
-        Result:
+        Result<a name="pagination"></a>:
         <pre><code class="html"><?=$this->getSnippet('ListView', $params)?></code></pre>
     </div>
 </div>
-<div class="demo-footer">
-    <p>Demo template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://github.com/romeo7">@romeo</a>.</p>
-    <p>
-        <a href="#">Back to top</a>
-    </p>
-</div>
+<?=$this->getChunk('@demo.views/chunks/footer')?>

@@ -49,6 +49,14 @@ __set() and __unset() using only for local placeholders.
 
 > Conflict resolution of names when using getter (`__get()`): The first is returned to the local placeholder, second - global placeholder, and third - resource.
 
+If placeholder is an array:
+
+```php
+$template->foo = ['bar' => 'Hello'];
+
+echo $template->getPlaceholder('foo.bar'); // result: Hello
+```
+
 Resource
 -----------------
 

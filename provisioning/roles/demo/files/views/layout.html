@@ -108,7 +108,7 @@ $params = [
 ];
 echo (new Template())->replace($replace, $params);<!--
                         --></code></pre>
-            Result:
+            Result<a name="pagination"></a>:
             <pre><code class="html"><!--
                         -->[[ListView
                     ?array = `[[!+demo.list:toJson]]`
@@ -116,7 +116,8 @@ echo (new Template())->replace($replace, $params);<!--
                     ?wrapperTpl = `@INLINE<div>[[!+output]]</div>`
                     ?pagination=`{
                         "array" : [[!+demo.pagination:toJson]],
-                        "pageVar" : "num"
+                        "pageVar" : "num",
+                        "pageAnchor" : "pagination"
                     }`
                 ]]<!--
                         --></code></pre>
@@ -172,9 +173,4 @@ echo (new FooController)->actionIndex();<!--
         </div>
     </div>
 </div>
-<div class="demo-footer">
-    <p>Demo template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://github.com/romeo7">@romeo</a>.</p>
-    <p>
-        <a href="#">Back to top</a>
-    </p>
-</div>
+[[$@demo.views/chunks/footer]]
