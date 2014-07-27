@@ -1,7 +1,9 @@
 Filters
 =================
 
-An filter must start with the ```:``` character. Used filter parameters ``` &is=`null` ``` are automatically converted to the type.
+An filter must start with the `:` character.
+Parameters of snippet are specified in the string type. The array must be in a [JSON](http://en.wikipedia.org/wiki/JSON) (e.g. ``` &array=`[{"name" : "Tom", "email" : "tom@site.com"}, {"name" : "Chuck"}]` ```).
+All parameters of snippet are automatically converted to the type (e.g. ``` &is=`null` ```).
 
  * [cascade](#cascade)
  * [conditions](#conditions)
@@ -79,7 +81,7 @@ To doesn't to apply filters again, in the conditions settings, available placeho
 
 Conditions
 ------------------
-> Note: supported ```[[+output]]```
+> Note: supported `[[+output]]`.
 
 Success:
 
@@ -102,7 +104,7 @@ Sugar:
 
 ###Is empty
 
-Aliases: ```isequalto```, ```isequal```, ```equalto```, ```equals```, ```is```, ```eq```
+**Aliases:** `isequalto`, `isequal`, `equalto`, `equals`, `is`, `eq`.
 
 ```html
 [[+foo
@@ -120,7 +122,7 @@ Sugar:
 
 ###Is not empty
 
-Aliases: ```notequalto```, ```notequals```, ```isnt```, ```isnot```, ```neq```, ```ne```
+**Aliases:** `notequalto`, `notequals`, `isnt`, `isnot`, `neq`, `ne`.
 
 ```html
 [[+foo
@@ -138,7 +140,7 @@ Sugar:
 
 ###Greater than
 
-Aliases: ```isgreaterthan```, ```greaterthan```, ```isgt```, ```gt```
+**Aliases:** `isgreaterthan`, `greaterthan`, `isgt`, `gt`.
 
 ```html
 [[+number gt `3` ? `success` : `fail`]]
@@ -146,7 +148,7 @@ Aliases: ```isgreaterthan```, ```greaterthan```, ```isgt```, ```gt```
 
 ###Equal or greater then
 
-Aliases: ```greaterthanorequalto```, ```equalorgreaterthen```, ```ge```, ```eg```, ```isgte```, ```gte```
+**Aliases:** `greaterthanorequalto`, `equalorgreaterthen`, `ge`, `eg`, `isgte`, `gte`.
 
 ```html
 [[+number gte `3` ? `success` : `fail`]]
@@ -154,7 +156,7 @@ Aliases: ```greaterthanorequalto```, ```equalorgreaterthen```, ```ge```, ```eg``
 
 ###Is less than
 
-Aliases: ```islowerthan```, ```islessthan```, ```lowerthan```, ```lessthan```, ```islt```, ```lt```
+**Aliases:** `islowerthan`, `islessthan`, `lowerthan`, `lessthan`, `islt`, `lt`.
 
 ```html
 [[+number lt `3` ? `success` : `fail`]]
@@ -162,7 +164,7 @@ Aliases: ```islowerthan```, ```islessthan```, ```lowerthan```, ```lessthan```, `
 
 ###Equal or less than
 
-Aliases: ```equaltoorlessthan```, ```lessthanorequalto```, ```el```, ```le```, ```islte```, ```lte```
+**Aliases:** `equaltoorlessthan`, `lessthanorequalto`, `el`, `le`, `islte`, `lte`.
 
 ```html
 [[+number lte `3` ? `success` : `fail`]]
@@ -170,7 +172,7 @@ Aliases: ```equaltoorlessthan```, ```lessthanorequalto```, ```el```, ```le```, `
 
 ###In array
 
-Aliases: ```inarray```, ```in_array```, ```in_arr```
+**Aliases:** `inarray`, `in_array`, `in_arr`.
 
 ```html
 [[+number in_array `foo,3,5` ? `success` : `fail`]]
@@ -230,7 +232,7 @@ echo (new Template)->replace($replace, ['foo' => 'hello world']); // result: weo
 
 ###contains
 
-> Note: supported ```[[+output]]```
+> Note: supported `[[+output]]`.
 
 Success:
 
@@ -294,7 +296,7 @@ Cascade:
 [[+num * `3` + `2`]]
 ```
 
-Supported operations: ```+```, ```-```, ```*```, ```/```, ```**```, ```mod```
+Supported operations: `+`, `-`, `*`, `/`, `**`, `mod`
 
 Bitwise operations
 -----------------------
@@ -303,14 +305,16 @@ Bitwise operations
 [[+num |  `8`]]
 ```
 
-Supported operations: ```|```, ```&```, ```^```, ```<<```, ```>>```
+Supported operations: `|`, `&`, `^`, `<<`, `>>`
 
 
 Other
 ------------
 
 ###url
-Alias: ```modifyUrl```
+**Alias:** `modifyUrl`.
+
+Build is performed `\rock\template\url\Url`.
 
 ```php
 $replace =
@@ -334,7 +338,9 @@ echo (new Template)->replace($replace,['url'=> '']); // result: #
 ```
 
 ###date
-Alias: ```modifyDate```
+**Alias:** `modifyDate`.
+
+Build is performed `\rock\template\date\DateTime`.
 
 ```php
 $replace = '[[+date:modifyDate&format=`dmy`]]';
@@ -343,7 +349,7 @@ echo (new Template)->replace($replace,['date'=> '2012-02-12 15:01']); // result:
 ```
 
 ###toJson
-Alias: ```arrayToJson```
+**Alias:** `arrayToJson`.
 
 ```php
 $replace = '[[+array:toJson]]';
@@ -352,7 +358,7 @@ echo (new Template)->replace($replace, ['array'=> ['foo' => 'test']]); // result
 ```
 
 ###toArray
-Aliases: ```jsonToArray```, ```unserialize```
+**Aliases:** `jsonToArray`, `unserialize`.
 
 ```php
 $replace ='[[!+foo:toArray:size]]';
@@ -380,8 +386,8 @@ echo (new Template)->replace($replace, ['title'=> 'hello world']); // result: 2
 Custom Filter
 ------------------
 
-Add to existing filters.
-> Note: the method must be static
+Adding to existing filters.
+> Note: the method must be static.
 
 ```php
 use rock\template\ClassName;
@@ -422,4 +428,4 @@ $config = [
 ];
 ```
 
-Now to the filter can be accessed by two names: ```:customFilter``` and ```:custom```.
+Now to the filter can be accessed by two names: `:customFilter` and `:custom`.

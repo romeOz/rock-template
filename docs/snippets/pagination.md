@@ -2,18 +2,20 @@ Pagination
 ====================
 **Autoescape: disabled**
 
-> Note: templates for pagination built on [Twitter Bootstrap  3.2.0 "Pagination"](http://getbootstrap.com/components/#pagination)
+Build URL is performed `\rock\template\url\Url`.
+
+> Note: templates for pagination built on [Twitter Bootstrap  3.2.0 "Pagination"](http://getbootstrap.com/components/#pagination).
 
 Params
 --------------------
 
 ###array
 
-The data returned [[\rock\template\helpers\Pagination::get()]].
+The data returned `\rock\template\helpers\Pagination::get()`.
 
 ###call
 
-The data as an call. May be a callable, snippet, and instance.
+The data as an call. May be an callable, snippet, or instance.
 
 ```html
 [[ListView?call=`\foo\FooController.getPagination`]]

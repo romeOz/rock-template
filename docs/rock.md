@@ -1,191 +1,20 @@
 Rock engine
 =================
 
- * [Aliases for path/url/namespace](#aliases-for-pathurlnamespace)
- * [Placeholders](#placeholders)
- * [Chunk](#chunk)
- * [Filters](#filters)
- * [Snippets](https://github.com/romeo7/rock-template/blob/master/docs/snippets/readme.md)
- * [Autoescape](#autoescape)
+ * [Aliases for path/url/namespace](https://github.com/romeo7/rock-template/blob/master/docs/aliases.md)
+ * [Render] (https://github.com/romeo7/rock-template/blob/master/docs/render.md)
+ * [Placeholder `[[+placeholder]]`](#placeholder)
+ * [Resource `[[*resource]]`](#resource)
+ * [Chunk `[[$chunk]]`](#chunk)
+ * [Filters `[[$chunk:filter]]`](https://github.com/romeo7/rock-template/blob/master/docs/filters.md)
+ * [Snippet `[[Snippet]]`](https://github.com/romeo7/rock-template/blob/master/docs/snippets/readme.md)
+ * [Extension `[[#extension]]`](#extension)
+ * [Autoescape `[[!+placeholder]]`](#autoescape)
+ * [Comments](#comments)
+ * [Shielding](#shielding)
  * [Caching](#caching)
 
-Aliases for path/url/namespace
------------------
-
-Aliases are used to represent file paths, URLs, or namespace so that you don't have to hard-code absolute paths or URLs in your project.
-An alias must start with the ```@``` character to be differentiated from normal file paths and URLs.
-Template engine has many pre-defined aliases already available. For example, the alias ```@rock``` represents the installation path of the Rock Template; ```@rock.views``` represents the path of the views by default.
-
-You can define an alias for a file path or URL:
-
-```php
-// an alias of a file path
-Template::setAlias('views', '/to/path/views');
-
-// an alias of a URL
-Template::setAlias('site', 'http://www.site.com');
-
-// an alias of a namespace
-Template::setAlias('ns.backend', 'apps\\backend');
-```
-
-You can define an alias using another alias (either root or derived):
-
-```php
-Template::setAlias('@views.article', '@views/article');
-```
-
-###Using Aliases
-Aliases are recognized in many places in Template engine without needing to call [[Template::getAlias()]] to convert them into paths or URLs.
-For example, [[Template::render()]] can accept both a file path and an alias representing a file path, thanks to the ```@``` prefix which allows it to differentiate a file path from an alias.
-
-```php
-Template::setAlias('views', '/to/path/views');
-
-echo (new Template)->render('@views/layout');
-```
-
-To template:
-
-```html
-{* For chunk *}
-[[$@views/chunks/item]]
-
-{* For snippet *}
-[[@ns.backend\snippets\FooSnippet]]
-
-{* Display alias *}
-[[$$ns.backend\snippets\FooSnippet]]
-```
-
-Render
------------------
-
-###Inline render
-
-```php
-echo (new Template)->replace('Hello <b>[[+foo]]</b>', ['foo' => 'world!!!']);
-```
-
-###Render layout
-
-```php
-echo (new Template)->render('/to/path/layout', ['foo' => 'world!!!']);
-```
-
-With specifying the context:
-
-```php
-class FooController
-{
-    use rock\template\Template;
-
-    public function actionIndex()
-    {
-        echo (new Template)->render('/to/path/layout', [], $this);
-    }
-
-    public function getAll()
-    {
-        return [
-            [
-                'name' => 'Tom',
-                'email' => 'tom@site.com',
-                'about' => 'biography'
-            ],
-            [
-                'name' => 'Chuck',
-                'email' => 'chuck@site.com'
-            ]
-        ];
-    }
-}
-```
-
-Contents layout.html:
-
-```html
-[[ListView
-    ?call=`context.getAll`
-    ?tpl=`@views/chunks/item`
-]]
-```
-
-###Configure render
-
-Through methods:
-
-```php
-$template = new Template;
-$template->title = 'Test';
-$template->registerMetaTag(['charset' => 'UTF-8']);
-$template->registerMetaTag(['name' => 'description', 'content' => 'about'], 'description');
-$template->registerLinkTag(['rel' => 'Shortcut Icon', 'type' => 'image/x-icon', 'href' => '/favicon.ico']);
-$template->registerCssFile('/assets/css/main.css');
-$template->registerJsFile('/assets/js/main.js');
-
-echo $template->render('/to/path/layout');
-```
-
-Through array:
-
-```php
-$config = [
-    'title' => 'Test',
-    'metaTags' => function(){
-            return [
-                '<meta charset="UTF-8">',
-                'description' => '<meta name="description" content="about">',
-            ];
-        },
-    'linkTags' => [
-        '<link type="image/x-icon" href="/favicon.ico" rel="Shortcut Icon">',
-    ],
-    'cssFiles' => [
-        Template::POS_HEAD => [
-            '<link href="/assets/css/main.css" >'
-        ],
-    ],
-    'jsFiles' => [
-        Template::POS_END => [
-            '<script src="/assets/js/main.js"></script>'
-        ]
-    ],
-];
-
-echo (new Template($config))->render('/to/path/layout');
-```
-
-Result:
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Test</title>
-    <meta charset="UTF-8">
-    <meta name="description" content="about">
-    <link type="image/x-icon" href="/favicon.ico">
-    <link href="/assets/css/main.css" rel="stylesheet">
-</head>
-<body>
-    <script src="/assets/js/main.js"></script>
-</body>
-</html>
-```
-
-Comments
------------------
-
-```html
-{*
-    Note: about...
-*}
-```
-
-Text located between ```{* *}``` will not be displayed.
-
-Placeholders
+Placeholder
 -----------------
 
 The engine supports local and global placeholders.
@@ -200,7 +29,7 @@ $template->addPlaceholder('foo', 'Hello');
 // Adding global placeholders
 $template->addPlaceholder('baz', 'Test', true);
 
-echo (new Template)->replace('[[+foo]] <b>[[+bar]]</b> [[++baz]]', ['bar' => 'world!!!']);
+echo $template->replace('[[+foo]] <b>[[+bar]]</b> [[++baz]]', ['bar' => 'world!!!']);
 ```
 
 Result:
@@ -211,6 +40,22 @@ Hello <b>world!!!</b> Test
 If placeholder is an array:
 ```html
 [[+bar.subbar]]
+```
+
+Resource
+-----------------
+
+Typically, the page of the site is a resource with data, retrieved from the database or controller. E.g., article/topic: id, title, description, content, url.
+All these data it is appropriate to stored in `resources`. Are available anywhere template.
+
+Adding/getting resource:
+
+```php
+$template = new Template;
+
+$template->addResource('content', 'Text...');
+
+echo $template->replace('<article>[[*content]]</article>');
 ```
 
 Chunk
@@ -226,7 +71,7 @@ Chunk is an html-entity. Autoescape is not affect.
 [[$@views/chunk]]
 ```
 
-Smart adding placeholders in the chunk
+Adding local placeholders in the chunk:
 
 ```html
 [[$@views/chunk
@@ -235,7 +80,157 @@ Smart adding placeholders in the chunk
 ]]
 ```
 
-[Filters](https://github.com/romeo7/rock-template/blob/master/docs/filters.md)
+Extension
 -----------------
 
-**[See filters](https://github.com/romeo7/rock-template/blob/master/docs/filters.md)**
+You can extend your templating engine.
+
+###Example
+
+```php
+use \rock\template\Template;
+
+$template = new Template;
+$template->extensions = [
+    'user' => function (array $keys, array $params = [], Tempate $template)
+    {
+        $user = new User;
+        if (current($keys) === 'isGuest') {
+            return $user->isGuest();
+        } elseif (current($keys) === 'isLogin') {
+            return !$user->isGuest();
+        }
+        return \rock\template\helpers\ArrayHelper::getValue($user->getAll(), $keys);
+    }
+];
+
+echo $template->replace('[[#user.firstname]]');
+```
+
+Autoescape
+-----------------
+
+By default, escaping be made on all entities of a template, except chunks and some snippets (`ListView`, `For`,... see to the docs snippet).
+
+###Include
+
+You can set globally autoescape in config of `\rock\template\Template`:
+
+```php
+use \rock\template\Template;
+
+$config = [
+    'autoescape' => Template::STRIP_TAGS // only strip tags
+];
+
+$template = new Template($config);
+```
+
+or
+
+```php
+use \rock\template\Template;
+
+$template = new Template;
+$template->autoescape = Template::STRIP_TAGS;
+```
+> Note: the property `autoescape` has a default value: `\rock\template\Template::ESCAPE`.
+
+###Usage
+
+You can specify custom escaping for any entity Template engine:
+
+```html
+[[+foo?autoEscape=`false`]]
+
+[[Snippet?autoEscape=`4`]] // to type
+
+[[#user.about?autoEscape=`true`]]
+```
+
+Possible value:
+
+ * true - default globally autoescape `rock\template\Template::ESCAPE`.
+ * false - doesn't escape.
+ * integer - `Template::ESCAPE`, `Template::STRIP_TAGS`, `Template::TO_TYPE`, or derived from bitwise operations.
+
+Sugar for `false`:
+
+```
+[[!+foo]]
+
+// equivalent
+
+[[+foo?autoEscape=`false`]]
+```
+
+Comments
+-----------------
+
+```html
+{*
+    Note: about...
+*}
+```
+
+Text located between `{* ... *}` will not be displayed.
+
+Shielding
+-----------------
+
+Necessary for displaying the entities of the template engine.
+
+```html
+{! [[ListView]] !}
+```
+
+Text located between `{! ... !}` will not be replaced.
+
+Caching
+------------------
+
+You can caching any entity templating engine.
+
+###Include
+
+```php
+use \rock\template\Template;
+
+$config = [
+    'cache' => new \rock\cache\Memcached;
+];
+
+$template = new Template($config);
+```
+
+or
+
+```php
+use \rock\template\Template;
+
+$template = new Template;
+$template->cache = new \rock\cache\Memcached;
+```
+
+###Usage
+
+The parameters to use for caching:
+
+ * `cacheKey` - key of cache
+ * `cacheExpire` - expire time
+ * `cacheTags` - tags of cache
+
+###Example
+
+```html
+[[+placeholder
+    ?cacheKey=`plh`
+    ?cacheExpire=`3600`
+]]
+
+[[ListView
+    ?call=`\foo\FooController.getAll`
+    ?cacheKey=`list`
+    ?cacheTags=`["articles", "news"]`
+]]
+```

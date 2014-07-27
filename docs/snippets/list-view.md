@@ -31,11 +31,11 @@ $template->getSnippet('ListView', ['call' => 'FooSnippet']);
 
 ###addPlaceholders
 
-Adding placeholders in ```tpl``` and ```wrapperTpl```.
+Adding external placeholders in `tpl` and `wrapperTpl`. Example: ``` ?addPlaceholders=`{"foo" : "[[+foo]]"}` ``` or in the short form ``` ?addPlaceholders=`["foo"]` ```.
 
 ###prepare
 
-Prepare item. May be a callable, snippet, and instance. You can implement the hook, e.g. not a repetition of the date:
+Prepare item. May be an callable, snippet, or instance. You can implement the hook, e.g. not a repetition of the date:
 
 ```html
 22 Sep 2011
@@ -84,8 +84,8 @@ Display the text of the error, if the data are empty. '' by default.
 Integration [Pagination (snippet)](https://github.com/romeo7/rock-template/blob/master/docs/snippets/pagination.md).
 Params:
 
- * array - the data returned [[\rock\template\helpers\Pagination::get()]].
- * call - the data as an call. May be a callable, snippet, and instance.
+ * array - the data returned `\rock\template\helpers\Pagination::get()`.
+ * call - the data as an call. May be an callable, snippet, or instance.
  * pageLimit - count buttons of pagination.
  * pageVar - name url-argument of pagination ("page" by default).
  * pageArgs - url-arguments of pagination.
