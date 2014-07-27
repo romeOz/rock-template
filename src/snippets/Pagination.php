@@ -12,27 +12,10 @@ use rock\template\url\Url;
  * Examples:
  *
  * ```php
- * $template = new \rock\Template;
+ * $template = new \rock\template\Template;
  * $countItems = 10;
  * $params = [
  *      'array' => \rock\helpers\Pagination::get($countItems, (int)$_GET['page'])
- * ];
- * $template->getSnippet('\rock\snippet\Pagination', $params);
- * ```
- *
- * With ActiveDataProvider:
- *
- * ```php
- * $provider = new \rock\db\ActiveDataProvider(
- *  [
- *      'query' => Post::find()->asArray()->all(),
- *      'pagination' => ['limit' => 10, 'sort' => SORT_DESC, 'pageCurrent' => (int)$_GET['num']]
- *  ]
- * );
- *
- *  $params = [
- *      'array' => $provider->getPagination(),
- *      'pageVar' => 'num'
  * ];
  * $template->getSnippet('\rock\snippet\Pagination', $params);
  * ```

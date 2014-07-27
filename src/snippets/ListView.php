@@ -106,7 +106,7 @@ class ListView extends Snippet
      *          => pageNumTpl       - template for buttons
      *          => pageActiveTpl    - template for active button
      *          => pageFirstTpl     - template for button "first"
-     *          => pageLastTpl      - template for button  "end"
+     *          => pageLastTpl      - template for button  "last"
      *
      * @var array
      */

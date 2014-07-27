@@ -69,7 +69,7 @@ Wrapper for item. You can specify the path to chunk ```?tpl=`/to/path/chunk```/`
 
 ###wrapperTpl
 
-Wrapper for all items. You can specify the path to chunk ```?tpl=`/to/path/chunk```/```?tpl=`@views/chunk``` or on the spot to specify a template ``` ?tpl=`@INLINE<b>[[+title]]</b>` ```.
+Wrapper for all items. You can specify the path to chunk ```?wrapperTpl=`/to/path/chunk```/```?wrapperTpl=`@views/chunk``` or on the spot to specify a template ``` ?wrapperTpl=`@INLINE<b>[[+title]]</b>` ```.
 
 ###toPlaceholder
 
@@ -84,20 +84,23 @@ Display the text of the error, if the data are empty. '' by default.
 Integration [Pagination (snippet)](https://github.com/romeo7/rock-template/blob/master/docs/snippets/pagination.md).
 Params:
 
-    * array - the data returned [[\rock\template\helpers\Pagination::get()]].
-    * call - the data as an call. May be a callable, snippet, and instance.
-    * pageLimit - count buttons of pagination.
-    * pageVar - name url-argument of pagination ("page" by default).
-    * pageArgs - url-arguments of pagination.
-    * pageAnchor - url-anchor of pagination.
-    * wrapperTpl - wrapper template.
-    * pageNumTpl - template for buttons.
-    * pageActiveTpl - template for active button.
-    * pageFirstTpl - template for button "first".
-    * pageLastTpl - template for button  "end".
-    * toPlaceholder - the name of global placeholder to adding the pagination.
+ * array - the data returned [[\rock\template\helpers\Pagination::get()]].
+ * call - the data as an call. May be a callable, snippet, and instance.
+ * pageLimit - count buttons of pagination.
+ * pageVar - name url-argument of pagination ("page" by default).
+ * pageArgs - url-arguments of pagination.
+ * pageAnchor - url-anchor of pagination.
+ * wrapperTpl - wrapper template.
+ * pageNumTpl - template for buttons.
+ * pageActiveTpl - template for active button.
+ * pageFirstTpl - template for button "first".
+ * pageLastTpl - template for button  "last".
+ * toPlaceholder - the name of global placeholder to adding the pagination.
 
-**Example:**
+> Note: templates for pagination built on [Twitter Bootstrap 3.2.0 "Pagination"](http://getbootstrap.com/components/#pagination)
+
+Example
+-----------------
 
 ```php
 class FooController
@@ -127,7 +130,7 @@ class FooController
     public function getPagination()
     {
         $currentPage = isset($_GET['num']) ? (int)$_GET['num'] : null;
-        return  \rock\template\helpers\Pagination::get(count($this->getAll()), $currentPage, 1, SORT_DESC);
+        return  \rock\template\helpers\Pagination::get(count($this->getAll()), $currentPage);
     }
 }
 ```
