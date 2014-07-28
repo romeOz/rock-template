@@ -20,7 +20,7 @@ use rock\template\Snippet;
  *
  * [[ListView
  *      ?call=`\foo\FooController.getAll`
- *      ?tpl=`/to/path/chunk_item`
+ *      ?tpl=`/path/to/chunk_item`
  *      ?wrapperTpl=`@INLINE<p>[[+output]][[++pagination]]</p>`
  *      ?pagination=`{
  *              "call" : "\\foo\\FooController.getPagination",

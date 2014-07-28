@@ -47,7 +47,7 @@ use rock\template\Template;
 $template = new Template;
 $template->engine = Template::ENGINE_PHP;
 
-echo $template->render('/to/path/layout', ['foo' => 'world!!!']);
+echo $template->render('/path/to/layout', ['foo' => 'world!!!']);
 ```
 
 Contents layout.php:
@@ -65,7 +65,7 @@ Hello <b><?=$this->foo?></b>
 ```php
 use rock\template\Template;
 
-echo (new Template)->render('/to/path/layout', ['foo' => 'world!!!']);
+echo (new Template)->render('/path/to/layout', ['foo' => 'world!!!']);
 ```
 
 Contents layout.html:
@@ -98,7 +98,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
  * Local IP loop on Host machine /etc/hosts and Virtual hosts in Nginx already set up!
 
 > if you only want local storage for caching, then you comment out the lines redis, couchbase, and memcached
-> in the file /to/path/provisioning/main.yml (**fastest way to up Vagrant**)
+> in the file /path/to/provisioning/main.yml (**fastest way to up Vagrant**)
 
 ###Installation:
 

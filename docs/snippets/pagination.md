@@ -67,7 +67,7 @@ Url-anchor of pagination.
 
 ###pageNumTpl
 
-Template for buttons. You can specify the path to chunk ```?pageNumTpl=`/to/path/chunk```/```?pageNumTpl=`@views/chunk``` or on the spot to specify a template ``` ?pageNumTpl=`@INLINE<b>[[+title]]</b>` ```.
+Template for buttons. You can specify the path to chunk ```?pageNumTpl=`/path/to/chunk```/```?pageNumTpl=`@views/chunk``` or on the spot to specify a template ``` ?pageNumTpl=`@INLINE<b>[[+title]]</b>` ```.
 Default: ```@rock.views/pagination/num```
 
 ###pageActiveTpl
@@ -104,7 +104,7 @@ class FooController
 
     public function actionIndex()
     {
-        echo (new Template)->render('/to/path/layout', [], $this);
+        echo (new Template)->render('/path/to/layout', [], $this);
     }
 
     public function getAll()

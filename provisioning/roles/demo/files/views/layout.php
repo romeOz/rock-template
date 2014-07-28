@@ -44,7 +44,7 @@ $params = [
         Contents index.php:
         <pre><code class="php"><!--
 -->// set alias
-\rock\template\Template::setAlias('@views', '/to/path/views')
+\rock\template\Template::setAlias('@views', '/path/to/views')
 
 $list = [
     [

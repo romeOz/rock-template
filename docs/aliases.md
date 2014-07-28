@@ -9,7 +9,7 @@ You can define an alias for a file path or URL:
 
 ```php
 // an alias of a file path
-Template::setAlias('views', '/to/path/views');
+Template::setAlias('views', '/path/to/views');
 
 // an alias of a URL
 Template::setAlias('site', 'http://www.site.com');
@@ -33,7 +33,7 @@ For example, `\rock\template\Template::render()` can accept both a file path and
 For PHP engine:
 
 ```php
-Template::setAlias('views', '/to/path/views');
+Template::setAlias('views', '/path/to/views');
 
 echo (new Template)->render('@views/layout');
 ```

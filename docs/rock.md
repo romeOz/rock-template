@@ -65,7 +65,7 @@ Chunk is an html-entity. Autoescape is not affect.
 
 ```html
 {* absolute path *}
-[[$/to/path/chunk]]
+[[$/path/to/chunk]]
 
 {* using alias *}
 [[$@views/chunk]]

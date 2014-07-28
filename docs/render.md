@@ -13,7 +13,7 @@ Render layout
 -----------------
 
 ```php
-echo (new Template)->render('/to/path/layout', ['foo' => 'world!!!']);
+echo (new Template)->render('/path/to/layout', ['foo' => 'world!!!']);
 ```
 
 With specifying the context:
@@ -25,7 +25,7 @@ class FooController
 
     public function actionIndex()
     {
-        echo (new Template)->render('/to/path/layout', [], $this);
+        echo (new Template)->render('/path/to/layout', [], $this);
     }
 
     public function getAll()
@@ -68,7 +68,7 @@ $template->registerLinkTag(['rel' => 'Shortcut Icon', 'type' => 'image/x-icon', 
 $template->registerCssFile('/assets/css/main.css');
 $template->registerJsFile('/assets/js/main.js');
 
-echo $template->render('/to/path/layout');
+echo $template->render('/path/to/layout');
 ```
 
 or as array:
@@ -97,7 +97,7 @@ $config = [
     ],
 ];
 
-echo (new Template($config))->render('/to/path/layout');
+echo (new Template($config))->render('/path/to/layout');
 ```
 
 Result:

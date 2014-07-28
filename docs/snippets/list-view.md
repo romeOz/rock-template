@@ -65,11 +65,11 @@ $template->getSnippet('ListView', $params);
 
 ###tpl
 
-Wrapper for item. You can specify the path to chunk ```?tpl=`/to/path/chunk```/```?tpl=`@views/chunk``` or on the spot to specify a template ``` ?tpl=`@INLINE<b>[[+title]]</b>` ```.
+Wrapper for item. You can specify the path to chunk ```?tpl=`/path/to/chunk```/```?tpl=`@views/chunk``` or on the spot to specify a template ``` ?tpl=`@INLINE<b>[[+title]]</b>` ```.
 
 ###wrapperTpl
 
-Wrapper for all items. You can specify the path to chunk ```?wrapperTpl=`/to/path/chunk```/```?wrapperTpl=`@views/chunk``` or on the spot to specify a template ``` ?wrapperTpl=`@INLINE<b>[[+title]]</b>` ```.
+Wrapper for all items. You can specify the path to chunk ```?wrapperTpl=`/path/to/chunk```/```?wrapperTpl=`@views/chunk``` or on the spot to specify a template ``` ?wrapperTpl=`@INLINE<b>[[+title]]</b>` ```.
 
 ###toPlaceholder
 
@@ -109,7 +109,7 @@ class FooController
 
     public function actionIndex()
     {
-        echo (new Template)->render('/to/path/layout', [], $this);
+        echo (new Template)->render('/path/to/layout', [], $this);
     }
 
     public function getAll()

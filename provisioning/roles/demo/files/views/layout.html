@@ -77,7 +77,7 @@ echo (new Template())->replace($replace, ['date'=> '2014-02-12 15:01']);<!--
             <pre><code class="php"><!--
  -->
 // set alias
-\rock\template\Template::setAlias('@views', '/to/path/views')
+\rock\template\Template::setAlias('@views', '/path/to/views')
 
 $replace =
 '{![[ListView
@@ -128,7 +128,7 @@ echo (new Template())->replace($replace, $params);<!--
     public function actionIndex()
     {
         // set alias
-        \rock\template\Template::setAlias('@views', '/to/path/views')
+        \rock\template\Template::setAlias('@views', '/path/to/views')
 
         // render template
         return (new \rock\template\Template)->render('@views/layout', [], $this);
