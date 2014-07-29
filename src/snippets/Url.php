@@ -76,7 +76,7 @@ class Url extends Snippet implements UrlInterface
     public $selfHost;
 
     /** @var \rock\template\url\Url */
-    public $urlManager;
+    public $urlBuilder;
 
     public $autoEscape = Template::STRIP_TAGS;
 
@@ -84,18 +84,18 @@ class Url extends Snippet implements UrlInterface
     public function init()
     {
         parent::init();
-        if (!isset($this->urlManager)) {
-            $this->urlManager = new \rock\template\url\Url;
-        } elseif($this->urlManager instanceof \Closure) {
-            $this->urlManager = call_user_func($this->urlManager, $this);
+        if (!isset($this->urlBuilder)) {
+            $this->urlBuilder = new \rock\template\url\Url;
+        } elseif($this->urlBuilder instanceof \Closure) {
+            $this->urlBuilder = call_user_func($this->urlBuilder, $this);
         }
 
-        $this->urlManager = new $this->urlManager;
+        $this->urlBuilder = new $this->urlBuilder;
     }
 
     public function get()
     {
-        $urlBuilder = $this->urlManager->set($this->url);
+        $urlBuilder = $this->urlBuilder->set($this->url);
         if (isset($this->removeArgs)) {
             $urlBuilder->removeArgs($this->removeArgs);
         }

@@ -84,7 +84,7 @@ class BaseFilter
      *                  => beginPath     - add string to begin
      *                  => endPath       - add string to end
      *                  => const
-     *                  => \Closure|\rock\template\url\Url urlManager
+     *                  => \Closure|\rock\template\url\Url urlBuilder
      * @param \rock\template\Template $template
      * @return string
      */
@@ -93,11 +93,11 @@ class BaseFilter
         if (empty($url)) {
             return '#';
         }
-        if (isset($params['urlManager'])) {
-            if ($params['urlManager'] instanceof \Closure) {
-                $params['urlManager'] = call_user_func($params['urlManager'], $template);
+        if (isset($params['urlBuilder'])) {
+            if ($params['urlBuilder'] instanceof \Closure) {
+                $params['urlBuilder'] = call_user_func($params['urlBuilder'], $template);
             }
-            $urlBuilder = $params['urlManager'];
+            $urlBuilder = $params['urlBuilder'];
         } else {
             $urlBuilder = new Url;
         }

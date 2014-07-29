@@ -489,7 +489,7 @@ class TemplateTest extends TemplateCommon
         $this->template->filters['url'] = [
             'method' => 'modifyUrl',
             'class' => BaseFilter::className(),
-            'urlManager' => function(){return new Url;}
+            'urlBuilder' => function(){return new Url;}
         ];
 
         $replace = '[[+url:modifyUrl
