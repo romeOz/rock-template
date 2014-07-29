@@ -114,7 +114,7 @@ class ArrayHelperTest extends \PHPUnit_Framework_TestCase
         };
         $this->assertSame(ArrayHelper::map(['foo' => 'foo', 'bar' => 'bar'], $callback, false, 1), ['foo' => 'test', 'bar' => 'bar']);
 
-        // recurcive
+        // recursive
         $this->assertSame(ArrayHelper::map(['foo' => 'foo', 'bar' => ['baz' => 'baz']], $callback, true), ['foo' => 'test', 'bar' => ['baz' => 'test']]);
     }
 }

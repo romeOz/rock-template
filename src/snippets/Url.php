@@ -95,32 +95,32 @@ class Url extends Snippet implements UrlInterface
 
     public function get()
     {
-        $urlManager = $this->urlManager->set($this->url);
+        $urlBuilder = $this->urlManager->set($this->url);
         if (isset($this->removeArgs)) {
-            $urlManager->removeArgs($this->removeArgs);
+            $urlBuilder->removeArgs($this->removeArgs);
         }
         if (isset($this->removeAllArgs)) {
-            $urlManager->removeAllArgs();
+            $urlBuilder->removeAllArgs();
         }
         if (isset($this->removeAnchor)) {
-            $urlManager->removeAnchor();
+            $urlBuilder->removeAnchor();
         }
         if (isset($this->beginPath)) {
-            $urlManager->addBeginPath($this->beginPath);
+            $urlBuilder->addBeginPath($this->beginPath);
         }
         if (isset($this->endPath)) {
-            $urlManager->addEndPath($this->endPath);
+            $urlBuilder->addEndPath($this->endPath);
         }
         if (isset($this->args)) {
-            $urlManager->setArgs($this->args);
+            $urlBuilder->setArgs($this->args);
         }
         if (isset($this->addArgs)) {
-            $urlManager->addArgs($this->addArgs);
+            $urlBuilder->addArgs($this->addArgs);
         }
         if (isset($this->anchor)) {
-            $urlManager->addAnchor($this->anchor);
+            $urlBuilder->addAnchor($this->anchor);
         }
 
-        return $urlManager->get((int)$this->const, (bool)$this->selfHost);
+        return $urlBuilder->get((int)$this->const, (bool)$this->selfHost);
     }
 }

@@ -42,6 +42,6 @@ class Date extends Snippet implements DateTimeInterface
 
     public function get()
     {
-        return (new DateTime($this->date, $this->timezone, $this->config))->format($this->format);
+        return (new DateTime($this->date, null, $this->config))->convertTimezone($this->timezone)->format($this->format);
     }
 }

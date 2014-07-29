@@ -68,7 +68,8 @@ class BaseFilter
         if (empty($date)) {
             return null;
         }
-        return (new DateTime($date, Helper::getValue($params['timezone']), Helper::getValue($params['config'], [])))
+        return (new DateTime($date, null, Helper::getValue($params['config'], [])))
+            ->convertTimezone(Helper::getValue($params['timezone']))
             ->format(Helper::getValue($params['format']));
     }
 
@@ -96,36 +97,36 @@ class BaseFilter
             if ($params['urlManager'] instanceof \Closure) {
                 $params['urlManager'] = call_user_func($params['urlManager'], $template);
             }
-            $urlManager = $params['urlManager'];
+            $urlBuilder = $params['urlManager'];
         } else {
-            $urlManager = new Url;
+            $urlBuilder = new Url;
         }
-        $urlManager->set($url);
+        $urlBuilder->set($url);
         if (isset($params['removeAllArgs'])) {
-            $urlManager->removeAllArgs();
+            $urlBuilder->removeAllArgs();
         }
         if (isset($params['removeArgs'])) {
-            $urlManager->removeArgs($params['removeArgs']);
+            $urlBuilder->removeArgs($params['removeArgs']);
         }
         if (isset($params['removeAnchor'])) {
-            $urlManager->removeAnchor();
+            $urlBuilder->removeAnchor();
         }
         if (isset($params['beginPath'])) {
-            $urlManager->addBeginPath($params['beginPath']);
+            $urlBuilder->addBeginPath($params['beginPath']);
         }
         if (isset($params['endPath'])) {
-            $urlManager->addEndPath($params['endPath']);
+            $urlBuilder->addEndPath($params['endPath']);
         }
         if (isset($params['args'])) {
-            $urlManager->setArgs($params['args']);
+            $urlBuilder->setArgs($params['args']);
         }
         if (isset($params['addArgs'])) {
-            $urlManager->addArgs($params['addArgs']);
+            $urlBuilder->addArgs($params['addArgs']);
         }
         if (isset($params['anchor'])) {
-            $urlManager->addAnchor($params['anchor']);
+            $urlBuilder->addAnchor($params['anchor']);
         }
-        return $urlManager->get(Helper::getValue($params['const'], 0), (bool)Helper::getValue($params['selfHost']));
+        return $urlBuilder->get(Helper::getValue($params['const'], 0), (bool)Helper::getValue($params['selfHost']));
     }
 
     /**

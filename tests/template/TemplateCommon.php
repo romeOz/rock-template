@@ -2,17 +2,6 @@
 
 namespace rockunit\template;
 
-use rock\template\date\Date;
-use rock\template\execute\CacheExecute;
-use rock\template\filters\BaseFilter;
-use rock\template\filters\ConditionFilter;
-use rock\template\filters\StringFilter;
-use rock\template\snippets\Formula;
-use rock\template\snippets\ForSnippet;
-use rock\template\snippets\IfSnippet;
-use rock\template\snippets\ListView;
-use rock\template\snippets\Pagination;
-use rock\template\snippets\Url;
 use rock\template\Template;
 use rockunit\common\CommonTrait;
 

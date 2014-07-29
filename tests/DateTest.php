@@ -33,9 +33,9 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 
     public function testDefaultFormat()
     {
-        $this->assertSame((new DateTime)->serverDate(), date('Y-m-d'));
-        $this->assertSame((new DateTime)->serverTime(), date('H:i:s'));
-        $this->assertSame((new DateTime)->serverDatetime(), date('Y-m-d H:i:s'));
+        $this->assertSame((new DateTime)->isoDate(), date('Y-m-d'));
+        $this->assertSame((new DateTime)->isoTime(), date('H:i:s'));
+        $this->assertSame((new DateTime)->isoDatetime(), date('Y-m-d H:i:s'));
 
         // set default format
         $dateTime = new DateTime;
@@ -181,8 +181,8 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     public function testTimezone()
     {
         $this->assertNotEquals(
-            (new DateTime('now', 'America/Chicago'))->serverDatetime(),
-            (new DateTime('now', new \DateTimeZone('Europe/Volgograd')))->serverDatetime()
+            (new DateTime('now', 'America/Chicago'))->isoDatetime(),
+            (new DateTime('now', new \DateTimeZone('Europe/Volgograd')))->isoDatetime()
         );
     }
 

@@ -66,4 +66,3 @@ class Formula extends Snippet
     }
 }
 
-

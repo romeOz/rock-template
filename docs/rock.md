@@ -6,7 +6,7 @@ Rock engine
  * [Placeholder `[[+placeholder]]`](#placeholder)
  * [Resource `[[*resource]]`](#resource)
  * [Chunk `[[$chunk]]`](#chunk)
- * [Filters `[[$chunk:filter]]`](https://github.com/romeo7/rock-template/blob/master/docs/filters.md)
+ * [Filters `[[+placeholder:filter]]`](https://github.com/romeo7/rock-template/blob/master/docs/filters.md)
  * [Snippet `[[Snippet]]`](https://github.com/romeo7/rock-template/blob/master/docs/snippets/readme.md)
  * [Extension `[[#extension]]`](#extension)
  * [Autoescape `[[!+placeholder]]`](#autoescape)
@@ -45,7 +45,7 @@ If placeholder is an array:
 Resource
 -----------------
 
-Typically, the page of the site is a resource with data, retrieved from the database or controller. E.g., article/topic: id, title, description, content, url.
+Typically, the page of the site is a resource with data, retrieved from the database or controller. E.g., article/topic have fields: `id`, `title`, `description`, `content`, `url`.
 All these data it is appropriate to stored in `resources`. Are available anywhere template.
 
 Adding/getting resource:
@@ -83,7 +83,7 @@ Adding local placeholders in the chunk:
 Extension
 -----------------
 
-You can extend your templating engine.
+You can extend template engine.
 
 ###Example
 
@@ -92,7 +92,7 @@ use \rock\template\Template;
 
 $template = new Template;
 $template->extensions = [
-    'user' => function (array $keys, array $params = [], Tempate $template)
+    'user' => function (array $keys, array $params = [], Template $template)
     {
         $user = new User;
         if (current($keys) === 'isGuest') {

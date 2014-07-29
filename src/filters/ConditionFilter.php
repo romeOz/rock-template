@@ -10,7 +10,7 @@ use rock\template\Template;
  *
  * @package rock\template
  */
-abstract class ConditionFilter
+class ConditionFilter
 {
     use ClassName;
 

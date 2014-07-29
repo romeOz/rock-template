@@ -25,6 +25,8 @@ class DateTime extends \DateTime implements DateTimeInterface
 
     public $formats = [];
 
+    public $clientTimezone;
+
     /** @var  array */
     protected  static $formatsOption;
 
@@ -96,6 +98,23 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
+     * Conversion in accordance with the client
+     *
+     * @param string|DateTimeZone|null $timezone
+     * @return $this|\DateTime
+     */
+    public function convertTimezone($timezone = null)
+    {
+        if (!isset($timezone)) {
+            if (!isset($this->clientTimezone)) {
+                return $this;
+            }
+            $timezone = $this->clientTimezone;
+        }
+        return parent::setTimezone($this->calculateTimezone($timezone));
+    }
+
+    /**
      * @param string|null $format http://php.net/date format or format name. Default value is current
      * @return string
      */
@@ -111,7 +130,7 @@ class DateTime extends \DateTime implements DateTimeInterface
      * Get date in YYYY-MM-DD format, in server timezone
      * @return string
      */
-    public function serverDate()
+    public function isoDate()
     {
         return $this->format(self::ISO_DATE_FORMAT);
     }
@@ -120,7 +139,7 @@ class DateTime extends \DateTime implements DateTimeInterface
      * Get date in HH-II-SS format, in server timezone
      * @return string
      */
-    public function serverTime()
+    public function isoTime()
     {
         return $this->format(self::ISO_TIME_FORMAT);
     }
@@ -129,7 +148,7 @@ class DateTime extends \DateTime implements DateTimeInterface
      * Get datetime in YYYY-MM-DD HH:II:SS format, in server timezone
      * @return string
      */
-    public function serverDatetime()
+    public function isoDatetime()
     {
         return $this->format(self::ISO_DATETIME_FORMAT);
     }
@@ -360,6 +379,4 @@ class DateTime extends \DateTime implements DateTimeInterface
                 return call_user_func($formatOptionsCallbacks[$matches[1]], $dateTime);
             }, $format);
     }
-
-
 }

@@ -59,7 +59,7 @@ class Template
     const POS_END = 3;
 
     /**
-     * Extension file layout/chunk. If used [[ENGINE_PHP]], then ".php" by default
+     * Extension file layout/chunk. If used `Template::ENGINE_PHP`, then ".php" by default
      * @var string
      */
     public $fileExtension = 'html';
@@ -257,7 +257,7 @@ class Template
      * Rendering chunk
      *
      * @param string      $name - path to chunk
-     * @param array  $placeholders - params
+     * @param array  $placeholders
      * @return string
      */
     public function getChunk($name, array $placeholders = [])
@@ -938,7 +938,6 @@ class Template
         $position = isset($options['position']) ? $options['position'] : self::POS_END;
         unset($options['position']);
         $this->jsFiles[$position][$key] = $this->renderWrapperTag(Html::jsFile($url, $options), $options);
-
     }
 
     /**
@@ -962,8 +961,8 @@ class Template
      *    the corresponding registered path.
      * 3. Throw an exception or return false, depending on the `$throwException` parameter.
      *
-     * For example, by default '@rock' is registered as the alias to the Rock framework directory,
-     * say '/path/to/rock'. The alias '@rock/web' would then be translated into '/path/to/rock/web'.
+     * For example, by default `@rock` is registered as the alias to the Rock framework directory,
+     * say '/path/to/rock'. The alias `@rock/web` would then be translated into '/path/to/rock/web'.
      *
      * If you have registered two aliases '@foo' and '@foo/bar'. Then translating '@foo/bar/config'
      * would replace the part '@foo/bar' (instead of '@foo') with the corresponding registered path.
@@ -1017,9 +1016,9 @@ class Template
      * Registers a path alias.
      *
      * A path alias is a short name representing a long path (a file path, a URL, etc.)
-     * For example, we use '@rock' as the alias of the path to the Rock framework directory.
+     * For example, we use `@rock` as the alias of the path to the Rock framework directory.
      *
-     * A path alias must start with the character '@' so that it can be easily differentiated
+     * A path alias must start with the character `@` so that it can be easily differentiated
      * from non-alias paths.
      *
      * Note that this method does not check if the given path exists or not. All it does is
@@ -1082,7 +1081,7 @@ class Template
 
     /**
      * Defines path aliases.
-     * This method calls [[Template::setAlias()]] to register the path aliases.
+     * This method calls `Template::setAlias()` to register the path aliases.
      * This method is provided so that you can define path aliases when configuring a module.
      * @property array list of path aliases to be defined. The array keys are alias names
      * (must start with '@') and the array values are the corresponding paths or aliases.

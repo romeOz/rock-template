@@ -15,9 +15,9 @@ use rock\template\url\Url;
  * $template = new \rock\template\Template;
  * $countItems = 10;
  * $params = [
- *      'array' => \rock\helpers\Pagination::get($countItems, (int)$_GET['page'])
+ *      'array' => \rock\template\helpers\Pagination::get($countItems, (int)$_GET['page'])
  * ];
- * $template->getSnippet('\rock\snippet\Pagination', $params);
+ * $template->getSnippet('Pagination', $params);
  * ```
  */
 class Pagination extends Snippet
@@ -255,4 +255,3 @@ class Pagination extends Snippet
         );
     }
 }
-

@@ -22,13 +22,11 @@ class ForSnippet extends Snippet
      * @var int
      */
     public $count;
-
     /**
      * Adding external placeholders in `tpl` and `wrapperTpl`.
      * @var array
      */
     public $addPlaceholders = [];
-
     /**
      * Wrapper for item. You can specify the path to chunk ```?tpl=`/path/to/chunk```/```?tpl=`@views/chunk``` or
      * on the spot to specify a template ``` ?tpl=`@INLINE<b>[[+title]]</b>` ```.
@@ -36,7 +34,6 @@ class ForSnippet extends Snippet
      * @var string
      */
     public $tpl;
-
     /**
      * Wrapper for all items. You can specify the path to chunk ```?wrapperTpl=`/path/to/chunk```/```?tpl=`@views/chunk``` or
      * on the spot to specify a template ``` ?wrapperTpl=`@INLINE<p>[[+output]]</p>` ```.
