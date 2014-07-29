@@ -29,7 +29,6 @@ class Url implements UrlInterface
      * @var array
      */
     protected $dataUrl = [];
-
     /**
      * Dummy by url
      *
@@ -181,8 +180,6 @@ class Url implements UrlInterface
         return $this;
     }
 
-
-
     public function callback(\Closure $callback)
     {
         if (empty($this->dataUrl)) {
@@ -191,7 +188,6 @@ class Url implements UrlInterface
         call_user_func($callback, $this);
         return $this;
     }
-
 
     protected function build(array $data)
     {
@@ -205,6 +201,9 @@ class Url implements UrlInterface
         $url .= preg_replace(['/\/+(?!http:\/\/)/', '/\\\+/'], '/', $data['path']);
 
         if (isset($data['query'])) {
+            if (is_string($data['query'])) {
+                $data['query'] = [$data['query']];
+            }
             /**
              * @see http://php.net/manual/ru/function.http-build-query.php#111819
              */
