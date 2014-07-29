@@ -23,7 +23,6 @@ class PaginationTest extends TemplateCommon
         $template->snippets = [
             'Pagination' => [
                 'class' => Pagination::className(),
-                'urlBuilder' => function () {return new Url();}
             ]
         ];
 

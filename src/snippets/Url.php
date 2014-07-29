@@ -75,27 +75,12 @@ class Url extends Snippet implements UrlInterface
      */
     public $selfHost;
 
-    /** @var \rock\template\url\Url */
-    public $urlBuilder;
-
     public $autoEscape = Template::STRIP_TAGS;
 
 
-    public function init()
-    {
-        parent::init();
-        if (!isset($this->urlBuilder)) {
-            $this->urlBuilder = new \rock\template\url\Url;
-        } elseif($this->urlBuilder instanceof \Closure) {
-            $this->urlBuilder = call_user_func($this->urlBuilder, $this);
-        }
-
-        $this->urlBuilder = new $this->urlBuilder;
-    }
-
     public function get()
     {
-        $urlBuilder = $this->urlBuilder->set($this->url);
+        $urlBuilder = new \rock\template\url\Url($this->url);
         if (isset($this->removeArgs)) {
             $urlBuilder->removeArgs($this->removeArgs);
         }

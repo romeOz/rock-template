@@ -84,24 +84,14 @@ class BaseFilter
      *                  => beginPath     - add string to begin
      *                  => endPath       - add string to end
      *                  => const
-     *                  => \Closure|\rock\template\url\Url urlBuilder
-     * @param \rock\template\Template $template
      * @return string
      */
-    public static function modifyUrl($url, array $params = [], Template $template)
+    public static function modifyUrl($url, array $params = [])
     {
         if (empty($url)) {
             return '#';
         }
-        if (isset($params['urlBuilder'])) {
-            if ($params['urlBuilder'] instanceof \Closure) {
-                $params['urlBuilder'] = call_user_func($params['urlBuilder'], $template);
-            }
-            $urlBuilder = $params['urlBuilder'];
-        } else {
-            $urlBuilder = new Url;
-        }
-        $urlBuilder->set($url);
+        $urlBuilder = new Url($url);
         if (isset($params['removeAllArgs'])) {
             $urlBuilder->removeAllArgs();
         }

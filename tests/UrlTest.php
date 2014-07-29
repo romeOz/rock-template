@@ -136,28 +136,23 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     public function testGetCustomUrl()
     {
         // relative
-        $url = new Url();
-        $url->set('http://site.com/?page=2#name');
+        $url = new Url('http://site.com/?page=2#name');
         $this->assertSame($url->getRelativeUrl(),'/?page=2#name');
 
         // https
-        $url = new Url();
-        $url->set('http://site.com/?page=2#name');
+        $url = new Url('http://site.com/?page=2#name');
         $this->assertSame($url->getHttpsUrl(),'https://site.com/?page=2#name');
 
         // http
-        $url = new Url();
-        $url->set('https://site.com/?page=2#name');
+        $url = new Url('https://site.com/?page=2#name');
         $this->assertSame($url->getHttpUrl(),'http://site.com/?page=2#name');
 
         // remove anchor
-        $url = new Url();
-        $url->set('https://site.com/?page=2#name');
+        $url = new Url('https://site.com/?page=2#name');
         $this->assertSame($url->removeAnchor()->getAbsoluteUrl(),'https://site.com/?page=2');
 
         // build + add args + self host
-        $url = new Url();
-        $url->set('http://site2.com/?page=2#name');
+        $url = new Url('http://site2.com/?page=2#name');
         $this->assertSame(
             $url
                 ->addBeginPath('/parts')
@@ -169,8 +164,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         );
 
         // build + remove args
-        $url = new Url();
-        $url->set('http://site2.com/?page=2#name');
+        $url = new Url('http://site2.com/?page=2#name');
         $this->assertSame(
             $url
                 ->addBeginPath('/parts')

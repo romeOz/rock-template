@@ -47,7 +47,6 @@ class UrlTest extends TemplateCommon
         $template->snippets = [
             'Url' => [
                 'class' => Url::className(),
-                'urlBuilder' => function () {return new \rock\template\url\Url();}
             ]
         ];
         $this->assertSame(

@@ -21,7 +21,9 @@ use rock\template\Template;
  */
 class Url implements UrlInterface
 {
-    use ObjectTrait;
+    use ObjectTrait {
+        ObjectTrait::__construct as parentConstruct;
+    }
 
     /**
      * Array data by url
@@ -39,15 +41,14 @@ class Url implements UrlInterface
     public $strip = true;
 
 
-    public function set($url = null)
+    public function __construct($url = null, $config = [])
     {
+        $this->parentConstruct($config);
         $url = empty($url) ? $this->getBaseHostInfo() . $this->getBaseUrl() : Template::getAlias($url);
         $this->dataUrl = parse_url(trim($url));
         if (isset($this->dataUrl['query'])) {
             parse_str($this->dataUrl['query'], $this->dataUrl['query']);
         }
-
-        return $this;
     }
 
     /**
@@ -58,9 +59,6 @@ class Url implements UrlInterface
      */
     public function setArgs(array $args)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         $this->dataUrl['query'] = $args;
 
         return $this;
@@ -74,9 +72,6 @@ class Url implements UrlInterface
      */
     public function addArgs(array $args)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         $this->dataUrl['query'] = array_merge(Helper::getValue($this->dataUrl['query'], []), $args);
         $this->dataUrl['query'] = array_filter($this->dataUrl['query']);
         return $this;
@@ -91,9 +86,6 @@ class Url implements UrlInterface
      */
     public function removeArgs(array $args)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         if (empty($this->dataUrl['query'])) {
             return $this;
         }
@@ -108,9 +100,6 @@ class Url implements UrlInterface
 
     public function removeAllArgs()
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         $this->dataUrl['query'] = null;
         return $this;
     }
@@ -123,9 +112,6 @@ class Url implements UrlInterface
      */
     public function addAnchor($anchor)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         $this->dataUrl['fragment'] = $anchor;
 
         return $this;
@@ -138,9 +124,6 @@ class Url implements UrlInterface
      */
     public function removeAnchor()
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         $this->dataUrl['fragment'] = null;
 
         return $this;
@@ -155,9 +138,6 @@ class Url implements UrlInterface
      */
     public function addBeginPath($value)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         $this->dataUrl['path'] = $value . $this->dataUrl['path'];
 
         return $this;
@@ -172,9 +152,6 @@ class Url implements UrlInterface
      */
     public function addEndPath($value)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         $this->dataUrl['path'] .= $value;
 
         return $this;
@@ -182,9 +159,6 @@ class Url implements UrlInterface
 
     public function callback(\Closure $callback)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         call_user_func($callback, $this);
         return $this;
     }
@@ -216,9 +190,6 @@ class Url implements UrlInterface
 
     public function get($const = 0, $selfHost = false)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         if (empty($this->dataUrl['path'])) {
             $this->dataUrl = array_merge(parse_url($this->getBaseHostInfo() . $this->getBaseUrl()), $this->dataUrl);
         }
@@ -293,9 +264,6 @@ class Url implements UrlInterface
      */
     public function __set($name, $value)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         $this->dataUrl[$name] = $value;
     }
 
@@ -310,9 +278,6 @@ class Url implements UrlInterface
      */
     public function __get($name)
     {
-        if (empty($this->dataUrl)) {
-            $this->set();
-        }
         if (isset($this->dataUrl[$name])) {
             return $this->dataUrl[$name];
         }

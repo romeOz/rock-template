@@ -77,20 +77,6 @@ class Pagination extends Snippet
 
     public $autoEscape = false;
 
-    /** @var Url */
-    public $urlBuilder;
-
-
-    public function init()
-    {
-        parent::init();
-        if (!isset($this->urlBuilder)) {
-            $this->urlBuilder = new Url;
-        } elseif ($this->urlBuilder instanceof \Closure) {
-            $this->urlBuilder = call_user_func($this->urlBuilder, $this);
-        }
-    }
-
     public function get()
     {
         if (empty($this->array) && empty($this->call)) {
@@ -180,8 +166,7 @@ class Pagination extends Snippet
         $result = '';
         foreach ($data['pageDisplay'] as $num) {
             $this->pageArgs[$pageVar] = $num;
-            $this->urlBuilder->reset();
-            $url = $this->urlBuilder->addArgs($this->pageArgs)->addAnchor($this->pageAnchor)->get();
+            $url = (new Url)->addArgs($this->pageArgs)->addAnchor($this->pageAnchor)->get();
             /**
              * for active page
              */
@@ -220,12 +205,11 @@ class Pagination extends Snippet
         }
         $pageFirstName = !empty($this->pageFirstName) ? $this->pageFirstName : 'page first';
         $this->pageArgs[$pageVar] = $pageFirst;
-        $this->urlBuilder->reset();
 
         return $this->template->replaceParamByPrefix(
             isset($this->pageFirstTpl) ? $this->pageFirstTpl : '@rock.views/pagination/first',
             [
-                'url' => $this->urlBuilder
+                'url' => (new Url)
                         ->addArgs($this->pageArgs)
                         ->addAnchor($this->pageAnchor)
                         ->get(),
@@ -241,12 +225,11 @@ class Pagination extends Snippet
         }
         $pageLastName = !empty($this->pageLastName) ? $this->pageLastName : 'page last';
         $this->pageArgs[$pageVar] = $pageLast;
-        $this->urlBuilder->reset();
 
         return $this->template->replaceParamByPrefix(
             isset($this->pageLastTpl) ? $this->pageLastTpl : '@rock.views/pagination/last',
             [
-                'url' => $this->urlBuilder
+                'url' => (new Url)
                         ->addArgs($this->pageArgs)
                         ->addAnchor($this->pageAnchor)
                         ->get(),

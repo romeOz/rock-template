@@ -164,7 +164,7 @@ class BaseHtml
         if (!isset($options['rel'])) {
             $options['rel'] = 'stylesheet';
         }
-        $options['href'] =  (new Url())->set($url)->getAbsoluteUrl();
+        $options['href'] =  (new Url($url))->getAbsoluteUrl();
 
         if (isset($options['condition'])) {
             $condition = $options['condition'];
@@ -191,7 +191,7 @@ class BaseHtml
      */
     public static function jsFile($url, $options = [])
     {
-        $options['src'] = (new Url())->set($url)->getAbsoluteUrl();
+        $options['src'] = (new Url($url))->getAbsoluteUrl();
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
