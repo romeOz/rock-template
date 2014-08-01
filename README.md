@@ -87,7 +87,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
 
 ###Out of the box:
 
- * Ubuntu 12.04 32 bit
+ * Ubuntu 14.04 32 bit
  * Nginx 1.6
  * PHP-FPM 5.5
  * Composer
