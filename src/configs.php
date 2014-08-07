@@ -13,7 +13,6 @@ use rock\template\snippets\Url;
 
 $datetimeConfig = [
     'formats' => [
-        'mysql' => \rock\template\date\DateTime::ISO_DATETIME_FORMAT,
         'dmy'   => function(\rock\template\date\DateTime $dateTime){
                 $nowYear  = date('Y');
                 $lastYear = $dateTime->format('Y');
