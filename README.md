@@ -88,7 +88,9 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
 ###Out of the box:
 
  * Ubuntu 14.04 64 bit
+ 
 > if you need to use 32 bit of Ubuntu, then uncomment `config.vm.box_url` the appropriate version in the file /path/to/Vagrantfile.
+
  * Nginx 1.6
  * PHP-FPM 5.5
  * Composer
