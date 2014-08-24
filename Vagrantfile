@@ -10,15 +10,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # please see the online documentation at vagrantup.com.
 
     # Every Vagrant virtual environment requires a box to build off of.
-    config.vm.box = "Ubuntu14.04"
-
-    # The url from where the 'config.vm.box' box will be fetched if it
-    # doesn't already exist on the user's system.
-    #config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+    config.vm.box = "Ubuntu14.04x64"
 
     # Uncomment this line and remove config.vm.box_url above
+    config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+
     # if you need to use 32 bit of Ubuntu
-    config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-i386-vagrant-disk1.box"
+    #config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-i386-vagrant-disk1.box"
 
     # Disable automatic box update checking. If you disable this, then
     # boxes will only be checked for updates when the user runs
@@ -97,6 +95,6 @@ SCRIPT
     # Run Ansible provisioning inside the VM
     #
     config.vm.provision "shell" do |sh|
-        sh.inline = "chmod -x /vagrant/provisioning/hosts; ansible-playbook /vagrant/provisioning/main.yml --inventory-file=/vagrant/provisioning/hosts --connection=local"
+        sh.inline = "chmod -x /vagrant/provisioning/hosts; ansible-playbook -v /vagrant/provisioning/main.yml --inventory-file=/vagrant/provisioning/hosts --connection=local"
     end
 end
