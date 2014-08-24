@@ -89,16 +89,18 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
 
  * Ubuntu 14.04 64 bit
 
-> If you need to use 32 bit of Ubuntu, then uncomment `config.vm.box_url` the appropriate version in the file /path/to/Vagrantfile.
+> If you need to use 32 bit of Ubuntu, then uncomment `config.vm.box_url` the appropriate version in the file /path/to/`Vagrantfile`.
 
  * Nginx 1.6
  * PHP-FPM 5.5
  * Composer
  * For caching
-    * Couchbase 2.2.0 + pecl couchbase-1.2.2
-    * Redis 2.8 + php5-redis
+    * Couchbase 2.2.0 + pecl couchbase-1.2.2 (**option**)
+    * Redis 2.8 + php5-redis (**option**)
     * Memcached 1.4.14 + php5_memcached, php5_memcache
  * Local IP loop on Host machine /etc/hosts and Virtual hosts in Nginx already set up!
+
+> To run all services marked `option` you should to uncomment them in the file `/path/to/provisioning/main.yml`.
 
 ###Installation:
 
