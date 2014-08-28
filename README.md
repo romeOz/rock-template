@@ -127,7 +127,7 @@ Requirements
  composer require romeo7/rock-cache:*
 ```
 
- or in your composer.json:
+or in your composer.json:
 
 ```json
  {
