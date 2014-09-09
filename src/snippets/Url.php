@@ -23,63 +23,88 @@ use rock\template\url\UrlInterface;
  */
 class Url extends Snippet implements UrlInterface
 {
+    /**
+     * URL for formatting.
+     * @var string|null
+     */
     public $url;
     /**
-     * Set args.
+     * Referrer URL for formatting.
+     * @var bool
+     */
+    public $referrer = false;
+    /**
+     * URL-arguments for set.
      * @var array
      */
     public $args;
     /**
-     * Adding args.
+     * URL-arguments for adding.
      * @var array
      */
     public $addArgs;
     /**
-     * Adding anchor.
+     * Anchor for adding.
      * @var string
      */
     public $anchor;
     /**
-     * Concat to begin URL.
+     * String to begin of URL-path.
      * @var string
      */
     public $beginPath;
     /**
-     * Concat to end URL.
+     * String to end of URL-path.
      * @var string
      */
     public $endPath;
     /**
-     * Selective removing arguments.
+     * The replacement data.
+     * ```php
+     * $replacement = [$search, $replace];
+     * ```
+     * @var array
+     */
+    public $replace;
+    /**
+     * URL-arguments for removing.
      * @var array
      */
     public $removeArgs;
     /**
-     * Removing all arguments.
+     * Remove all URL-arguments.
      * @var bool
      */
     public $removeAllArgs;
     /**
-     * Removing anchor.
+     * Remove anchor.
      * @var bool
      */
     public $removeAnchor;
     /**
+     * Adduce URL to: `\rock\template\url\UrlInterface::ABS`, `\rock\template\url\UrlInterface::HTTP`, `\rock\template\url\UrlInterface::HTTPS`.
      * @var int
      * @see UrlInterface
      */
     public $const;
     /**
-     * Self host
+     * Use self host.
      * @var bool
      */
     public $selfHost;
-
+    /**
+     * @inheritdoc
+     */
     public $autoEscape = Template::STRIP_TAGS;
 
-
+    /**
+     * @inheritdoc
+     */
     public function get()
     {
+        if ($this->referrer) {
+            $this->url = \rock\template\url\Url::getReferrer() ? : '';
+        }
         $urlBuilder = new \rock\template\url\Url($this->url);
         if (isset($this->removeArgs)) {
             $urlBuilder->removeArgs($this->removeArgs);
@@ -95,6 +120,13 @@ class Url extends Snippet implements UrlInterface
         }
         if (isset($this->endPath)) {
             $urlBuilder->addEndPath($this->endPath);
+        }
+        if (isset($this->replace)) {
+            if (!isset($this->replace[1])) {
+                $this->replace[1] = '';
+            }
+            list($search, $replace) = $this->replace;
+            $urlBuilder->replacePath($search, $replace);
         }
         if (isset($this->args)) {
             $urlBuilder->setArgs($this->args);

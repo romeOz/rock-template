@@ -16,6 +16,7 @@ class UrlTest extends TemplateCommon
     public function testGet()
     {
         $this->assertSame(
+            'http://site.com/parts/categories/news/?view=all&page=1#name',
             $this->template->replace('[[Url
                         ?url=`http://site.com/categories/?view=all`
                         ?addArgs=`{"page" : 1}`
@@ -24,12 +25,23 @@ class UrlTest extends TemplateCommon
                         ?anchor=`name`
                         ?const=`32`
                     ]]'
-            ),
-            'http://site.com/parts/categories/news/?view=all&page=1#name'
+            )
+        );
+
+        // replacing URL
+        $this->assertSame(
+            'http://site.com/?view=all',
+            $this->template->replace('[[Url
+                        ?url=`http://site.com/news/?view=all`
+                        ?replace=`["news/", ""]`
+                        ?const=`32`
+                    ]]'
+            )
         );
 
         // modify url + remove args + add args
         $this->assertSame(
+            'http://site.com/categories/?page=1',
             $this->template->getSnippet(
                 Url::className(),
                 [
@@ -38,18 +50,13 @@ class UrlTest extends TemplateCommon
                     'args' => ['page' => 1],
                     'const' => Url::ABS
                 ]
-            ),
-            'http://site.com/categories/?page=1'
+            )
         );
 
         // modify url + remove all args
         $template = new Template();
-        $template->snippets = [
-            'Url' => [
-                'class' => Url::className(),
-            ]
-        ];
         $this->assertSame(
+            'http://site.com/categories/',
             $template->getSnippet(
                 'Url',
                 [
@@ -58,20 +65,19 @@ class UrlTest extends TemplateCommon
                     'removeAnchor' => true,
                     'const' => Url::ABS
                 ]
-            ),
-            'http://site.com/categories/'
+            )
         );
 
-        // modify url + input null
+        // modify self url + input null
         $this->assertSame(
+            'http://site.com/',
             $this->template->getSnippet(
                 Url::className(),
                 [
                     'removeAllArgs' => true,
                     'const' => Url::ABS
                 ]
-            ),
-            'http://site.com/'
+            )
         );
     }
 }

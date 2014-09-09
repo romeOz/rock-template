@@ -26,25 +26,31 @@ class Url implements UrlInterface
     }
 
     /**
-     * Array data by url
+     * Array URL-data.
      *
      * @var array
      */
     protected $dataUrl = [];
     /**
-     * Dummy by url
+     * Dummy by URL. If URL is empty.
      *
      * @var string
      */
     public $dummy = '#';
-
+    /**
+     * Strip tags (security).
+     * @var bool
+     */
     public $strip = true;
 
-
+    /**
+     * @param string|null  $url - URL for formatting. If url as `NULL`, then use current (self) URL.
+     * @param array $config
+     */
     public function __construct($url = null, $config = [])
     {
         $this->parentConstruct($config);
-        $url = empty($url) ? $this->getBaseHostInfo() . $this->getBaseUrl() : Template::getAlias($url);
+        $url = !isset($url) ? $this->getBaseHostInfo() . $this->getBaseUrl() : Template::getAlias($url);
         $this->dataUrl = parse_url(trim($url));
         if (isset($this->dataUrl['query'])) {
             parse_str($this->dataUrl['query'], $this->dataUrl['query']);
@@ -52,7 +58,7 @@ class Url implements UrlInterface
     }
 
     /**
-     * Set args
+     * Set URL-args
      *
      * @param array $args - array args
      * @return $this
@@ -65,9 +71,9 @@ class Url implements UrlInterface
     }
 
     /**
-     * Add args
+     * Adding URL-arguments
      *
-     * @param array $args - array args
+     * @param array $args - arguments
      * @return $this
      */
     public function addArgs(array $args)
@@ -77,11 +83,10 @@ class Url implements UrlInterface
         return $this;
     }
 
-
     /**
-     * Remove args
+     * Removing URL-args
      *
-     * @param array $args - array args
+     * @param array $args - arguments
      * @return $this
      */
     public function removeArgs(array $args)
@@ -98,6 +103,10 @@ class Url implements UrlInterface
         return $this;
     }
 
+    /**
+     * Removing all URL-arguments
+     * @return $this
+     */
     public function removeAllArgs()
     {
         $this->dataUrl['query'] = null;
@@ -105,7 +114,7 @@ class Url implements UrlInterface
     }
 
     /**
-     * Add args
+     * Adding anchor.
      *
      * @param string $anchor
      * @return $this
@@ -118,7 +127,7 @@ class Url implements UrlInterface
     }
 
     /**
-     * Remove anchor
+     * Removing anchor.
      *
      * @return $this
      */
@@ -129,9 +138,8 @@ class Url implements UrlInterface
         return $this;
     }
 
-
     /**
-     * Add string to begin of path
+     * Adding string to begin of URL-path.
      *
      * @param string $value
      * @return $this
@@ -143,9 +151,8 @@ class Url implements UrlInterface
         return $this;
     }
 
-
     /**
-     * Add string to end pf path
+     * Adding string to end of URL-path.
      *
      * @param string $value
      * @return $this
@@ -157,6 +164,25 @@ class Url implements UrlInterface
         return $this;
     }
 
+    /**
+     * Replacing path
+     *
+     * @param string $search
+     * @param string $replace
+     * @return $this
+     */
+    public function replacePath($search, $replace)
+    {
+        $this->dataUrl['path'] = str_replace($search, $replace, $this->dataUrl['path']);
+        return $this;
+    }
+
+    /**
+     * Custom formatting
+     *
+     * @param callable $callback
+     * @return $this
+     */
     public function callback(\Closure $callback)
     {
         call_user_func($callback, $this);
@@ -172,15 +198,14 @@ class Url implements UrlInterface
             $url .= String::rconcat($data['pass'], '@');
         }
         $url .= Helper::getValue($data['host']);
-        $url .= preg_replace(['/\/+(?!http:\/\/)/', '/\\\+/'], '/', $data['path']);
-
+        if (isset($data['path'])) {
+            $url .= preg_replace(['/\/+(?!http:\/\/)/', '/\\\+/'], '/', $data['path']);
+        }
         if (isset($data['query'])) {
             if (is_string($data['query'])) {
                 $data['query'] = [$data['query']];
             }
-            /**
-             * @see http://php.net/manual/ru/function.http-build-query.php#111819
-             */
+            // @see http://php.net/manual/ru/function.http-build-query.php#111819
             $url .= '?' . preg_replace('/%5B[0-9]+%5D/i', '%5B%5D', http_build_query($data['query']));
         }
         $url .= String::lconcat($data['fragment'], '#');
@@ -188,11 +213,15 @@ class Url implements UrlInterface
         return $url;
     }
 
+    /**
+     * Get formatted URL.
+     *
+     * @param int  $const
+     * @param bool $selfHost - to use current host (security).
+     * @return null|string
+     */
     public function get($const = 0, $selfHost = false)
     {
-        if (empty($this->dataUrl['path'])) {
-            $this->dataUrl = array_merge(parse_url($this->getBaseHostInfo() . $this->getBaseUrl()), $this->dataUrl);
-        }
         if ($selfHost == true) {
             $this->dataUrl['scheme'] = $this->getBaseScheme();
             $this->dataUrl['host'] = $this->getBaseHost();
@@ -214,7 +243,40 @@ class Url implements UrlInterface
     }
 
     /**
-     * Get absolute url: http://site.com
+     * Set data of URL.
+     *
+     * @param $name
+     * @param $value
+     *
+     * ```php
+     * (new \rock\template\url\Url)->host = site.com
+     * ```
+     */
+    public function __set($name, $value)
+    {
+        $this->dataUrl[$name] = $value;
+    }
+
+    /**
+     * Get URL-data.
+     * @param $name
+     * @return string|null
+     *
+     * ```php
+     * echo (new \rock\template\url\Url)->host; // result: site.com
+     * ```
+     */
+    public function __get($name)
+    {
+        if (isset($this->dataUrl[$name])) {
+            return $this->dataUrl[$name];
+        }
+
+        return null;
+    }
+
+    /**
+     * Get absolute URL: `http://site.com`
      * @param bool $selfHost
      * @return null|string
      */
@@ -224,7 +286,7 @@ class Url implements UrlInterface
     }
 
     /**
-     * Get absolute url: /
+     * Get absolute URL: `/`
      * @param bool $selfHost
      * @return null|string
      */
@@ -234,7 +296,7 @@ class Url implements UrlInterface
     }
 
     /**
-     * Get http url: http://site.com
+     * Get http URL: `http://site.com`
      * @param bool $selfHost
      * @return null|string
      */
@@ -244,51 +306,13 @@ class Url implements UrlInterface
     }
 
     /**
-     * Get https url: http://site.com
+     * Get https URL: `https://site.com`
      * @param bool $selfHost
      * @return null|string
      */
     public function getHttpsUrl($selfHost = false)
     {
         return $this->get(self::HTTPS, $selfHost);
-    }
-
-    /**
-     * Set data of url
-     * @param $name
-     * @param $value
-     *
-     * ```php
-     * (new Url())->host = site.com
-     * ```
-     */
-    public function __set($name, $value)
-    {
-        $this->dataUrl[$name] = $value;
-    }
-
-    /**
-     * Get data of url
-     * @param $name
-     * @return string|null
-     *
-     * ```php
-     * echo (new Url())->host; // result: site.com
-     * ```
-     */
-    public function __get($name)
-    {
-        if (isset($this->dataUrl[$name])) {
-            return $this->dataUrl[$name];
-        }
-        return null;
-    }
-
-    public function reset()
-    {
-        $this->dataUrl = [];
-        $this->strip = true;
-        $this->dummy = '#';
     }
 
 
@@ -465,5 +489,14 @@ class Url implements UrlInterface
             throw new Exception('Unable to determine the request URI.');
         }
         return $requestUri;
+    }
+
+    /**
+     * Returns the URL referrer, null if not present
+     * @return string URL referrer, null if not present
+     */
+    public static function getReferrer()
+    {
+        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
     }
 }

@@ -73,23 +73,33 @@ class BaseFilter
             ->format(Helper::getValue($params['format']));
     }
 
-
     /**
      * Modify url
      *
      * @param string $url
      * @param array  $params - params
-     *                  => args        - add args-url
-     *                  => scheme      - scheme
-     *                  => beginPath     - add string to begin
-     *                  => endPath       - add string to end
-     *                  => const
+     *                  => args        - URL-arguments for set.
+     *                  => addArgs        - URL-arguments for adding.
+     *                  => removeArgs       - URL-arguments for removing.
+     *                  => removeAllArgs        - Remove all URL-arguments.
+     *                  => beginPath     - String to begin of URL-path.
+     *                  => endPath       - String to end of URL-path.
+     *                  => replace       - The replacement data.
+     *                  => anchor       - Anchor for adding.
+     *                  => removeAnchor       - Remove anchor.
+     *                  => referrer - referrer URL for formatting.
+     *                  => const - Adduce URL to: `\rock\template\url\UrlInterface::ABS`, `\rock\template\url\UrlInterface::HTTP`,
+     *                  `\rock\template\url\UrlInterface::HTTPS`. @see UrlInterface.
      * @return string
      */
     public static function modifyUrl($url, array $params = [])
     {
         if (empty($url)) {
             return '#';
+        }
+
+        if (isset($params['referrer'])) {
+            $url = Url::getReferrer() ? : '';
         }
         $urlBuilder = new Url($url);
         if (isset($params['removeAllArgs'])) {
@@ -106,6 +116,13 @@ class BaseFilter
         }
         if (isset($params['endPath'])) {
             $urlBuilder->addEndPath($params['endPath']);
+        }
+        if (isset($params['replace'])) {
+            if (!isset($params['replace'][1])) {
+                $params['replace'][1] = '';
+            }
+            list($search, $replace) = $params['replace'];
+            $urlBuilder->replacePath($search, $replace);
         }
         if (isset($params['args'])) {
             $urlBuilder->setArgs($params['args']);
