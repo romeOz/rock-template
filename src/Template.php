@@ -76,6 +76,7 @@ class Template
 
     /** @var string */
     public $head = '<!DOCTYPE html>';
+    public $body = '<body>';
     /**
      * @var array the registered link tags.
      * @see registerLinkTag()
@@ -167,7 +168,7 @@ class Template
             return $resultCache;
         }
         $result = $this->prepareRender($name, $placeholders);
-        foreach (['jsFiles', 'js', 'linkTags', 'cssFiles', 'css','linkTags', 'title', 'metaTags'] as $property) {
+        foreach (['jsFiles', 'js', 'linkTags', 'cssFiles', 'css','linkTags', 'title', 'metaTags','head', 'body'] as $property) {
             if ($this->$property instanceof \Closure) {
                 $this->$property = call_user_func($this->$property, $this);
             }
@@ -1145,7 +1146,7 @@ class Template
      */
     protected function renderBodyBeginHtml()
     {
-        $lines = ['<body>'];
+        $lines = [$this->body];
         if (!empty($this->jsFiles[self::POS_BEGIN])) {
             $lines[] = implode("\n", $this->jsFiles[self::POS_BEGIN]);
         }
