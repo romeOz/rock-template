@@ -511,10 +511,9 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->replace($replace, ['url'=> '/categories/?view=all']), 'http://site.com/parts/categories/news/?page=1#name');
     }
 
-    public function testOutputArrayException()
+    public function testAutomaticConversionArrayToJSON()
     {
         $replace = '[[!+array:jsonToArray]]';
-        $this->setExpectedException(Exception::className());
         $this->template->replace($replace, ['array'=> json_encode(['foo' => 'test'])]);
     }
 
