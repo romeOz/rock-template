@@ -71,8 +71,16 @@ class Template
     public $filters = [];
     /** @var array  */
     public $extensions = [];
-    /** @var int|bool  */
+    /**
+     * Is mode auto-escaping.
+     * @var int|bool
+     */
     public $autoEscape = self::ESCAPE;
+    /**
+     * Automatic conversion to JSON.
+     * @var bool
+     */
+    public $autoToJSON = true;
 
     /** @var string */
     public $head = '<!DOCTYPE html>';
@@ -1300,9 +1308,11 @@ class Template
             $result = $this->makeFilter($result, $filters);
         }
 
+        if ($this->autoToJSON && is_array($result)) {
+            $result = Json::encode($result);
+        }
         if (!is_scalar($result) && !empty($result)) {
             throw new Exception('Wrong type is var: ' . Json::encode($result));
-            //$result = null;
         }
 
         // Set cache
