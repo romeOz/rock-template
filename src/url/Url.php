@@ -43,6 +43,8 @@ class Url implements UrlInterface
      * @var bool
      */
     public $strip = true;
+    /** @var  Request */
+    private $_request;
 
 
     /**
@@ -52,7 +54,8 @@ class Url implements UrlInterface
     public function __construct($url = null, $config = [])
     {
         $this->parentConstruct($config);
-        $url = !isset($url) ? Request::getBaseHostInfo() . Request::getBaseUrl() : Template::getAlias($url);
+        $this->_request = new Request();
+        $url = !isset($url) ? $this->_request->getBaseHostInfo() .$this->_request->getBaseUrl() : Template::getAlias($url);
         $this->dataUrl = parse_url(trim($url));
         if (isset($this->dataUrl['query'])) {
             parse_str($this->dataUrl['query'], $this->dataUrl['query']);
@@ -225,8 +228,8 @@ class Url implements UrlInterface
     public function get($const = 0, $selfHost = false)
     {
         if ($selfHost == true) {
-            $this->dataUrl['scheme'] = Request::getBaseScheme();
-            $this->dataUrl['host'] = Request::getBaseHost();
+            $this->dataUrl['scheme'] = $this->_request->getBaseScheme();
+            $this->dataUrl['host'] = $this->_request->getBaseHost();
         }
 
         if ($const & self::HTTP && isset($this->dataUrl['host'])) {
@@ -235,8 +238,8 @@ class Url implements UrlInterface
             $this->dataUrl['scheme'] = 'https';
         } elseif($const & self::ABS) {
             if (!isset($this->dataUrl['host'])) {
-                $this->dataUrl['scheme'] = Request::getBaseScheme();
-                $this->dataUrl['host'] = Request::getBaseHost();
+                $this->dataUrl['scheme'] = $this->_request->getBaseScheme();
+                $this->dataUrl['host'] = $this->_request->getBaseHost();
             }
         } else {
             unset($this->dataUrl['scheme'] , $this->dataUrl['host'], $this->dataUrl['user'], $this->dataUrl['pass']);

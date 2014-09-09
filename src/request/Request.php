@@ -3,30 +3,30 @@
 namespace rock\template\request;
 
 
-use rock\template\ClassName;
 use rock\template\helpers\Helper;
+use rock\template\ObjectTrait;
 
 class Request
 {
-    use ClassName;
+    use ObjectTrait;
     /**
      * @var string
      */
-    private static $_schema;
+    private $_schema;
 
     /**
      * @return string
      */
-    public static function getBaseScheme()
+    public function getBaseScheme()
     {
-        if (static::$_schema === null) {
-            static::$_schema = static::isSecureConnection() ? 'https' : 'http';
+        if ($this->_schema === null) {
+            $this->_schema = static::isSecureConnection() ? 'https' : 'http';
         }
 
-        return static::$_schema;
+        return $this->_schema;
     }
 
-    private static $_hostInfo;
+    private $_hostInfo;
 
     /**
      * Returns the schema and host part of the current request URL.
@@ -36,23 +36,23 @@ class Request
      * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.site.com`)
      * @see setHostInfo()
      */
-    public static function getBaseHostInfo()
+    public function getBaseHostInfo()
     {
-        if (self::$_hostInfo === null) {
+        if ($this->_hostInfo === null) {
             $secure = static::isSecureConnection();
             $http = $secure ? 'https' : 'http';
             if (isset($_SERVER['HTTP_HOST'])) {
-                self::$_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
+                $this->_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
             } else {
-                self::$_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
+                $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
                 $port = $secure ? static::getSecurePort() : static::getBasePort();
                 if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
-                    self::$_hostInfo .= ':' . $port;
+                    $this->_hostInfo .= ':' . $port;
                 }
             }
         }
 
-        return self::$_hostInfo;
+        return $this->_hostInfo;
     }
 
     /**
@@ -65,8 +65,7 @@ class Request
                || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
     }
 
-    private static $_port;
-
+    private $_port;
 
     /**
      * Returns the port to use for insecure requests.
@@ -75,12 +74,12 @@ class Request
      * @return integer port number for insecure requests.
      * @see setPort()
      */
-    public static function getBasePort()
+    public function getBasePort()
     {
-        if (self::$_port === null) {
-            self::$_port = !static::isSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int)$_SERVER['SERVER_PORT'] : 80;
+        if ($this->_port === null) {
+            $this->_port = !static::isSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int)$_SERVER['SERVER_PORT'] : 80;
         }
-        return self::$_port;
+        return $this->_port;
     }
 
     /**
@@ -89,15 +88,15 @@ class Request
      * server configurations.
      * @param integer $value port number.
      */
-    public static function setBasePort($value)
+    public function setBasePort($value)
     {
-        if ($value != self::$_port) {
-            self::$_port = (int)$value;
-            self::$_hostInfo = null;
+        if ($value != $this->_port) {
+            $this->_port = (int)$value;
+            $this->_hostInfo = null;
         }
     }
 
-    private static $_securePort;
+    private $_securePort;
 
     /**
      * Returns the port to use for secure requests.
@@ -106,12 +105,12 @@ class Request
      * @return integer port number for secure requests.
      * @see setSecurePort()
      */
-    public static function getSecurePort()
+    public function getSecurePort()
     {
-        if (self::$_securePort === null) {
-            self::$_securePort = static::isSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int)$_SERVER['SERVER_PORT'] : 443;
+        if ($this->_securePort === null) {
+            $this->_securePort = static::isSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int)$_SERVER['SERVER_PORT'] : 443;
         }
-        return self::$_securePort;
+        return $this->_securePort;
     }
 
     /**
@@ -120,26 +119,26 @@ class Request
      * server configurations.
      * @param integer $value port number.
      */
-    public static function setSecurePort($value)
+    public function setSecurePort($value)
     {
-        if ($value != self::$_securePort) {
-            self::$_securePort = (int)$value;
-            self::$_hostInfo = null;
+        if ($value != $this->_securePort) {
+            $this->_securePort = (int)$value;
+            $this->_hostInfo = null;
         }
     }
 
-    private static $_host;
+    private $_host;
 
-    public static function getBaseHost()
+    public function getBaseHost()
     {
-        if (self::$_host === null) {
-            self::$_host = Helper::getValue($_SERVER['HTTP_HOST'], $_SERVER['SERVER_NAME']);
+        if ($this->_host === null) {
+            $this->_host = Helper::getValue($_SERVER['HTTP_HOST'], $_SERVER['SERVER_NAME']);
         }
 
-        return self::$_host;
+        return $this->_host;
     }
 
-    private static $_url;
+    private $_url;
 
     /**
      * Returns the currently requested relative URL.
@@ -148,12 +147,12 @@ class Request
      * @return string the currently requested relative URL. Note that the URI returned is URL-encoded.
      * @throws Exception if the URL cannot be determined due to unusual server configuration
      */
-    public static function getBaseUrl()
+    public function getBaseUrl()
     {
-        if (self::$_url === null) {
-            self::$_url = static::resolveRequestUri();
+        if ($this->_url === null) {
+            $this->_url = static::resolveRequestUri();
         }
-        return self::$_url;
+        return $this->_url;
     }
 
     /**
