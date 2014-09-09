@@ -7,6 +7,7 @@ use rock\template\helpers\ArrayHelper;
 use rock\template\helpers\Helper;
 use rock\template\helpers\Json;
 use rock\template\helpers\Serialize;
+use rock\template\request\Request;
 use rock\template\Template;
 use rock\template\url\Url;
 
@@ -99,7 +100,7 @@ class BaseFilter
         }
 
         if (isset($params['referrer'])) {
-            $url = Url::getReferrer() ? : '';
+            $url = Request::getReferrer() ? : '';
         }
         $urlBuilder = new Url($url);
         if (isset($params['removeAllArgs'])) {

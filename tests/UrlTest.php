@@ -175,20 +175,5 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'http://site2.com/parts/news/?view=all#name'
         );
     }
-
-    public function testRequest()
-    {
-        $this->assertSame((new Url())->getBasePort(), 80);
-
-        $url = new Url();
-        $url->setBasePort(443);
-        $this->assertSame($url->getBasePort(), 443);
-
-        $this->assertSame((new Url())->getSecurePort(), 443);
-
-        $url = new Url();
-        $url->setSecurePort(444);
-        $this->assertSame($url->getSecurePort(), 444);
-    }
 }
  

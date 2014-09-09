@@ -1,6 +1,7 @@
 <?php
 namespace rock\template\snippets;
 
+use rock\template\request\Request;
 use rock\template\Snippet;
 use rock\template\Template;
 use rock\template\url\UrlInterface;
@@ -103,7 +104,7 @@ class Url extends Snippet implements UrlInterface
     public function get()
     {
         if ($this->referrer) {
-            $this->url = \rock\template\url\Url::getReferrer() ? : '';
+            $this->url = Request::getReferrer() ? : '';
         }
         $urlBuilder = new \rock\template\url\Url($this->url);
         if (isset($this->removeArgs)) {

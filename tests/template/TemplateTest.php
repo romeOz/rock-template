@@ -6,6 +6,7 @@ namespace rockunit\template;
 use rock\template\Exception;
 use rock\template\filters\BaseFilter;
 use rock\template\helpers\String;
+use rock\template\request\Request;
 use rock\template\Template;
 use rock\template\url\Url;
 use rockunit\template\snippets\NullSnippet;
@@ -588,7 +589,7 @@ class TemplateTest extends TemplateCommon
     public function testUnknown2Snippet()
     {
         $this->setExpectedException(Exception::className());
-        $this->template->getSnippet(Url::className());
+        $this->template->getSnippet(Request::className());
     }
 
     public function testExtensions()
