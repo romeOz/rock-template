@@ -125,7 +125,6 @@ class ListView extends Snippet
      */
     public $prepare;
 
-
     /**
      * name of template
      *
@@ -158,7 +157,6 @@ class ListView extends Snippet
      * @var int|bool
      */
     public $autoEscape = false;
-        
 
 
     public function get()
@@ -189,6 +187,9 @@ class ListView extends Snippet
         $this->array = Helper::getValue($this->array);
         if (!empty($this->call)) {
             $this->array = $this->callFunction($this->call);
+        }
+        if (!empty($this->array) && is_scalar($this->array)) {
+            $this->array =[$this->array];
         }
         if (!empty($this->array) && !is_int(key($this->array))) {
             $this->array = [$this->array];
@@ -249,7 +250,7 @@ class ListView extends Snippet
             return Json::encode($this->array);
         }
         $i = 1;
-        $result = "";
+        $result = '';
         $countItems = count($this->array);
         //Adding placeholders
         $addPlaceholders = $this->template->calculateAddPlaceholders($this->addPlaceholders);
@@ -257,18 +258,27 @@ class ListView extends Snippet
         $placeholders = [];
 
         foreach ($this->array as $placeholders) {
-            $placeholders['currentItem'] = $i;
-            $this->prepareItem($placeholders);
+            if (is_array($placeholders)) {
+                $placeholders['currentItem'] = $i;
+                $this->prepareItem($placeholders);
+                $result .= $this->template->replaceParamByPrefix(
+                    $this->tpl,
+                    array_merge($placeholders, $addPlaceholders)
+                );
+                ++$i;
+                continue;
+            }
             $result .= $this->template->replaceParamByPrefix(
                 $this->tpl,
-                array_merge($placeholders, $addPlaceholders)
-            );
+                array_merge($addPlaceholders, ['output' => $placeholders, 'currentItem' => $i]));
 
             ++$i;
         }
 
         // Deleting placeholders
-        $this->template->removeMultiPlaceholders(array_keys($placeholders));
+        if (is_array($placeholders)) {
+            $this->template->removeMultiPlaceholders(array_keys($placeholders));
+        }
         // Inserting content into wrapper template (optional)
         if (!empty($this->wrapperTpl)) {
             $result = $this->renderWrapperTpl($result, $addPlaceholders);

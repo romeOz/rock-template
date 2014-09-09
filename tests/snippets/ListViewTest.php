@@ -50,6 +50,13 @@ class ListViewTest extends TemplateCommon
         $this->assertNotEmpty($this->template->getPlaceholder('pagination', false, true));
     }
 
+    public function testGetAsSingleArray()
+    {
+        $params['array'] = ['foo', 'bar'];
+        $params['tpl'] = "@INLINE<li>[[!+output]][[+currentItem]]</li>";
+        $params['wrapperTpl'] = "@INLINE<ul>[[!+output]]</ul>";
+        $this->assertSame($this->removeSpace($this->template->getSnippet(ListView::className(), $params)), '<ul><li>foo1</li><li>bar2</li></ul>');
+    }
 
     public function testGetAsMethod()
     {
