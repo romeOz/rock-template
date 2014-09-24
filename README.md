@@ -80,8 +80,14 @@ Documentation
  * [Guide by Rock engine](https://github.com/romeo7/rock-template/blob/master/docs/rock.md)
  * [Guide by PHP engine](https://github.com/romeo7/rock-template/blob/master/docs/php.md)
 
-Demo & Tests
+[Demo](http://demo.template.framerock.net/) & Tests
 -------------------
+
+Destination:
+
+[**DEMO**](http://demo.template.framerock.net/)
+
+or local:
 
 Use a specially prepared environment (Vagrant + Ansible) with preinstalled and configured storages.
 
