@@ -112,7 +112,7 @@ class Pagination extends Snippet
         $pageFirstName = $this->calculateFirstPage($data, $pageVar);
         $pageLastName = $this->calculateLastPage($data, $pageVar);
 
-        return $this->template->replaceParamByPrefix(
+        return $this->template->replaceByPrefix(
             isset($this->wrapperTpl) ? $this->wrapperTpl : '@rock.views/pagination/wrapper',
             [
                 'num' => $num,
@@ -172,7 +172,7 @@ class Pagination extends Snippet
              */
             if ((int)$data['pageCurrent'] === (int)$num) {
                 $result .=
-                    $this->template->replaceParamByPrefix(
+                    $this->template->replaceByPrefix(
                         isset($this->pageActiveTpl) ? $this->pageActiveTpl
                             : '@rock.views/pagination/numActive',
                         [
@@ -186,7 +186,7 @@ class Pagination extends Snippet
              * for default page
              */
             $result .=
-                $this->template->replaceParamByPrefix(
+                $this->template->replaceByPrefix(
                     isset($this->pageNumTpl) ? $this->pageNumTpl : '@rock.views/pagination/num',
                     [
                         'num' => $num,
@@ -206,7 +206,7 @@ class Pagination extends Snippet
         $pageFirstName = !empty($this->pageFirstName) ? $this->pageFirstName : 'page first';
         $this->pageArgs[$pageVar] = $pageFirst;
 
-        return $this->template->replaceParamByPrefix(
+        return $this->template->replaceByPrefix(
             isset($this->pageFirstTpl) ? $this->pageFirstTpl : '@rock.views/pagination/first',
             [
                 'url' => (new Url)
@@ -226,7 +226,7 @@ class Pagination extends Snippet
         $pageLastName = !empty($this->pageLastName) ? $this->pageLastName : 'page last';
         $this->pageArgs[$pageVar] = $pageLast;
 
-        return $this->template->replaceParamByPrefix(
+        return $this->template->replaceByPrefix(
             isset($this->pageLastTpl) ? $this->pageLastTpl : '@rock.views/pagination/last',
             [
                 'url' => (new Url)
