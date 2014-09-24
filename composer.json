@@ -20,7 +20,7 @@
     },
     "require-dev": {
         "romeo7/rock-cache" : "*",
-        "phpunit/phpunit": "~3.7"
+        "phpunit/phpunit": "4.2.*"
     },
     "suggest": {
         "romeo7/rock-cache": "required by rock-cache"
