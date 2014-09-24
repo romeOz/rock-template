@@ -60,7 +60,7 @@ $list = [
 $pagination = \rock\template\helpers\Pagination::get(count($list), null, 1, SORT_DESC);
 
 // render template
-echo (new \rock\template\Template)->render('@views/layout', ['list' => $list, 'pagination' => $pagination]);<!--
+echo (new \rock\template\Template)->render('@views/layout.php', ['list' => $list, 'pagination' => $pagination]);<!--
         --></code></pre>
         Contents layout.php:
         <pre><code class="php"><!--
