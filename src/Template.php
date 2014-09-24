@@ -59,17 +59,29 @@ class Template
     const POS_END = 3;
 
     /**
-     * Extension file layout/chunk. If used `Template::ENGINE_PHP`, then ".php" by default
-     * @var string
+     * Mapping extensions with engines.
+     * @var array
      */
-    public $fileExtension = 'html';
-    /** @var int  */
-    public $engine = self::ENGINE_ROCK;
+    public $engines = [
+        self::ENGINE_ROCK => 'html',
+        self::ENGINE_PHP => 'php',
+    ];
+    /**
+     * Use of engine default.
+     * @var int
+     */
+    public $defaultEngine = self::ENGINE_ROCK;
     /** @var array  */
     public $snippets = [];
-    /** @var array  */
+    /**
+     * Collection filters.
+     * @var array
+     */
     public $filters = [];
-    /** @var array  */
+    /**
+     * Collection extensions.
+     * @var array
+     */
     public $extensions = [];
     /**
      * Is mode auto-escaping.
@@ -90,7 +102,6 @@ class Template
      * @see registerLinkTag()
      */
     public $linkTags = [];
-
     /**
      * @var array the registered CSS code blocks.
      * @see registerCss()
@@ -160,12 +171,12 @@ class Template
     /**
      * Rendering layout
      *
-     * @param string      $name - path to layout
+     * @param string      $path - path to layout
      * @param array       $placeholders
      * @param object|null $context
      * @return string
      */
-    public function render($name, array $placeholders = [], $context = null)
+    public function render($path, array $placeholders = [], $context = null)
     {
         if (!isset($this->context)) {
             $this->context = $context;
@@ -175,7 +186,7 @@ class Template
         if (($resultCache = $this->getCache($cacheKey)) !== false) {
             return $resultCache;
         }
-        $result = $this->prepareRender($name, $placeholders);
+        $result = $this->renderInternal($path, $placeholders);
         foreach (['jsFiles', 'js', 'linkTags', 'cssFiles', 'css','linkTags', 'title', 'metaTags','head', 'body'] as $property) {
             if ($this->$property instanceof \Closure) {
                 $this->$property = call_user_func($this->$property, $this);
@@ -190,22 +201,23 @@ class Template
 
 
     /**
-     * @param string      $name - path to layout/chunk
+     * @param string      $path - path to layout/chunk
      * @param array       $placeholders
      * @throws Exception
      * @return string
      */
-    protected function prepareRender($name, array $placeholders = [])
+    protected function renderInternal($path, array $placeholders = [])
     {
-        $name = static::getAlias($name);
-        $path = $name .
-              '.' . ($this->engine === self::ENGINE_PHP ? 'php' : $this->fileExtension);
+        $path = static::getAlias($path);
+        if (!pathinfo($path, PATHINFO_EXTENSION)) {
+            $path .= '.' . $this->engines[$this->defaultEngine];
+        }
         $path = File::normalizePath($path);
 
         if (!file_exists($path)) {
             throw new Exception(Exception::UNKNOWN_FILE, 0, ['path' => $path]);
         }
-        if ($this->engine === self::ENGINE_PHP) {
+        if (current(array_keys($this->engines, pathinfo($path, PATHINFO_EXTENSION))) === self::ENGINE_PHP) {
             $this->addMultiPlaceholders($placeholders ? : []);
             return $this->renderPhpFile($path);
         } else {
@@ -265,11 +277,11 @@ class Template
     /**
      * Rendering chunk
      *
-     * @param string      $name - path to chunk
+     * @param string      $path - path to chunk
      * @param array  $placeholders
      * @return string
      */
-    public function getChunk($name, array $placeholders = [])
+    public function getChunk($path, array $placeholders = [])
     {
         $template = clone $this;
         $template->removeAllPlaceholders();
@@ -278,7 +290,7 @@ class Template
         if (($resultCache = $template->getCache($cacheKey)) !== false) {
             return $resultCache;
         }
-        $result = $template->prepareRender($name, $placeholders);
+        $result = $template->renderInternal($path, $placeholders);
         // Set cache
         $template->setCache($cacheKey, $result, $cacheExpire, $cacheTags);
         return $result;
@@ -287,12 +299,16 @@ class Template
     /**
      * Has chunk
      *
-     * @param string $name - name of chunk
+     * @param string $path - path to chunk
      * @return bool
      */
-    public function hasChunk($name)
+    public function hasChunk($path)
     {
-        return file_exists(static::getAlias($name) . '.' . $this->fileExtension);
+        $path = static::getAlias($path);
+        if (!pathinfo($path, PATHINFO_EXTENSION)) {
+            $path .= '.' . $this->engines[$this->defaultEngine];
+        }
+        return file_exists($path);
     }
 
     /**

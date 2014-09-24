@@ -8,7 +8,6 @@ Template::setAlias('@runtime', __DIR__ . '/runtime');
 Template::setAlias('@demo.views', __DIR__ . '/views');
 
 $template = new Template();
-$template->engine = Template::ENGINE_PHP;
 // registration meta
 $template->title = 'Demo by PHP engine';
 $template->head = "<!DOCTYPE html>\n<html lang=\"en\">";
@@ -47,7 +46,7 @@ $template->registerJsFile('/assets/js/demo.js');
 $template->addPlaceholder('active.php', true, true);
 
 echo $template->render(
-    '@demo.views/layout',
+    '@demo.views/layout.php',
     [
         'title' => 'Demo by PHP engine',
     ]

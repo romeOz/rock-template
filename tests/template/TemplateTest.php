@@ -211,21 +211,23 @@ class TemplateTest extends TemplateCommon
 
         // Rock engine
         $this->assertSame(
-            static::removeSpace((new Template($config))->render($this->path . '/meta', ['about' => 'demo'])),
+            static::removeSpace((new Template($config))->render($this->path . '/meta.html', ['about' => 'demo'])),
             static::removeSpace(file_get_contents($this->path . '/_meta.html'))
         );
-
-        // PHP engine
-        $config['engine'] = Template::ENGINE_PHP;
-        $config['fileExtension'] = 'php';
+        // Rock engine as default
         $this->assertSame(
             static::removeSpace((new Template($config))->render($this->path . '/meta', ['about' => 'demo'])),
             static::removeSpace(file_get_contents($this->path . '/_meta.html'))
         );
 
+        // PHP engine
+        $this->assertSame(
+            static::removeSpace((new Template($config))->render($this->path . '/meta.php', ['about' => 'demo'])),
+            static::removeSpace(file_get_contents($this->path . '/_meta.html'))
+        );
+
         // register
         $template = new Template;
-        $template->engine = Template::ENGINE_PHP;
         $template->head = '<!DOCTYPE html>
             <!--[if !IE]>--><html class="no-js"><!--<![endif]-->';
         $template->title = 'Demo';
@@ -265,7 +267,7 @@ class TemplateTest extends TemplateCommon
         $template->registerJs('end = "test"', Template::POS_END);
         $template->registerCss('.title {color: #354a57;}');
         $this->assertSame(
-            static::removeSpace($template->render($this->path . '/meta', ['about' => 'demo'])),
+            static::removeSpace($template->render($this->path . '/meta.php', ['about' => 'demo'])),
             static::removeSpace(file_get_contents($this->path . '/_meta.html'))
         );
     }
@@ -273,6 +275,7 @@ class TemplateTest extends TemplateCommon
     public function testHasChunk()
     {
         $this->assertTrue($this->template->hasChunk($this->path . '/layout'));
+        $this->assertTrue($this->template->hasChunk($this->path . '/layout.php'));
     }
 
     public function testConditionFilter()

@@ -86,10 +86,10 @@ Chunk is an html-entity. Autoescape is not affect.
 $template = new Template;
 
 //absolute path
-echo $template->getChunk('/path/to/chunk', ['foo' => 'text']);
+echo $template->getChunk('/path/to/chunk.php', ['foo' => 'text']);
 
 // using alias
-echo $template->getChunk('@views/chunk', ['foo' => 'text']);
+echo $template->getChunk('@views/chunk.php', ['foo' => 'text']);
 ```
 
 Autoescape

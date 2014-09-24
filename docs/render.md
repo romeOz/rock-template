@@ -12,6 +12,10 @@ echo (new Template)->replace('Hello <b>[[+foo]]</b>', ['foo' => 'world!!!']);
 Render layout
 -----------------
 
+Depending on the extensions, you can use an appropriate engine (multi-engines). The template engine supports two types of engines: Rock engine (`.html`) and PHP engine (`.php`).
+
+> In the absence of the extension, used engine default (`Rock engine`). You can specify explicitly: `new Template(['defaultEngine' => Template::ENGINE_PHP])`.
+
 ```php
 echo (new Template)->render('/path/to/layout', ['foo' => 'world!!!']);
 ```

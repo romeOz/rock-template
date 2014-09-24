@@ -13,6 +13,7 @@ Features
 -------------------
 
  * Supports native PHP engine and declarative MODx-like syntax (placeholders, chunk, snippet,...)
+ * Supports multi-engines
  * The variety of filters (arithmetic/bitwise operations, conditions, string, date, and url)
  * Custom autoescaping
  * Support adding/customization filters and snippets
@@ -45,9 +46,8 @@ Quick Start
 use rock\template\Template;
 
 $template = new Template;
-$template->engine = Template::ENGINE_PHP;
 
-echo $template->render('/path/to/layout', ['foo' => 'world!!!']);
+echo $template->render('/path/to/layout.php', ['foo' => 'world!!!']);
 ```
 
 Contents layout.php:
