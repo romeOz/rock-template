@@ -1,13 +1,13 @@
 Template engine for PHP
 =================
 
-[![Latest Stable Version](https://poser.pugx.org/romeo7/rock-template/v/stable.svg)](https://packagist.org/packages/romeo7/rock-template)
-[![Total Downloads](https://poser.pugx.org/romeo7/rock-template/downloads.svg)](https://packagist.org/packages/romeo7/rock-template)
-[![Build Status](https://travis-ci.org/romeo7/rock-template.svg?branch=master)](https://travis-ci.org/romeo7/rock-template)
-[![Coverage Status](https://coveralls.io/repos/romeo7/rock-template/badge.png?branch=master)](https://coveralls.io/r/romeo7/rock-template?branch=master)
-[![License](https://poser.pugx.org/romeo7/rock-template/license.svg)](https://packagist.org/packages/romeo7/rock-template)
+[![Latest Stable Version](https://poser.pugx.org/romeOz/rock-template/v/stable.svg)](https://packagist.org/packages/romeOz/rock-template)
+[![Total Downloads](https://poser.pugx.org/romeOz/rock-template/downloads.svg)](https://packagist.org/packages/romeOz/rock-template)
+[![Build Status](https://travis-ci.org/romeOz/rock-template.svg?branch=master)](https://travis-ci.org/romeOz/rock-template)
+[![Coverage Status](https://coveralls.io/repos/romeOz/rock-template/badge.png?branch=master)](https://coveralls.io/r/romeOz/rock-template?branch=master)
+[![License](https://poser.pugx.org/romeOz/rock-template/license.svg)](https://packagist.org/packages/romeOz/rock-template)
 
-[Rock template on Packagist](https://packagist.org/packages/romeo7/rock-template)
+[Rock template on Packagist](https://packagist.org/packages/romeOz/rock-template)
 
 Features
 -------------------
@@ -18,21 +18,21 @@ Features
  * Custom autoescaping
  * Support adding/customization filters and snippets
  * There is a possibility of adding custom extensions
- * Caching all entities template engine (suggest [Rock Cache](https://github.com/romeo7/rock-cache))
+ * Caching all entities template engine (suggest [Rock Cache](https://github.com/romeOz/rock-cache))
 
 Installation
 -------------------
 
 From the Command Line:
 
-```composer require romeo7/rock-template:*```
+```composer require romeOz/rock-template:*```
 
 In your composer.json:
 
 ```json
 {
     "require": {
-        "romeo7/rock-template": "*"
+        "romeOz/rock-template": "*"
     }
 }
 ```
@@ -77,8 +77,8 @@ Hello <b>[[+foo]]</b>
 Documentation
 -------------------
 
- * [Guide by Rock engine](https://github.com/romeo7/rock-template/blob/master/docs/rock.md)
- * [Guide by PHP engine](https://github.com/romeo7/rock-template/blob/master/docs/php.md)
+ * [Guide by Rock engine](https://github.com/romeOz/rock-template/blob/master/docs/rock.md)
+ * [Guide by PHP engine](https://github.com/romeOz/rock-template/blob/master/docs/php.md)
 
 [Demo](http://demo.template.framerock.net/) & Tests
 -------------------
@@ -111,7 +111,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
 ###Installation:
 
 1. [Install Composer](https://getcomposer.org/doc/00-intro.md#globally)
-2. ```composer create-project --prefer-dist --stability=dev romeo7/rock-template```
+2. ```composer create-project --prefer-dist --stability=dev romeOz/rock-template```
 3. [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins ```vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier```
 4. ```vagrant up```
 5. Open demo [http://rock.tpl/](http://rock.tpl/) or [http://192.168.33.34/](http://192.168.33.34/)
@@ -127,10 +127,10 @@ Requirements
 
  * **PHP 5.4+**
  * **For caching (optional):**
- suggested to use [Rock Cache](https://github.com/romeo7/rock-cache). Should be installed:
+ suggested to use [Rock Cache](https://github.com/romeOz/rock-cache). Should be installed:
 
 ```
- composer require romeo7/rock-cache:*
+ composer require romeOz/rock-cache:*
 ```
 
 or in your composer.json:
@@ -138,7 +138,7 @@ or in your composer.json:
 ```json
  {
     "require": {
-        "romeo7/rock-cache": "*"
+        "romeOz/rock-cache": "*"
     }
  }
 ```
