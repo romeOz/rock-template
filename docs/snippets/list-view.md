@@ -81,7 +81,7 @@ Display the text of the error, if the data are empty. '' by default.
 
 ###pagination
 
-Integration [Pagination (snippet)](https://github.com/romeo7/rock-template/blob/master/docs/snippets/pagination.md).
+Integration [Pagination (snippet)](https://github.com/romeOz/rock-template/blob/master/docs/snippets/pagination.md).
 Params:
 
  * array - the data returned `\rock\template\helpers\Pagination::get()`.

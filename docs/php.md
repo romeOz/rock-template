@@ -1,12 +1,12 @@
 PHP engine
 =================
 
- * [Aliases for path/url/namespace](https://github.com/romeo7/rock-template/blob/master/docs/aliases.md)
- * [Render] (https://github.com/romeo7/rock-template/blob/master/docs/render.md)
+ * [Aliases for path/url/namespace](https://github.com/romeOz/rock-template/blob/master/docs/aliases.md)
+ * [Render] (https://github.com/romeOz/rock-template/blob/master/docs/render.md)
  * [Placeholder](#placeholder)
  * [Resource](#resource)
  * [Chunk](#chunk)
- * [Snippet](https://github.com/romeo7/rock-template/blob/master/docs/snippets/readme.md)
+ * [Snippet](https://github.com/romeOz/rock-template/blob/master/docs/snippets/readme.md)
  * [Autoescape](#autoescape)
  * [Caching](#caching)
 
@@ -207,4 +207,4 @@ $cache->set('list', $result, 3600);
 return $result;
 ```
 
-More detailed information see [Rock cache](https://github.com/romeo7/rock-cache/).
+More detailed information see [Rock cache](https://github.com/romeOz/rock-cache/).

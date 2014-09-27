@@ -1,13 +1,13 @@
 Rock engine
 =================
 
- * [Aliases for path/url/namespace](https://github.com/romeo7/rock-template/blob/master/docs/aliases.md)
- * [Render] (https://github.com/romeo7/rock-template/blob/master/docs/render.md)
+ * [Aliases for path/url/namespace](https://github.com/romeOz/rock-template/blob/master/docs/aliases.md)
+ * [Render] (https://github.com/romeOz/rock-template/blob/master/docs/render.md)
  * [Placeholder `[[+placeholder]]`](#placeholder)
  * [Resource `[[*resource]]`](#resource)
  * [Chunk `[[$chunk]]`](#chunk)
- * [Filters `[[+placeholder:filter]]`](https://github.com/romeo7/rock-template/blob/master/docs/filters.md)
- * [Snippet `[[Snippet]]`](https://github.com/romeo7/rock-template/blob/master/docs/snippets/readme.md)
+ * [Filters `[[+placeholder:filter]]`](https://github.com/romeOz/rock-template/blob/master/docs/filters.md)
+ * [Snippet `[[Snippet]]`](https://github.com/romeOz/rock-template/blob/master/docs/snippets/readme.md)
  * [Extension `[[#extension]]`](#extension)
  * [Autoescape `[[!+placeholder]]`](#autoescape)
  * [Comments](#comments)
@@ -235,4 +235,4 @@ The parameters to use for caching:
 ]]
 ```
 
-More detailed information see [Rock cache](https://github.com/romeo7/rock-cache/).
+More detailed information see [Rock cache](https://github.com/romeOz/rock-cache/).

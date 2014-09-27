@@ -1,5 +1,5 @@
 {
-    "name": "romeo7/rock-template",
+    "name": "romeOz/rock-template",
     "description": "Flexible template engine for PHP with MODx-like syntax.",
     "keywords": ["template", "template-engine", "templating"],
     "type": "library",
@@ -19,11 +19,11 @@
         "php": ">=5.4.0"
     },
     "require-dev": {
-        "romeo7/rock-cache" : "*",
+        "romeOz/rock-cache" : "*",
         "phpunit/phpunit": "4.2.*"
     },
     "suggest": {
-        "romeo7/rock-cache": "required by rock-cache"
+        "romeOz/rock-cache": "required by rock-cache"
     },
     "autoload": {
         "psr-4": {
