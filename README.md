@@ -130,7 +130,7 @@ Requirements
  suggested to use [Rock Cache](https://github.com/romeOz/rock-cache). Should be installed:
 
 ```
- composer require romeOz/rock-cache:*
+ composer require romeoz/rock-cache:*
 ```
 
 or in your composer.json:
@@ -138,7 +138,7 @@ or in your composer.json:
 ```json
  {
     "require": {
-        "romeOz/rock-cache": "*"
+        "romeoz/rock-cache": "*"
     }
  }
 ```
