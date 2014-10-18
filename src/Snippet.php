@@ -10,7 +10,6 @@ abstract class Snippet
      * @var int|bool
      */
     public $autoEscape = true;
-
     /** @var  Template */
     public $template;
 
@@ -33,11 +32,10 @@ abstract class Snippet
         return null;
     }
 
-
     /**
      * @param mixed $function - may be a callable, snippet, and instance
      * @param array $params
-     * @throws Exception
+     * @throws BaseException
      * @return mixed
      *
      * ```php
@@ -64,7 +62,7 @@ abstract class Snippet
                 return call_user_func_array($function, $params);
             } elseif (is_string($function[0])) {
                 if (!class_exists($function[0])) {
-                    throw new Exception(Exception::UNKNOWN_CLASS, 0, ['class' => $function[0]]);
+                    throw new BaseException(BaseException::UNKNOWN_CLASS, ['class' => $function[0]]);
                 }
                 if (is_string($function[0])) {
                     $function[0] = new $function[0];

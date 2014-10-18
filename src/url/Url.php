@@ -2,8 +2,8 @@
 
 namespace rock\template\url;
 
-use rock\template\helpers\Helper;
-use rock\template\helpers\String;
+use rock\helpers\Helper;
+use rock\helpers\String;
 use rock\template\ObjectTrait;
 use rock\template\request\Request;
 use rock\template\Template;
@@ -63,9 +63,9 @@ class Url implements UrlInterface
     }
 
     /**
-     * Set URL-args
+     * Set URL-args.
      *
-     * @param array $args - array args
+     * @param array $args array args
      * @return $this
      */
     public function setArgs(array $args)
@@ -76,9 +76,9 @@ class Url implements UrlInterface
     }
 
     /**
-     * Adding URL-arguments
+     * Adding URL-arguments.
      *
-     * @param array $args - arguments
+     * @param array $args arguments
      * @return $this
      */
     public function addArgs(array $args)
@@ -89,9 +89,9 @@ class Url implements UrlInterface
     }
 
     /**
-     * Removing URL-args
+     * Removing URL-args.
      *
-     * @param array $args - arguments
+     * @param array $args arguments.
      * @return $this
      */
     public function removeArgs(array $args)
@@ -222,7 +222,7 @@ class Url implements UrlInterface
      * Get formatted URL.
      *
      * @param int  $const
-     * @param bool $selfHost - to use current host (security).
+     * @param bool $selfHost to use current host (security).
      * @return null|string
      */
     public function get($const = 0, $selfHost = false)
@@ -254,7 +254,7 @@ class Url implements UrlInterface
      * @param $value
      *
      * ```php
-     * (new \rock\template\url\Url)->host = site.com
+     * (new \rock\template\url\Url)->host = site.com;
      * ```
      */
     public function __set($name, $value)

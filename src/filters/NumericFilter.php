@@ -3,9 +3,9 @@
 namespace rock\template\filters;
 
 
+use rock\helpers\Numeric;
 use rock\template\ClassName;
-use rock\template\Exception;
-use rock\template\helpers\Numeric;
+use rock\template\BaseException;
 use rock\template\Template;
 
 class NumericFilter
@@ -13,20 +13,20 @@ class NumericFilter
     use ClassName;
 
     /**
-     * Check numeric is parity
+     * Check numeric is parity.
      *
      * @param string   $value
      * @param array    $params
-     *                 => then
-     *                 => else
+     *                  - then
+     *                  - else
      * @param Template $template
-     * @throws \rock\template\Exception
+     * @throws \rock\template\BaseException
      * @return string
      */
     public static function isParity($value, array $params, Template $template)
     {
         if (empty($params) || count($params) < 1 || !isset($params['then'])) {
-            throw new Exception(Exception::UNKNOWN_PARAM_FILTER, 0, ['name' => __METHOD__]);
+            throw new BaseException(BaseException::UNKNOWN_PARAM_FILTER, ['name' => __METHOD__]);
         }
         $params['else'] = isset($params['else']) ? $params['else'] : null;
         $template = clone $template;
@@ -56,7 +56,7 @@ class NumericFilter
      *                  => operator - arithmetic and bitwise operators: *, **, +, -, /, %, |, &, ^, <<, >>
      *                  => operand
      * @return float|int|number
-     * @throws \rock\template\Exception
+     * @throws \rock\template\BaseException
      *
      * ```php
      * (new \rock\Template())->replace('[[+num:formula&operator=`*`&operand=`4`]]', ['num'=> 3]); // 12
@@ -96,6 +96,6 @@ class NumericFilter
             case '>>':
                 return $value >> $params['operand'];
         }
-        throw new Exception("Unknown operator: {$params['operator']}");
+        throw new BaseException("Unknown operator: {$params['operator']}");
     }
 }

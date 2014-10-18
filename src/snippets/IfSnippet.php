@@ -1,10 +1,10 @@
 <?php
 namespace rock\template\snippets;
 
+use rock\helpers\Helper;
+use rock\helpers\String;
 use rock\template\execute\CacheExecute;
 use rock\template\execute\Execute;
-use rock\template\helpers\Helper;
-use rock\template\helpers\String;
 use rock\template\Snippet;
 
 /**

@@ -3,6 +3,6 @@
 namespace rock\template\date;
 
 
-class Exception extends \rock\template\Exception
+class Exception extends \rock\template\BaseException
 {
 }

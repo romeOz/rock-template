@@ -3,6 +3,8 @@
 namespace rock\template\helpers;
 
 
+use rock\helpers\Json;
+use rock\helpers\String;
 use rock\template\url\Url;
 
 class BaseHtml

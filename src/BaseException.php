@@ -2,9 +2,9 @@
 
 namespace rock\template;
 
-use rock\template\helpers\String;
+use rock\helpers\String;
 
-class Exception extends \Exception
+class BaseException extends \Exception
 {
     use className;
 
@@ -22,14 +22,13 @@ class Exception extends \Exception
 
     /**
      * @param string     $msg
-     * @param int        $code
-     * @param array      $dataReplace
+     * @param array      $placeholders
      * @param \Exception $handler
      */
-    public function __construct($msg, $code = 0, array $dataReplace = [], \Exception $handler = null)
+    public function __construct($msg, array $placeholders = [], \Exception $handler = null)
     {
-        $msg = String::replace($msg, $dataReplace);
-        parent::__construct($msg, $code, $handler);
+        $msg = String::replace($msg, $placeholders);
+        parent::__construct($msg, 0, $handler);
     }
 
 } 

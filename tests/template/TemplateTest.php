@@ -3,9 +3,9 @@
 namespace rockunit\template;
 
 
-use rock\template\Exception;
+use rock\template\BaseException;
 use rock\template\filters\BaseFilter;
-use rock\template\helpers\String;
+use rock\helpers\String;
 use rock\template\request\Request;
 use rock\template\Template;
 use rock\template\url\Url;
@@ -152,7 +152,7 @@ class TemplateTest extends TemplateCommon
 
     public function testRenderUnknownFileException()
     {
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->render($this->path . '/unknown');
     }
 
@@ -283,13 +283,13 @@ class TemplateTest extends TemplateCommon
         $this->assertSame($this->template->getChunk('@rockunit.tpl/condition_filter', ['title' => '<b>test</b>', 'number' => 3]), file_get_contents($this->path . '/_condition_filter.html'));
 
         // unknown param
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->replace('[[+content:if&foo=`null`&then=`[[!+title]]`]]');
     }
 
     public function testIfException()
     {
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->replace('[[+title:if]]', ['title'=> 'Hello World']);
     }
 
@@ -506,7 +506,7 @@ class TemplateTest extends TemplateCommon
 
         $this->template->replace('[[+num:formula&operator=`<<`]]', ['num'=> 2], '2');
 
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->replace('[[+num:formula&operator=`<!<!<`&operand=`4`]]', ['num'=> 2]);
     }
 
@@ -543,19 +543,19 @@ class TemplateTest extends TemplateCommon
 
     public function testContainsException()
     {
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->replace('[[+title:contains]]', ['title'=> 'Hello World']);
     }
 
     public function testIsParityException()
     {
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->replace('[[+num:isParity]]', ['num'=> 2]);
     }
 
     public function testUnknownFilter()
     {
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->replace('[[+num:foo&operator=`<<`]]', ['num'=> 2], '2');
     }
 
@@ -605,13 +605,13 @@ class TemplateTest extends TemplateCommon
 
     public function testUnknownSnippet()
     {
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->getSnippet('Unknown');
     }
 
     public function testUnknown2Snippet()
     {
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->getSnippet(Request::className());
     }
 

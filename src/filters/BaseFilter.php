@@ -1,12 +1,12 @@
 <?php
 namespace rock\template\filters;
 
+use rock\helpers\ArrayHelper;
+use rock\helpers\Helper;
+use rock\helpers\Json;
+use rock\helpers\Serialize;
 use rock\template\ClassName;
 use rock\template\date\DateTime;
-use rock\template\helpers\ArrayHelper;
-use rock\template\helpers\Helper;
-use rock\template\helpers\Json;
-use rock\template\helpers\Serialize;
 use rock\template\request\Request;
 use rock\template\Template;
 use rock\template\url\Url;
@@ -16,12 +16,12 @@ class BaseFilter
     use ClassName;
 
     /**
-     * Unserialize
+     * Unserialize.
      *
-     * @param string $value             - serialized array
-     * @param array  $params            - params
-     *                                  => key
-     *                                  => separator
+     * @param string $value  serialized array
+     * @param array  $params params
+     *                         - key
+     *                         - separator
      * @return string
      */
     public static function unserialize($value, array $params)
@@ -41,9 +41,9 @@ class BaseFilter
     }
 
     /**
-     * Replace variables template (chunk, snippet...)
+     * Replace variables template (chunk, snippet...).
      *
-     * @param string                  $content - content
+     * @param string                  $content content
      * @param array                   $placeholders
      * @param \rock\template\Template $template
      * @return string
@@ -55,13 +55,12 @@ class BaseFilter
         return $template->replace($content, $placeholders);
     }
 
-
     /**
-     * Modify date
+     * Modify date.
      *
-     * @param string $date   - date
-     * @param array  $params - params
-     *                       => format   - date format
+     * @param string $date   date
+     * @param array  $params params
+     *                       - format: date format
      * @return string|null
      */
     public static function modifyDate($date, array $params = [])
@@ -78,18 +77,18 @@ class BaseFilter
      * Modify url
      *
      * @param string $url
-     * @param array  $params - params
-     *                  => args        - URL-arguments for set.
-     *                  => addArgs        - URL-arguments for adding.
-     *                  => removeArgs       - URL-arguments for removing.
-     *                  => removeAllArgs        - Remove all URL-arguments.
-     *                  => beginPath     - String to begin of URL-path.
-     *                  => endPath       - String to end of URL-path.
-     *                  => replace       - The replacement data.
-     *                  => anchor       - Anchor for adding.
-     *                  => removeAnchor       - Remove anchor.
-     *                  => referrer - referrer URL for formatting.
-     *                  => const - Adduce URL to: `\rock\template\url\UrlInterface::ABS`, `\rock\template\url\UrlInterface::HTTP`,
+     * @param array  $params params
+     *                  - args:        URL-arguments for set.
+     *                  - addArgs:       URL-arguments for adding.
+     *                  - removeArgs:     URL-arguments for removing.
+     *                  - removeAllArgs:        Remove all URL-arguments.
+     *                  - beginPath:     String to begin of URL-path.
+     *                  - endPath:      String to end of URL-path.
+     *                  - replace:       The replacement data.
+     *                  - anchor:       Anchor for adding.
+     *                  - removeAnchor:      Remove anchor.
+     *                  - referrer: referrer URL for formatting.
+     *                  - const: Adduce URL to: `\rock\template\url\UrlInterface::ABS`, `\rock\template\url\UrlInterface::HTTP`,
      *                  `\rock\template\url\UrlInterface::HTTPS`. @see UrlInterface.
      * @return string
      */
@@ -138,9 +137,9 @@ class BaseFilter
     }
 
     /**
-     * Converting array to json-object
+     * Converting array to json-object.
      *
-     * @param array $array - current array
+     * @param array $array current array
      * @return string
      */
     public static function arrayToJson($array)

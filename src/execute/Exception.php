@@ -3,6 +3,6 @@
 namespace rock\template\execute;
 
 
-class Exception extends \rock\template\Exception
+class BaseException extends \rock\template\BaseException
 {
 }

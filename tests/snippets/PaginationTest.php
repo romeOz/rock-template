@@ -3,10 +3,9 @@
 namespace rockunit\snippets;
 
 
-use rock\template\Exception;
+use rock\template\BaseException;
 use rock\template\snippets\Pagination;
 use rock\template\Template;
-use rock\template\url\Url;
 use rockunit\template\TemplateCommon;
 
 class PaginationTest extends TemplateCommon
@@ -30,14 +29,14 @@ class PaginationTest extends TemplateCommon
 
         $params = [
           'call' => function(){
-                  return \rock\template\helpers\Pagination::get(0, null, 10, SORT_DESC);
+                  return \rock\helpers\Pagination::get(0, null, 10, SORT_DESC);
               }
         ];
         $this->assertEmpty($this->template->getSnippet(Pagination::className(), $params));
 
         // with args + anchor
         $params = [
-            'array' => \rock\template\helpers\Pagination::get(7, null, 5, SORT_DESC),
+            'array' => \rock\helpers\Pagination::get(7, null, 5, SORT_DESC),
             'pageArgs' => 'view=all&sort=desc',
             'pageAnchor' => 'name'
 
@@ -50,7 +49,7 @@ class PaginationTest extends TemplateCommon
 
         // not args
         $params = [
-            'array' => \rock\template\helpers\Pagination::get(7, null, 5, SORT_DESC),
+            'array' => \rock\helpers\Pagination::get(7, null, 5, SORT_DESC),
         ];
         $this->assertSame(
             static::removeSpace($this->template->getSnippet(Pagination::className(), $params)),
@@ -63,7 +62,7 @@ class PaginationTest extends TemplateCommon
         $params = [
             'call' => 'Foo.method'
         ];
-        $this->setExpectedException(Exception::className());
+        $this->setExpectedException(BaseException::className());
         $this->template->getSnippet(Pagination::className(), $params);
     }
 }

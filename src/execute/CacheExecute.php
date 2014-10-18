@@ -2,7 +2,7 @@
 
 namespace rock\template\execute;
 
-use rock\template\helpers\File;
+use rock\helpers\File;
 use rock\template\Template;
 
 class CacheExecute extends Execute
@@ -10,7 +10,7 @@ class CacheExecute extends Execute
     public $path = '@rock/runtime/execute';
 
     /**
-     * Create file
+     * Create file.
      *
      * @param string $path
      * @param string $value
@@ -33,10 +33,10 @@ class CacheExecute extends Execute
     /**
      * Get
      *
-     * @param string $value - key
+     * @param string $value key
      * @param array  $data
      * @param array  $params
-     * @throws Exception
+     * @throws BaseException
      * @return mixed
      */
     public function get($value, array $params = null, array $data = null)
@@ -44,7 +44,7 @@ class CacheExecute extends Execute
         $path = static::preparePath($value);
 
         if (!file_exists($path) && !$this->createFile($path, $value)) {
-            throw new Exception(Exception::NOT_CREATE_FILE, 0, ['path' => $path]);
+            throw new BaseException(BaseException::NOT_CREATE_FILE, 0, ['path' => $path]);
         }
         unset($value);
 

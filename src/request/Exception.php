@@ -3,7 +3,7 @@
 namespace rock\template\request;
 
 
-class Exception extends \rock\template\Exception
+class BaseException extends \rock\template\BaseException
 {
 
 } 

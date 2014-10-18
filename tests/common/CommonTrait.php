@@ -3,7 +3,7 @@
 namespace rockunit\common;
 
 
-use rock\template\helpers\File;
+use rock\helpers\File;
 use rock\template\Template;
 
 trait CommonTrait

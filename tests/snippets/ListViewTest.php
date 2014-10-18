@@ -4,7 +4,7 @@ namespace rockunit\snippets;
 
 
 
-use rock\template\helpers\Pagination;
+use rock\helpers\Pagination;
 use rock\template\snippets\ListView;
 use rock\template\Template;
 use rockunit\template\TemplateCommon;

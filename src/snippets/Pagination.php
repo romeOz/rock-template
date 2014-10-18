@@ -1,8 +1,8 @@
 <?php
 namespace rock\template\snippets;
 
-use rock\template\helpers\Helper;
-use rock\template\helpers\String;
+use rock\helpers\Helper;
+use rock\helpers\String;
 use rock\template\Snippet;
 use rock\template\url\Url;
 
@@ -72,7 +72,7 @@ class Pagination extends Snippet
      *
      * @var
      */
-    public $pageArgs;
+    public $pageArgs = [];
     public $pageAnchor;
 
     public $autoEscape = false;
@@ -103,7 +103,7 @@ class Pagination extends Snippet
             ? $this->pageVar
             : (!empty($data['pageVar'])
                 ? $data['pageVar']
-                : \rock\template\helpers\Pagination::PAGE_VAR
+                : \rock\helpers\Pagination::PAGE_VAR
             );
         /**
          * Numeration

@@ -10,7 +10,9 @@ use rock\template\snippets\IfSnippet;
 use rock\template\snippets\ListView;
 use rock\template\snippets\Pagination;
 use rock\template\snippets\Url;
+use rock\template\Template;
 
+Template::setAlias('rock.views', '@rock/views');
 $datetimeConfig = [
     'formats' => [
         'dmy'   => function(\rock\template\date\DateTime $dateTime){

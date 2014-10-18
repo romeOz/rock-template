@@ -3,7 +3,7 @@
 namespace rock\template\request;
 
 
-use rock\template\helpers\Helper;
+use rock\helpers\Helper;
 use rock\template\ObjectTrait;
 
 class Request
@@ -145,7 +145,7 @@ class Request
      * This refers to the portion of the URL that is after the [[hostInfo]] part.
      * It includes the [[queryString]] part if any.
      * @return string the currently requested relative URL. Note that the URI returned is URL-encoded.
-     * @throws Exception if the URL cannot be determined due to unusual server configuration
+     * @throws BaseException if the URL cannot be determined due to unusual server configuration
      */
     public function getBaseUrl()
     {
@@ -161,7 +161,7 @@ class Request
      * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
      * @return string|boolean the request URI portion for the currently requested URL.
      * Note that the URI returned is URL-encoded.
-     * @throws Exception if the request URI cannot be determined due to unusual server configuration
+     * @throws BaseException if the request URI cannot be determined due to unusual server configuration
      */
     protected static function resolveRequestUri()
     {
@@ -178,7 +178,7 @@ class Request
                 $requestUri .= '?' . $_SERVER['QUERY_STRING'];
             }
         } else {
-            throw new Exception('Unable to determine the request URI.');
+            throw new BaseException('Unable to determine the request URI.');
         }
         return $requestUri;
     }

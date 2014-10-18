@@ -1,10 +1,10 @@
 <?php
 namespace rock\template\filters;
 
+use rock\helpers\Helper;
+use rock\helpers\String;
+use rock\template\BaseException;
 use rock\template\ClassName;
-use rock\template\Exception;
-use rock\template\helpers\Helper;
-use rock\template\helpers\String;
 use rock\template\Template;
 
 /**
@@ -34,9 +34,9 @@ abstract class StringFilter
      * Trim by pattern
      *
      * @param string $value
-     * @param array $params -
-     *                 => pattern - regexp pattern
-     *                 => limit
+     * @param array $params
+     *                 - pattern regexp pattern
+     *                 - limit
      * @return string
      */
     public static function trimPattern($value, array $params)
@@ -49,21 +49,21 @@ abstract class StringFilter
     }
 
     /**
-     * Check contains word or char in string
+     * Check contains word or char in string.
      *
-     * @param string   $value
-     * @param array    $params
-     *                 => is
-     *                 => then
-     *                 => else
+     * @param string $value
+     * @param array $params
+     *                  - is
+     *                  - then
+     *                  - else
      * @param Template $template
-     * @throws \rock\template\Exception
+     * @throws \rock\template\BaseException
      * @return string
      */
     public static function contains($value, array $params, Template $template)
     {
         if (empty($params) || count($params) < 2 || !isset($params['then'])) {
-            throw new Exception(Exception::UNKNOWN_PARAM_FILTER, 0, ['name' => __METHOD__]);
+            throw new BaseException(BaseException::UNKNOWN_PARAM_FILTER, ['name' => __METHOD__]);
         }
         $params['else'] = isset($params['else']) ? $params['else'] : null;
         $template = clone $template;
@@ -79,8 +79,8 @@ abstract class StringFilter
      * Truncates a string to the number of characters specified.
      *
      * @param string $value
-     * @param array  $params           - params
-     *                                 => len - count of output characters (minus 3, because point)
+     * @param array $params params
+     *                        - length: count of output characters (minus 3, because point)
      * @return string
      */
     public static function truncate($value, array $params)
@@ -96,8 +96,8 @@ abstract class StringFilter
      * Truncates a string to the number of words specified.
      *
      * @param string $value
-     * @param array  $params            - params
-     *                                  => len - count of output characters
+     * @param array $params params
+     *                        - length: count of output characters
      * @return string
      */
     public static function truncateWords($value, array $params)
@@ -110,7 +110,7 @@ abstract class StringFilter
     }
 
     /**
-     * String to uppercase
+     * String to uppercase.
      *
      * @param string $value
      * @return string

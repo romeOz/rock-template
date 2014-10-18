@@ -1,16 +1,16 @@
 <?php
 namespace rock\template;
 
+use rock\helpers\ArrayHelper;
+use rock\helpers\File;
+use rock\helpers\Helper;
+use rock\helpers\Json;
+use rock\helpers\Numeric;
+use rock\helpers\ObjectHelper;
+use rock\helpers\Serialize;
+use rock\helpers\String;
 use rock\template\filters\ConditionFilter;
-use rock\template\helpers\ArrayHelper;
-use rock\template\helpers\File;
-use rock\template\helpers\Helper;
 use rock\template\helpers\Html;
-use rock\template\helpers\Json;
-use rock\template\helpers\Numeric;
-use rock\template\helpers\ObjectHelper;
-use rock\template\helpers\Serialize;
-use rock\template\helpers\String;
 
 class Template
 {
@@ -71,7 +71,7 @@ class Template
      * @var int
      */
     public $defaultEngine = self::ENGINE_ROCK;
-    /** @var array  */
+    /** @var array */
     public $snippets = [];
     /**
      * Collection filters.
@@ -137,7 +137,7 @@ class Template
      * @var object
      */
     public $context;
-    /** @var \rock\cache\CacheInterface|null  */
+    /** @var \rock\cache\CacheInterface|null */
     public $cache;
     /**
      * Array global placeholders of variables template engine
@@ -171,8 +171,8 @@ class Template
     /**
      * Rendering layout
      *
-     * @param string      $path - path to layout
-     * @param array       $placeholders
+     * @param string $path - path to layout
+     * @param array $placeholders
      * @param object|null $context
      * @return string
      */
@@ -187,7 +187,7 @@ class Template
             return $resultCache;
         }
         $result = $this->renderInternal($path, $placeholders);
-        foreach (['jsFiles', 'js', 'linkTags', 'cssFiles', 'css','linkTags', 'title', 'metaTags','head', 'body'] as $property) {
+        foreach (['jsFiles', 'js', 'linkTags', 'cssFiles', 'css', 'linkTags', 'title', 'metaTags', 'head', 'body'] as $property) {
             if ($this->$property instanceof \Closure) {
                 $this->$property = call_user_func($this->$property, $this);
             }
@@ -199,11 +199,10 @@ class Template
         return $result;
     }
 
-
     /**
-     * @param string      $path - path to layout/chunk
-     * @param array       $placeholders
-     * @throws Exception
+     * @param string $path - path to layout/chunk
+     * @param array $placeholders
+     * @throws BaseException
      * @return string
      */
     protected function renderInternal($path, array $placeholders = [])
@@ -213,12 +212,11 @@ class Template
             $path .= '.' . $this->engines[$this->defaultEngine];
         }
         $path = File::normalizePath($path);
-
         if (!file_exists($path)) {
-            throw new Exception(Exception::UNKNOWN_FILE, 0, ['path' => $path]);
+            throw new BaseException(BaseException::UNKNOWN_FILE, ['path' => $path]);
         }
         if (current(array_keys($this->engines, pathinfo($path, PATHINFO_EXTENSION))) === self::ENGINE_PHP) {
-            $this->addMultiPlaceholders($placeholders ? : []);
+            $this->addMultiPlaceholders($placeholders ?: []);
             return $this->renderPhpFile($path);
         } else {
             return $this->replace(file_get_contents($path), $placeholders);
@@ -235,10 +233,10 @@ class Template
     }
 
     /**
-     * Replace variables template (chunk, snippet...) on content
+     * Replace variables template (chunk, snippet...) on content.
      *
-     * @param string $code         - current template with variables template
-     * @param array  $placeholders - array placeholders of variables template
+     * @param string $code current template with variables template
+     * @param array $placeholders array placeholders of variables template
      * @return string
      */
     public function replace($code, array $placeholders = [])
@@ -251,8 +249,7 @@ class Template
             $this->addMultiPlaceholders($placeholders);
         }
 
-        /**
-         * Remove tpl-comment
+        /* Remove tpl-comment.
          * ```
          * {* Comment about *}
          * ```
@@ -275,10 +272,10 @@ class Template
     }
 
     /**
-     * Rendering chunk
+     * Rendering chunk.
      *
-     * @param string      $path - path to chunk
-     * @param array  $placeholders
+     * @param string $path path to chunk.
+     * @param array $placeholders
      * @return string
      */
     public function getChunk($path, array $placeholders = [])
@@ -299,7 +296,7 @@ class Template
     /**
      * Has chunk
      *
-     * @param string $path - path to chunk
+     * @param string $path path to chunk
      * @return bool
      */
     public function hasChunk($path)
@@ -314,9 +311,9 @@ class Template
     /**
      * Get data from snippet
      *
-     * @param string|Snippet $snippet - name
-     * @param array          $params  - params
-     * @param bool           $autoEscape
+     * @param string|Snippet $snippet name of snippet
+     * @param array $params params of snippet
+     * @param bool $autoEscape
      * @return mixed
      */
     public function getSnippet($snippet, array $params = [], $autoEscape = true)
@@ -344,13 +341,13 @@ class Template
                 unset($config['class']);
             }
             if (!class_exists($class)) {
-                throw new Exception(Exception::UNKNOWN_SNIPPET, 0, ['name' => $class]);
+                throw new BaseException(BaseException::UNKNOWN_SNIPPET, ['name' => $class]);
             }
             /** @var Snippet $snippet */
             $snippet = new $class(array_merge($config, $params));
 
             if (!$snippet instanceof Snippet) {
-                throw new Exception(Exception::UNKNOWN_SNIPPET, 0, ['name' => $snippet::className()]);
+                throw new BaseException(BaseException::UNKNOWN_SNIPPET, ['name' => $snippet::className()]);
             }
         }
         if ($autoEscape === false) {
@@ -378,11 +375,11 @@ class Template
     }
 
     /**
-     * Get placeholder
+     * Get placeholder.
      *
-     * @param string $name          - name
-     * @param int|bool|null   $autoEscape
-     * @param bool   $global - globally placeholder
+     * @param string $name name of placeholder
+     * @param int|bool|null $autoEscape
+     * @param bool $global globally placeholder
      * @return string|null
      */
     public function getPlaceholder($name, $autoEscape = true, $global = false)
@@ -394,8 +391,8 @@ class Template
     }
 
     /**
-     * Get local/global placeholder and resource
-     * @param $name
+     * Get local/global placeholder and resource.
+     * @param string $name name of placeholder/resource.
      * @return mixed
      */
     public function __get($name)
@@ -432,7 +429,8 @@ class Template
     }
 
     /**
-     * Add local placeholder
+     * Add local placeholder.
+     *
      * @param $name
      * @param $value
      */
@@ -442,7 +440,8 @@ class Template
     }
 
     /**
-     * Remove local placeholder
+     * Remove local placeholder.
+     *
      * @param $name
      */
     public function __unset($name)
@@ -451,12 +450,12 @@ class Template
     }
 
     /**
-     * Get all placeholders
+     * Get all placeholders.
      *
      * @param int|bool $autoEscape
-     * @param bool          $global - globally placeholder
-     * @param array         $only
-     * @param array         $exclude
+     * @param bool $global globally placeholder.
+     * @param array $only
+     * @param array $exclude
      * @return array
      */
     public function getAllPlaceholders($autoEscape = true, $global = false, array $only = [], array $exclude = [])
@@ -469,9 +468,9 @@ class Template
     }
 
     /**
-     * Exists placeholder
+     * Exists placeholder.
      *
-     * @param      $name - name of placeholder
+     * @param string $name name of placeholder
      * @param bool $global
      * @return bool
      */
@@ -486,11 +485,11 @@ class Template
     }
 
     /**
-     * Set placeholder
+     * Set placeholder.
      *
-     * @param string $name  - key
-     * @param mixed  $value - value
-     * @param bool   $global - globally placeholder
+     * @param string $name key
+     * @param mixed $value value
+     * @param bool $global globally placeholder
      */
     public function addPlaceholder($name, $value = null, $global = false)
     {
@@ -510,10 +509,10 @@ class Template
     }
 
     /**
-     * Set placeholders
+     * Set placeholders.
      *
-     * @param array $placeholders - array
-     * @param bool   $global - globally placeholder
+     * @param array $placeholders array
+     * @param bool $global globally placeholder.
      * @return mixed
      */
     public function addMultiPlaceholders(array $placeholders, $global = false)
@@ -527,10 +526,10 @@ class Template
     }
 
     /**
-     * Deleted placeholder
+     * Deleted placeholder.
      *
-     * @param string $name   - key
-     * @param bool   $global - globally placeholder
+     * @param string $name key
+     * @param bool $global globally placeholder
      */
     public function removePlaceholder($name, $global = false)
     {
@@ -545,10 +544,10 @@ class Template
     }
 
     /**
-     * Deleted multi-placeholders
+     * Deleted multi-placeholders.
      *
-     * @param array $names - array of
-     * @param bool   $global - globally placeholder
+     * @param array $names
+     * @param bool $global globally placeholder
      */
     public function removeMultiPlaceholders(array $names, $global = false)
     {
@@ -560,7 +559,8 @@ class Template
     }
 
     /**
-     * Deleted all placeholders
+     * Deleted all placeholders.
+     *
      * @param bool $global
      */
     public function removeAllPlaceholders($global = false)
@@ -575,9 +575,10 @@ class Template
     protected static $resources = [];
 
     /**
-     * Added resource
-     * @param $name - name of resource
-     * @param $value - value of resource
+     * Added resource.
+     *
+     * @param string $name name of resource
+     * @param mixed $value value of resource
      */
     public function addResource($name, $value)
     {
@@ -585,7 +586,8 @@ class Template
     }
 
     /**
-     * Added multi-resources
+     * Added multi-resources.
+     *
      * @param array $resources
      */
     public function addMultiResources(array $resources)
@@ -596,10 +598,11 @@ class Template
     }
 
     /**
-     * Get resource
-     * @param string     $name - name of resource
+     * Get resource.
+     *
+     * @param string $name name of resource
      * @param bool $autoEscape
-     * @return array|mixed|null|string
+     * @return mixed
      */
     public function getResource($name, $autoEscape = true)
     {
@@ -607,8 +610,9 @@ class Template
     }
 
     /**
-     * Has resource by name
-     * @param $name - name of resource
+     * Has resource by name.
+     *
+     * @param string $name name of resource
      * @return bool
      */
     public function hasResource($name)
@@ -617,8 +621,9 @@ class Template
     }
 
     /**
-     * Get all resources
-     * @param bool  $autoEscape
+     * Get all resources.
+     *
+     * @param bool $autoEscape
      * @param array $only
      * @param array $exclude
      * @return array|mixed|null|string
@@ -629,8 +634,9 @@ class Template
     }
 
     /**
-     * Deleted resource
-     * @param $name - name of resource
+     * Deleted resource.
+     *
+     * @param string $name name of resource
      */
     public function removeResource($name)
     {
@@ -638,7 +644,7 @@ class Template
     }
 
     /**
-     * Deleted all resources
+     * Deleted all resources.
      */
     public function removeAllResource()
     {
@@ -646,9 +652,10 @@ class Template
     }
 
     /**
-     * Replace inline tpl
-     * @param string $value  - value
-     * @param array  $placeholders
+     * Replace inline tpl.
+     *
+     * @param string $value value
+     * @param array $placeholders
      * @return string
      */
     public function replaceByPrefix($value, array $placeholders = [])
@@ -666,8 +673,9 @@ class Template
     }
 
     /**
-     * Get name prefix by param
-     * @param string $value - value of param
+     * Get name prefix by param.
+     *
+     * @param string $value value of param
      * @return array|null
      */
     public function getNamePrefix($value)
@@ -679,13 +687,14 @@ class Template
 
         return [
             'prefix' => Helper::getValue($matches['prefix']),
-            'value'  => Helper::getValue($matches['value'])
+            'value' => Helper::getValue($matches['value'])
         ];
     }
 
     /**
-     * Remove prefix by param
-     * @param string $value - value of param
+     * Remove prefix by param.
+     *
+     * @param string $value value of param
      * @return string|null
      */
     public function removePrefix($value)
@@ -698,10 +707,10 @@ class Template
     }
 
     /**
-     * Make filter (modifier)
-     * @param string $value   - value
-     * @param array  $filters - array of filters with params
-     * @throws Exception
+     * Make filter (modifier).
+     * @param string $value value
+     * @param array $filters array of filters with params
+     * @throws BaseException
      * @return string
      */
     public function makeFilter($value, $filters)
@@ -714,13 +723,13 @@ class Template
                 if (isset($this->filters[$method]['class'])) {
                     $filterParams = $this->filters[$method];
                     $class = $filterParams['class'];
-                    $method  = Helper::getValue($filterParams['method'], $method);
+                    $method = Helper::getValue($filterParams['method'], $method);
                     unset($filterParams['class'], $filterParams['method']);
                     $value = call_user_func([$class, $method], $value, array_merge($filterParams, $_params), $this);
                 } elseif (function_exists($method)) {
                     $value = call_user_func_array($method, array_merge([$value], $_params));
                 } else {
-                    throw new Exception(Exception::UNKNOWN_FILTER, 0, ['name' => $method]);
+                    throw new BaseException(BaseException::UNKNOWN_FILTER, ['name' => $method]);
                 }
             }
         };
@@ -728,9 +737,9 @@ class Template
         return $value;
     }
 
-
     /**
-     * Calculate for adding placeholders
+     * Calculate for adding placeholders.
+     *
      * @param array $placeholders
      * @return array
      *
@@ -761,9 +770,11 @@ class Template
     }
 
     /**
-     * @param string $name - name of extension
+     * Get Extension.
+     *
+     * @param string $name name of extension
      * @param array $params
-     * @param bool|int  $autoEscape
+     * @param bool|int $autoEscape
      * @return mixed
      */
     public function getExtension($name, array $params = [], $autoEscape = true)
@@ -779,7 +790,8 @@ class Template
     protected static $data = [];
 
     /**
-     * Autoescape vars of template engine
+     * Autoescape vars of template engine.
+     *
      * @param mixed $value
      * @param bool|int $const
      * @return mixed
@@ -857,6 +869,7 @@ class Template
 
     /**
      * Registers a meta tag.
+     *
      * @param array $options the HTML attributes for the meta tag.
      * @param string $key the key that identifies the meta tag. If two meta tags are registered
      * with the same key, the latter will overwrite the former. If this is null, the new meta tag
@@ -873,6 +886,7 @@ class Template
 
     /**
      * Registers a link tag.
+     *
      * @param array $options the HTML attributes for the link tag.
      * @param string $key the key that identifies the link tag. If two link tags are registered
      * with the same key, the latter will overwrite the former. If this is null, the new link tag
@@ -889,6 +903,7 @@ class Template
 
     /**
      * Registers a CSS code block.
+     *
      * @param string $css the CSS code block to be registered
      * @param array $options the HTML attributes for the style tag.
      * @param string $key the key that identifies the CSS code block. If null, it will use
@@ -903,6 +918,7 @@ class Template
 
     /**
      * Registers a CSS file.
+     *
      * @param string $url the CSS file to be registered.
      * @param array $options the HTML attributes for the link tag.
      * @param string $key the key that identifies the CSS script file. If null, it will use
@@ -921,14 +937,14 @@ class Template
 
     /**
      * Registers a JS code block.
+     *
      * @param string $js the JS code block to be registered
      * @param integer $position the position at which the JS script tag should be inserted
      * in a page. The possible values are:
      *
-     * - [[POS_HEAD]]: in the head section
-     * - [[POS_BEGIN]]: at the beginning of the body section
-     * - [[POS_END]]: at the end of the body section
-     *   Note that by using this position, the method will automatically register the jQuery js file.
+     * - `POS_HEAD`: in the head section
+     * - `POS_BEGIN`: at the beginning of the body section
+     * - `POS_END`: at the end of the body section
      *
      * @param string $key the key that identifies the JS code block. If null, it will use
      * $js as the key. If two JS code blocks are registered with the same key, the latter
@@ -947,9 +963,9 @@ class Template
      * named "position" is supported which specifies where the JS script tag should be inserted
      * in a page. The possible values of "position" are:
      *
-     * - [[POS_HEAD]]: in the head section
-     * - [[POS_BEGIN]]: at the beginning of the body section
-     * - [[POS_END]]: at the end of the body section. This is the default value.
+     * - `POS_HEAD`: in the head section
+     * - `POS_BEGIN`: at the beginning of the body section
+     * - `POS_END`: at the end of the body section. This is the default value.
      *
      * @param string $key the key that identifies the JS script file. If null, it will use
      * $url as the key. If two JS files are registered with the same key, the latter
@@ -972,7 +988,6 @@ class Template
      */
     public static $aliases = [
         '@rock' => __DIR__,
-        '@rock.views' => '@rock/views'
     ];
 
     /**
@@ -998,17 +1013,17 @@ class Template
      *
      * Note, this method does not check if the returned path exists or not.
      *
-     * @param string  $alias          the alias to be translated.
-     * @param array   $dataReplace
+     * @param string $alias the alias to be translated.
+     * @param array $placeholders
      * @param boolean $throwException whether to throw an exception if the given alias is invalid.
      *                                If this is false and an invalid alias is given, false will be returned by this method.
      * @throws \Exception if the alias is invalid while $throwException is true.
      * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
      * @see setAlias()
      */
-    public static function getAlias($alias, array $dataReplace = [],  $throwException = true)
+    public static function getAlias($alias, array $placeholders = [], $throwException = true)
     {
-        $alias = String::replace($alias, $dataReplace);
+        $alias = String::replace($alias, $placeholders);
         if (strncmp($alias, '@', 1)) {
             // not an alias
             return $alias;
@@ -1049,12 +1064,12 @@ class Template
      * Note that this method does not check if the given path exists or not. All it does is
      * to associate the alias with the path.
      *
-     * Any trailing '/' and '\' characters in the given path will be trimmed.
+     * Any trailing `/` and `\` characters in the given path will be trimmed.
      *
-     * @param string $alias the alias name (e.g. "@rock"). It must start with a '@' character.
+     * @param string $alias the alias name (e.g. `@rock`). It must start with a `@` character.
      * It may contain the forward slash '/' which serves as boundary character when performing
      * alias translation by [[getAlias()]].
-     * @param string $path the path corresponding to the alias. Trailing '/' and '\' characters
+     * @param string $path the path corresponding to the alias. Trailing `/` and `\` characters
      * will be trimmed. This can be
      *
      * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
@@ -1106,13 +1121,14 @@ class Template
 
     /**
      * Defines path aliases.
-     * This method calls `Template::setAlias()` to register the path aliases.
+     *
+     * This method calls @see setAlias() to register the path aliases.
      * This method is provided so that you can define path aliases when configuring a module.
      * @property array list of path aliases to be defined. The array keys are alias names
      * (must start with '@') and the array values are the corresponding paths or aliases.
-     * See [[setAliases()]] for an example.
+     * See @see setAliases() for an example.
      * @param array $aliases list of path aliases to be defined. The array keys are alias names
-     * (must start with '@') and the array values are the corresponding paths or aliases.
+     * (must start with `@`) and the array values are the corresponding paths or aliases.
      * For example,
      *
      * ```php
@@ -1221,10 +1237,10 @@ class Template
     }
 
     /**
-     * Callback to replace variables template
+     * Callback to replace variables template.
      *
-     * @param array $matches - array of variables template
-     * @throws Exception
+     * @param array $matches array of variables template.
+     * @throws BaseException
      * @return string
      */
     protected function replaceCallback($matches)
@@ -1242,7 +1258,7 @@ class Template
                 \\s*(?P<sugar> (?!`)\*(?!`) | (?!`)\*\*(?!`) | (?!`)\/(?!`) | (?!`)\%(?!`) |
                 \\s+(?!`)mod(?!`)\\s+ | (?!`)\+(?!`) | (?!`)\-(?!`) | (?!`)\|(?!`) | (?!`)\&(?!`) |
                 (?!`)\^(?!`) | (?!`)\>\>(?!`) | (?!`)\<\<(?!`) |
-                (?!`)\|\|(?!`) | (?!`)\&\&(?!`) | \\s+(?!`)'.$this->_getInlineConditionNames().'(?!`)\\s+ |`\\s+\?\\s+|`\\s+\:\\s+)\\s*`
+                (?!`)\|\|(?!`) | (?!`)\&\&(?!`) | \\s+(?!`)' . $this->_getInlineConditionNames() . '(?!`)\\s+ |`\\s+\?\\s+|`\\s+\:\\s+)\\s*`
             /x', [$this, 'replaceSugar'], $matches[0]);
         // Replace `=` tpl mnemonics
         $matches[0] = preg_replace('/`([\!\<\>]?)[\=]+`/', '`$1&#61;`', $matches[0]);
@@ -1282,25 +1298,25 @@ class Template
         if ($matches['type'] === '$') {
             $result = $this->getChunk($matches['name'], $params);
 
-        // data of resource
+            // data of resource
         } elseif ($matches['type'] === '*') {
             $result = $this->getResource(
                 $matches['name'],
                 Helper::getValueIsset($params['autoEscape'], $escape)
             );
 
-        // get alias
+            // get alias
         } elseif ($matches['type'] === '$$') {
             $result = static::getAlias("@{$matches['name']}");
 
-        // local placeholder
+            // local placeholder
         } elseif ($matches['type'] === '+') {
             $result = $this->getPlaceholder(
                 $matches['name'],
                 Helper::getValueIsset($params['autoEscape'], $escape)
             );
 
-        // global placeholder
+            // global placeholder
         } elseif ($matches['type'] === '++') {
             $result = $this->getPlaceholder(
                 $matches['name'],
@@ -1308,11 +1324,11 @@ class Template
                 true
             );
 
-        // extensions
+            // extensions
         } elseif ($matches['type'] === '#') {
             $result = $this->getExtension($matches['name'], $params, Helper::getValueIsset($params['autoEscape'], $escape));
 
-        // snippet
+            // snippet
         } elseif (empty($matches['type'])) {
             $result = $this->getSnippet($matches['name'], $params, $escape);
         } else {
@@ -1332,7 +1348,7 @@ class Template
             }
         }
         if (!is_scalar($result) && !empty($result)) {
-            throw new Exception('Wrong type is var: ' . Json::encode($result));
+            throw new BaseException('Wrong type is var: ' . Json::encode($result));
         }
 
         // Set cache
@@ -1416,11 +1432,11 @@ class Template
     }
 
     /**
-     * Search placeholders is variable of template
+     * Search placeholders is variable of template.
      * ?<name>=<value>
      *
      * @param string $value
-     * @param array  $dataRecursive
+     * @param array $dataRecursive
      * @return array
      */
     private function _searchParams($value, array $dataRecursive)
@@ -1471,10 +1487,10 @@ class Template
     }
 
     /**
-     * Validate: not replace is @INLINE prefix exists or parameters then/else
+     * Validate: not replace is @INLINE prefix exists or parameters then/else.
      *
-     * @param string $name  - name of param
-     * @param string $value - value of param
+     * @param string $name name of param
+     * @param string $value value of param
      * @return string
      */
     private function _searchPrefix($name, $value)
@@ -1492,10 +1508,10 @@ class Template
     }
 
     /**
-     * Search of filters (modifiers)
+     * Search of filters (modifiers).
      *
      * @param string $value
-     * @param array  $dataRecursive
+     * @param array $dataRecursive
      * @return array
      */
     private function _searchFilters($value, array $dataRecursive)
@@ -1562,9 +1578,9 @@ class Template
     }
 
     /**
-     * @param string     $name   - name of extension
+     * @param string $name - name of extension
      * @param array $params - params
-     * @throws Exception
+     * @throws BaseException
      * @return mixed
      */
     private function _getExtensionInternal($name = null, array $params = [])
@@ -1626,7 +1642,8 @@ class Template
     }
 
     /**
-     * Get the content from the cache
+     * Get the content from the cache.
+     *
      * @param string|null $key
      * @return bool
      */
@@ -1649,11 +1666,11 @@ class Template
     }
 
     /**
-     * Caching template
+     * Caching template.
      *
      * @param null $key
      * @param null $value
-     * @param int  $expire
+     * @param int $expire
      * @param null $tags
      */
     protected function setCache($key = null, $value = null, $expire = 0, $tags = null)

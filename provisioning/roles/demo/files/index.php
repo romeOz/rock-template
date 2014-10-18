@@ -1,5 +1,5 @@
 <?php
-use rock\template\helpers\Pagination;
+use rock\helpers\Pagination;
 use rock\template\Template;
 
 include_once(__DIR__ . '/vendor/autoload.php');

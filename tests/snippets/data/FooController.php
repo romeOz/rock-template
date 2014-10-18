@@ -3,7 +3,7 @@
 namespace rockunit\snippets\data;
 
 
-use rock\template\helpers\Pagination;
+use rock\helpers\Pagination;
 
 class FooController
 {

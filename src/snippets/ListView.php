@@ -1,9 +1,9 @@
 <?php
 namespace rock\template\snippets;
 
-use rock\template\helpers\ArrayHelper;
-use rock\template\helpers\Helper;
-use rock\template\helpers\Json;
+use rock\helpers\ArrayHelper;
+use rock\helpers\Helper;
+use rock\helpers\Json;
 use rock\template\Snippet;
 
 /**
@@ -210,7 +210,7 @@ class ListView extends Snippet
             $this->pagination['pageSort'] = SORT_DESC;
         }
         if (empty($this->pagination['pageLimit'])) {
-            $this->pagination['pageLimit'] = \rock\template\helpers\Pagination::PAGE_LIMIT;
+            $this->pagination['pageLimit'] = \rock\helpers\Pagination::PAGE_LIMIT;
         }
 
         if (isset($this->pagination['call'])) {
