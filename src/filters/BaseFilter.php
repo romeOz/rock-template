@@ -19,9 +19,11 @@ class BaseFilter
      * Unserialize.
      *
      * @param string $value  serialized array
-     * @param array  $params params
-     *                         - key
-     *                         - separator
+     * @param array  $params params:
+     *
+     *  - key
+     *  - separator
+     *
      * @return string
      */
     public static function unserialize($value, array $params)
@@ -78,17 +80,18 @@ class BaseFilter
      *
      * @param string $url
      * @param array  $params params
-     *                  - args:        URL-arguments for set.
-     *                  - addArgs:       URL-arguments for adding.
-     *                  - removeArgs:     URL-arguments for removing.
-     *                  - removeAllArgs:        Remove all URL-arguments.
-     *                  - beginPath:     String to begin of URL-path.
-     *                  - endPath:      String to end of URL-path.
-     *                  - replace:       The replacement data.
-     *                  - anchor:       Anchor for adding.
-     *                  - removeAnchor:      Remove anchor.
-     *                  - referrer: referrer URL for formatting.
-     *                  - const: Adduce URL to: `\rock\template\url\UrlInterface::ABS`, `\rock\template\url\UrlInterface::HTTP`,
+     *
+     * - args:        URL-arguments for set.
+     * - addArgs:       URL-arguments for adding.
+     * - removeArgs:     URL-arguments for removing.
+     * - removeAllArgs:        Remove all URL-arguments.
+     * - beginPath:     String to begin of URL-path.
+     * - endPath:      String to end of URL-path.
+     * - replace:       The replacement data.
+     * - anchor:       Anchor for adding.
+     * - removeAnchor:      Remove anchor.
+     * - referrer: referrer URL for formatting.
+     * - const: Adduce URL to: `\rock\template\url\UrlInterface::ABS`, `\rock\template\url\UrlInterface::HTTP`,
      *                  `\rock\template\url\UrlInterface::HTTPS`. @see UrlInterface.
      * @return string
      */

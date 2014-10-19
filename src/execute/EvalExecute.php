@@ -6,7 +6,7 @@ namespace rock\template\execute;
 class EvalExecute extends Execute
 {
     /**
-     * @param string $value - key
+     * @param string $value key
      * @param array  $data
      * @param array  $params
      * @return mixed

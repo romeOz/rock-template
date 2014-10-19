@@ -34,9 +34,11 @@ abstract class StringFilter
      * Trim by pattern
      *
      * @param string $value
-     * @param array $params
-     *                 - pattern regexp pattern
-     *                 - limit
+     * @param array $params:
+     *
+     * - pattern: regexp pattern
+     * - limit
+     *
      * @return string
      */
     public static function trimPattern($value, array $params)
@@ -52,10 +54,12 @@ abstract class StringFilter
      * Check contains word or char in string.
      *
      * @param string $value
-     * @param array $params
-     *                  - is
-     *                  - then
-     *                  - else
+     * @param array $params:
+     *
+     * - is
+     * - then
+     * - else
+     *
      * @param Template $template
      * @throws \rock\template\BaseException
      * @return string
@@ -79,8 +83,10 @@ abstract class StringFilter
      * Truncates a string to the number of characters specified.
      *
      * @param string $value
-     * @param array $params params
-     *                        - length: count of output characters (minus 3, because point)
+     * @param array $params params:
+     *
+     * - length: count of output characters (minus 3, because point).
+     *
      * @return string
      */
     public static function truncate($value, array $params)
@@ -96,8 +102,10 @@ abstract class StringFilter
      * Truncates a string to the number of words specified.
      *
      * @param string $value
-     * @param array $params params
-     *                        - length: count of output characters
+     * @param array $params params:
+     *
+     * - length: count of output characters.
+     *
      * @return string
      */
     public static function truncateWords($value, array $params)
@@ -121,7 +129,7 @@ abstract class StringFilter
     }
 
     /**
-     * String to lowercase
+     * String to lowercase.
      *
      * @param string $value
      * @return string
@@ -132,7 +140,7 @@ abstract class StringFilter
     }
 
     /**
-     * Upper first char
+     * Upper first char.
      *
      * @param string $value
      * @return string

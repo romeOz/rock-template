@@ -9,7 +9,7 @@ abstract class Execute
     use ObjectTrait;
 
     /**
-     * @param string $value - key
+     * @param string $value key
      * @param array  $data
      * @param array  $params
      * @return mixed

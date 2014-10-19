@@ -24,24 +24,26 @@ class Template
     const ENGINE_PHP = 2;
 
     /**
-     * @event Event an event that is triggered by [[beginPage()]].
+     * @event Event an event that is triggered
+     * by @see beginPage() .
      */
     const EVENT_BEGIN_PAGE = 'beginPage';
     /**
-     * @event Event an event that is triggered by [[endPage()]].
+     * @event Event an event that is triggered
+     * by @see endPage() .
      */
     const EVENT_END_PAGE = 'endPage';
 
     /**
-     * @event Event an event that is triggered by [[beginBody()]].
+     * @event Event an event that is triggered
+     * by @see beginBody().
      */
     const EVENT_BEGIN_BODY = 'beginBody';
     /**
-     * @event Event an event that is triggered by [[endBody()]].
+     * @event Event an event that is triggered
+     * by @see endBody() .
      */
     const EVENT_END_BODY = 'endBody';
-
-
     /**
      * The location of registered JavaScript code block or files.
      * This means the location is in the head section.
@@ -843,8 +845,6 @@ class Template
 
     /**
      * Marks the ending of an HTML page.
-     * If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
-     * will be rendered at the end of the view like normal scripts.
      */
     public function endPage()
     {
@@ -1433,7 +1433,10 @@ class Template
 
     /**
      * Search placeholders is variable of template.
+     *
+     * ```
      * ?<name>=<value>
+     * ```
      *
      * @param string $value
      * @param array $dataRecursive
@@ -1578,8 +1581,8 @@ class Template
     }
 
     /**
-     * @param string $name - name of extension
-     * @param array $params - params
+     * @param string $name name of extension
+     * @param array $params params
      * @throws BaseException
      * @return mixed
      */

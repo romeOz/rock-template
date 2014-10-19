@@ -24,25 +24,20 @@ class IfSnippet extends Snippet
      * @var string
      */
     public $subject;
-
     /**
      * Compliance of the operand to the placeholder. E.g. `{"foo" : "[[+foo]]"}`
      * @var array
      */
     public $operands = [];
-
     /** @var  string */
     public $then;
-
     /** @var  string */
     public $else;
-
     /**
      * Adding external placeholders in `tpl` and `wrapperTpl`.
      * @var array
      */
     public $addPlaceholders = [];
-
     /** @var Execute|\Closure|string */
     public $execute;
 

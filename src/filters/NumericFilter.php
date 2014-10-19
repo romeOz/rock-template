@@ -16,9 +16,11 @@ class NumericFilter
      * Check numeric is parity.
      *
      * @param string   $value
-     * @param array    $params
-     *                  - then
-     *                  - else
+     * @param array    $params:
+     *
+     * - then
+     * - else
+     *
      * @param Template $template
      * @throws \rock\template\BaseException
      * @return string
@@ -49,12 +51,14 @@ class NumericFilter
     }
 
     /**
-     * The value is calculated by the formula
+     * The value is calculated by the formula.
      *
      * @param float|int|number $value
-     * @param array $params
-     *                  => operator - arithmetic and bitwise operators: *, **, +, -, /, %, |, &, ^, <<, >>
-     *                  => operand
+     * @param array $params:
+     *
+     * - operator: arithmetic and bitwise operators: `*`, `**`, `+`, `-`, `/`, `%`, `|`, `&`, `^`, `<<`, `>>`.
+     * - operand
+     *
      * @return float|int|number
      * @throws \rock\template\BaseException
      *

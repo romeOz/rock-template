@@ -2,14 +2,17 @@
 
 namespace rock\template\date;
 
-
 use DateInterval;
 use DateTimeZone;
 use rock\template\date\locale\En;
 use rock\template\date\locale\Locale;
 use rock\template\ObjectTrait;
 
-/** @noinspection PhpHierarchyChecksInspection */
+/**
+ * @method  date()
+ * @method  time()
+ * @method  datetime()
+ */
 class DateTime extends \DateTime implements DateTimeInterface
 {
     use ObjectTrait {
@@ -18,14 +21,14 @@ class DateTime extends \DateTime implements DateTimeInterface
 
     const DEFAULT_FORMAT = 'Y-m-d H:i:s';
 
+    /**
+     * Default format: `Y-m-d H:i:s`.
+     * @var string
+     */
     public $format = self::DEFAULT_FORMAT;
-
     /** @var  string */
     public $locale = 'en';
-
     public $formats = [];
-
-    public $clientTimezone;
 
     /** @var  array */
     protected  static $formatsOption;
@@ -106,15 +109,14 @@ class DateTime extends \DateTime implements DateTimeInterface
     public function convertTimezone($timezone = null)
     {
         if (!isset($timezone)) {
-            if (!isset($this->clientTimezone)) {
-                return $this;
-            }
-            $timezone = $this->clientTimezone;
+            return $this;
         }
         return parent::setTimezone($this->calculateTimezone($timezone));
     }
 
     /**
+     * Get formatting date.
+     *
      * @param string|null $format http://php.net/date format or format name. Default value is current
      * @return string
      */
@@ -127,7 +129,8 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
-     * Get date in YYYY-MM-DD format, in server timezone
+     * Get date in `YYYY-MM-DD` format, in server timezone.
+     *
      * @return string
      */
     public function isoDate()
@@ -136,7 +139,8 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
-     * Get date in HH-II-SS format, in server timezone
+     * Get date in `HH-II-SS` format, in server timezone.
+     *
      * @return string
      */
     public function isoTime()
@@ -145,7 +149,8 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
-     * Get datetime in YYYY-MM-DD HH:II:SS format, in server timezone
+     * Get datetime in `YYYY-MM-DD HH:II:SS` format, in server timezone.
+     *
      * @return string
      */
     public function isoDatetime()
@@ -154,14 +159,15 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
-     * Magic call of $dater->format($datetimeOrTimestamp, $formatAlias).
+     * Magic call of `$dater->format($datetimeOrTimestamp, $formatAlias)`.
+     *
      * @param $formatAlias
      * @param $params
      * @throws Exception
      * @return string
      *
      * ```php
-     * $datetime = new \rock\template\DateTime(time());
+     * $datetime = new DateTime(time());
      * $datetime->addFormat('shortDate', 'd/m');
      * $datetime->shortDate();
      * ```
@@ -176,7 +182,7 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
-     * Validation exist date in the format of timestamp
+     * Validation exist date in the format of timestamp.
      *
      * @param string|int $timestamp
      * @return bool
@@ -187,8 +193,8 @@ class DateTime extends \DateTime implements DateTimeInterface
             return false;
         }
         return ((string)(int)$timestamp === (string)$timestamp)
-               && ($timestamp <= PHP_INT_MAX)
-               && ($timestamp >= ~PHP_INT_MAX);
+        && ($timestamp <= PHP_INT_MAX)
+        && ($timestamp >= ~PHP_INT_MAX);
     }
 
     /**
@@ -276,9 +282,7 @@ class DateTime extends \DateTime implements DateTimeInterface
         }
         $sign = $interval->invert;
         $days = $interval->days;
-        /**
-         * Seconds
-         */
+        // Seconds
         $seconds = $days * 24 * 60 * 60;
         $seconds += $interval->h * 60 * 60;
         $seconds += $interval->i * 60;
@@ -299,7 +303,8 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
-     * Get Datetimezone object by timezone name
+     * Get DateTimezone object by timezone name.
+     *
      * @param string|\DateTimezone $timezone
      * @return \DateTimezone|null
      */
@@ -317,7 +322,8 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
-     * Format \DateTime object to http://php.net/date format or format name
+     * Format \DateTime object to http://php.net/date format or format name.
+     *
      * @param $format
      * @return string
      */
@@ -342,21 +348,22 @@ class DateTime extends \DateTime implements DateTimeInterface
     protected function initCustomFormatOptions()
     {
         $this->addFormatOption('F', function (DateTime $dateTime) {
-                return $dateTime->getLocale()->getMonth($dateTime->format('n') - 1);
-            });
+            return $dateTime->getLocale()->getMonth($dateTime->format('n') - 1);
+        });
         $this->addFormatOption('M', function (DateTime $dateTime) {
-                return $dateTime->getLocale()->getShortMonth($dateTime->format('n') - 1);
-            });
+            return $dateTime->getLocale()->getShortMonth($dateTime->format('n') - 1);
+        });
         $this->addFormatOption('l', function (DateTime $dateTime) {
-                return $dateTime->getLocale()->getWeekDay($dateTime->format('N') - 1);
-            });
+            return $dateTime->getLocale()->getWeekDay($dateTime->format('N') - 1);
+        });
         $this->addFormatOption('D', function (DateTime $dateTime) {
-                return $dateTime->getLocale()->getShortWeekDay($dateTime->format('N') - 1);
-            });
+            return $dateTime->getLocale()->getShortWeekDay($dateTime->format('N') - 1);
+        });
     }
 
     /**
-     * Stash custom format options from standard PHP \DateTime format parser
+     * Stash custom format options from standard PHP \DateTime format parser.
+     *
      * @param $format
      * @return bool Return true if there was any custom options in $format
      */
@@ -367,7 +374,8 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
-     * Stash custom format options from standard PHP \DateTime format parser
+     * Stash custom format options from standard PHP \DateTime format parser.
+     *
      * @param $format
      * @return bool Return true if there was any custom options in $format
      */
@@ -376,7 +384,7 @@ class DateTime extends \DateTime implements DateTimeInterface
         $formatOptionsCallbacks = static::$formatOptionsCallbacks;
         $dateTime = $this;
         $format = preg_replace_callback('/~(\d+)~/', function ($matches) use ($dateTime, $formatOptionsCallbacks) {
-                return call_user_func($formatOptionsCallbacks[$matches[1]], $dateTime);
-            }, $format);
+            return call_user_func($formatOptionsCallbacks[$matches[1]], $dateTime);
+        }, $format);
     }
 }

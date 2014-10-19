@@ -32,9 +32,7 @@ class Request
      * Returns the schema and host part of the current request URL.
      * The returned URL does not have an ending slash.
      * By default this is determined based on the user request information.
-     * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
      * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.site.com`)
-     * @see setHostInfo()
      */
     public function getBaseHostInfo()
     {
@@ -142,8 +140,7 @@ class Request
 
     /**
      * Returns the currently requested relative URL.
-     * This refers to the portion of the URL that is after the [[hostInfo]] part.
-     * It includes the [[queryString]] part if any.
+     *
      * @return string the currently requested relative URL. Note that the URI returned is URL-encoded.
      * @throws BaseException if the URL cannot be determined due to unusual server configuration
      */
@@ -157,8 +154,7 @@ class Request
 
     /**
      * Resolves the request URI portion for the currently requested URL.
-     * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
-     * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
+     *
      * @return string|boolean the request URI portion for the currently requested URL.
      * Note that the URI returned is URL-encoded.
      * @throws BaseException if the request URI cannot be determined due to unusual server configuration

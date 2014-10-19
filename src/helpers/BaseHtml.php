@@ -33,7 +33,7 @@ class BaseHtml
     ];
     /**
      * @var array the preferred order of attributes in a tag. This mainly affects the order of the attributes
-     * that are rendered by [[renderTagAttributes()]].
+     * that are rendered by @see renderTagAttributes().
      */
     public static $attributeOrder = [
         'type',
@@ -82,7 +82,7 @@ class BaseHtml
 
     /**
      * Decodes special HTML entities back to the corresponding characters.
-     * This is the opposite of [[encode()]].
+     * This is the opposite of @see encode() .
      * @param string $content the content to be decoded
      * @return string the decoded content
      * @see encode()
@@ -97,15 +97,15 @@ class BaseHtml
      * Generates a complete HTML tag.
      * @param string $name the tag name
      * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
-     * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
+     * If this is coming from end users, you should consider @see encode() it to prevent XSS attacks.
      * @param array $options the HTML tag attributes (HTML options) in terms of name-value pairs.
-     * These will be rendered as the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * These will be rendered as the attributes of the resulting tag. The values will be HTML-encoded using @see encode().
      * If a value is null, the corresponding attribute will not be rendered.
      *
      * For example when using `['class' => 'my-class', 'target' => '_blank', 'value' => null]` it will result in the
      * html attributes rendered like this: `class="my-class" target="_blank"`.
      *
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * See @see renderTagAttributes() for details on how attributes are being rendered.
      *
      * @return string the generated HTML tag
      * @see beginTag()
@@ -121,10 +121,10 @@ class BaseHtml
      * Generates a style tag.
      * @param string $content the style content
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * the attributes of the resulting tag. The values will be HTML-encoded using @see encode() .
      * If a value is null, the corresponding attribute will not be rendered.
      * If the options does not contain "type", a "type" attribute with value "text/css" will be used.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * See @see renderTagAttributes() for details on how attributes are being rendered.
      * @return string the generated style tag
      */
     public static function style($content, $options = [])
@@ -136,10 +136,10 @@ class BaseHtml
      * Generates a script tag.
      * @param string $content the script content
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * the attributes of the resulting tag. The values will be HTML-encoded using @see encode().
      * If a value is null, the corresponding attribute will not be rendered.
      * If the options does not contain "type", a "type" attribute with value "text/javascript" will be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * See @see renderTagAttributes() for details on how attributes are being rendered.
      * @return string the generated script tag
      */
     public static function script($content, $options = [])
@@ -149,7 +149,8 @@ class BaseHtml
 
     /**
      * Generates a link tag that refers to an external CSS file.
-     * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[Url::to()]].
+     * @param array|string $url the URL of the external CSS file. This parameter will
+     * be processed by @see Url::getAbsoluteUrl() .
      * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
      *
      * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
@@ -157,8 +158,8 @@ class BaseHtml
      *   for supporting old versions of IE browsers.
      *
      * The rest of the options will be rendered as the attributes of the resulting link tag. The values will
-     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * be HTML-encoded using @see encode(). If a value is null, the corresponding attribute will not be rendered.
+     * See @see renderTagAttributes() for details on how attributes are being rendered.
      * @return string the generated link tag
      */
     public static function cssFile($url, $options = [])
@@ -179,7 +180,8 @@ class BaseHtml
 
     /**
      * Generates a script tag that refers to an external JavaScript file.
-     * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[Url::to()]].
+     * @param string $url the URL of the external JavaScript file. This parameter will
+     * be processed by @see Url::getAbsoluteUrl() .
      * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
      *
      * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
@@ -187,8 +189,8 @@ class BaseHtml
      *   for supporting old versions of IE browsers.
      *
      * The rest of the options will be rendered as the attributes of the resulting script tag. The values will
-     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * be HTML-encoded using @see encode(). If a value is null, the corresponding attribute will not be rendered.
+     * See @see renderTagAttributes() for details on how attributes are being rendered.
      * @return string the generated script tag
      */
     public static function jsFile($url, $options = [])
@@ -212,7 +214,7 @@ class BaseHtml
      *
      * Attributes whose values are null will not be rendered.
      *
-     * The values of attributes will be HTML-encoded using [[encode()]].
+     * The values of attributes will be HTML-encoded using @see encode().
      *
      * The "data" attribute is specially handled when it is receiving an array value. In this case,
      * the array will be "expanded" and a list data attributes will be rendered. For example,
@@ -221,7 +223,7 @@ class BaseHtml
      * Additionally `'data' => ['params' => ['id' => 1, 'name' => 'rock'], 'status' => 'ok']` will be rendered as:
      * `data-params='{"id":1,"name":"rock"}' data-status="ok"`.
      *
-     * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
+     * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using @see encode().
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
      * in a tag. If there is no attribute, an empty string will be returned.

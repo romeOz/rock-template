@@ -3,13 +3,13 @@
 namespace rock\template\date;
 
 /**
- * All this methods works through DateTime::__call method, mapped to format date with `DateTime::$formats[METHOD_NAME]` format:
- * @method date() Get date in Date::$formats['date'] format
- * @method time() Get date in Date::$formats['time'] format
- * @method datetime() Get date in Date::$formats['datetime'] format
- * @method isoDate() Get date in Date::$formats['isoDate'] format
- * @method isoTime() Get date in Date::$formats['isoTime'] format
- * @method isoDatetime() Get date in Date::$formats['isoDatetime'] format
+ * All this methods works through `DateTime::__call` method, mapped to format date with `DateTime::$formats[METHOD_NAME]` format:
+ * @method date() Get date in `Date::$formats['date']` format
+ * @method time() Get date in `Date::$formats['time']` format
+ * @method datetime() Get date in `Date::$formats['datetime']` format
+ * @method isoDate() Get date in `Date::$formats['isoDate']` format
+ * @method isoTime() Get date in `Date::$formats['isoTime']` format
+ * @method isoDatetime() Get date in `Date::$formats['isoDatetime']` format
  */
 interface DateTimeInterface
 {

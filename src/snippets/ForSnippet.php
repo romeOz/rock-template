@@ -40,7 +40,6 @@ class ForSnippet extends Snippet
      * @var string
      */
     public $wrapperTpl;
-
     /**
      * @var int|bool
      */

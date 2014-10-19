@@ -19,8 +19,10 @@ class ConditionFilter
      *
      * @param string $value value
      * @param array $params params
-     *                       - is:               get, if value is not empty
-     *                       - addPlaceholders: set names of the placeholders, which adding the result
+     *
+     * - is:               get, if value is not empty.
+     * - addPlaceholders: set names of the placeholders, which adding the result.
+     *
      * @param Template $template
      * @return string
      */
@@ -48,7 +50,9 @@ class ConditionFilter
      *
      * @param string $value value
      * @param array $params params
-     *                       - is: get, if value is empty
+     *
+     * - is: get, if value is empty.
+     *
      * @param Template $template
      * @return string
      */
