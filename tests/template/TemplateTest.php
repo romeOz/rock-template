@@ -271,6 +271,12 @@ class TemplateTest extends TemplateCommon
             static::removeSpace(file_get_contents($this->path . '/_meta.html'))
         );
     }
+    public function testCurrentPathTpl()
+    {
+        $template = new Template();
+        $this->assertSame('hello', $template->getChunk('@rockunit.tpl\current\chunk'));
+        $this->assertSame('hello', $template->getChunk('@rockunit.tpl\current\chunk.php'));
+    }
 
     public function testHasChunk()
     {
@@ -676,8 +682,7 @@ class TemplateTest extends TemplateCommon
 
     public function testRenderAsPHP()
     {
-        $this->template->engine = Template::ENGINE_PHP;
-        $this->template->fileExtension = 'php';
+        $this->template = new Template();;
         $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>']], true);
         $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']], true);
         $this->assertSame($this->template->render($this->path . '/layout', ['text' => 'world']), file_get_contents($this->path . '/_layout.html'));

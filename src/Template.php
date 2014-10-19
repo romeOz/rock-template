@@ -33,7 +33,6 @@ class Template
      * by @see endPage() .
      */
     const EVENT_END_PAGE = 'endPage';
-
     /**
      * @event Event an event that is triggered
      * by @see beginBody().
@@ -141,6 +140,7 @@ class Template
     public $context;
     /** @var \rock\cache\CacheInterface|null */
     public $cache;
+    public $cachePlaceholders = [];
     /**
      * Array global placeholders of variables template engine
      * @var array
@@ -152,7 +152,7 @@ class Template
      */
     protected $localPlaceholders = [];
     protected $oldPlaceholders = [];
-    public $cachePlaceholders = [];
+    protected $path;
 
     public function init()
     {
@@ -173,14 +173,14 @@ class Template
     /**
      * Rendering layout
      *
-     * @param string $path - path to layout
+     * @param string $path path to layout.
      * @param array $placeholders
      * @param object|null $context
      * @return string
      */
     public function render($path, array $placeholders = [], $context = null)
     {
-        if (!isset($this->context)) {
+        if (isset($context)) {
             $this->context = $context;
         }
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($placeholders);
@@ -202,7 +202,7 @@ class Template
     }
 
     /**
-     * @param string $path - path to layout/chunk
+     * @param string $path path to layout/chunk.
      * @param array $placeholders
      * @throws BaseException
      * @return string
@@ -214,11 +214,17 @@ class Template
             $path .= '.' . $this->engines[$this->defaultEngine];
         }
         $path = File::normalizePath($path);
+        // Current path
+        if (strpos($path, DIRECTORY_SEPARATOR) === false && $this->path) {
+            $path = dirname($this->path) . DIRECTORY_SEPARATOR . $path;
+        }
+        $this->path = $path;
         if (!file_exists($path)) {
             throw new BaseException(BaseException::UNKNOWN_FILE, ['path' => $path]);
         }
         if (current(array_keys($this->engines, pathinfo($path, PATHINFO_EXTENSION))) === self::ENGINE_PHP) {
             $this->addMultiPlaceholders($placeholders ?: []);
+
             return $this->renderPhpFile($path);
         } else {
             return $this->replace(file_get_contents($path), $placeholders);
@@ -431,7 +437,7 @@ class Template
     }
 
     /**
-     * Add local placeholder.
+     * Adding local placeholder.
      *
      * @param $name
      * @param $value
@@ -442,7 +448,7 @@ class Template
     }
 
     /**
-     * Remove local placeholder.
+     * Removing local placeholder.
      *
      * @param $name
      */
@@ -528,7 +534,7 @@ class Template
     }
 
     /**
-     * Deleted placeholder.
+     * Deleting placeholder.
      *
      * @param string $name key
      * @param bool $global globally placeholder
@@ -546,7 +552,7 @@ class Template
     }
 
     /**
-     * Deleted multi-placeholders.
+     * Deleting multi-placeholders.
      *
      * @param array $names
      * @param bool $global globally placeholder
@@ -561,7 +567,7 @@ class Template
     }
 
     /**
-     * Deleted all placeholders.
+     * Deleting all placeholders.
      *
      * @param bool $global
      */
@@ -577,10 +583,10 @@ class Template
     protected static $resources = [];
 
     /**
-     * Added resource.
+     * Adding resource.
      *
-     * @param string $name name of resource
-     * @param mixed $value value of resource
+     * @param string $name name of resource.
+     * @param mixed $value value of resource.
      */
     public function addResource($name, $value)
     {
@@ -588,7 +594,7 @@ class Template
     }
 
     /**
-     * Added multi-resources.
+     * Adding multi-resources.
      *
      * @param array $resources
      */
@@ -636,7 +642,7 @@ class Template
     }
 
     /**
-     * Deleted resource.
+     * Deleting resource.
      *
      * @param string $name name of resource
      */
@@ -646,7 +652,7 @@ class Template
     }
 
     /**
-     * Deleted all resources.
+     * Deleting all resources.
      */
     public function removeAllResource()
     {
@@ -694,7 +700,7 @@ class Template
     }
 
     /**
-     * Remove prefix by param.
+     * Removing prefix by param.
      *
      * @param string $value value of param
      * @return string|null
@@ -710,6 +716,7 @@ class Template
 
     /**
      * Make filter (modifier).
+     *
      * @param string $value value
      * @param array $filters array of filters with params
      * @throws BaseException
@@ -772,7 +779,7 @@ class Template
     }
 
     /**
-     * Get Extension.
+     * Get extension.
      *
      * @param string $name name of extension
      * @param array $params
@@ -958,6 +965,7 @@ class Template
 
     /**
      * Registers a JS file.
+     *
      * @param string $url the JS file to be registered.
      * @param array $options the HTML attributes for the script tag. A special option
      * named "position" is supported which specifies where the JS script tag should be inserted
@@ -995,7 +1003,7 @@ class Template
      *
      * The translation is done according to the following procedure:
      *
-     * 1. If the given alias does not start with '@', it is returned back without change;
+     * 1. If the given alias does not start with `@`, it is returned back without change;
      * 2. Otherwise, look for the longest registered alias that matches the beginning part
      *    of the given alias. If it exists, replace the matching part of the given alias with
      *    the corresponding registered path.
@@ -1068,14 +1076,14 @@ class Template
      *
      * @param string $alias the alias name (e.g. `@rock`). It must start with a `@` character.
      * It may contain the forward slash '/' which serves as boundary character when performing
-     * alias translation by [[getAlias()]].
+     * alias translation by @see getAlias() .
      * @param string $path the path corresponding to the alias. Trailing `/` and `\` characters
      * will be trimmed. This can be
      *
      * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
      * - a URL (e.g. `http://www.site.com`)
      * - a path alias (e.g. `@rock/base`). In this case, the path alias will be converted into the
-     *   actual path first by calling [[getAlias()]].
+     *   actual path first by calling @see getAlias() .
      *
      * @throws \Exception if $path is an invalid alias.
      * @see getAlias()
@@ -1490,7 +1498,7 @@ class Template
     }
 
     /**
-     * Validate: not replace is @INLINE prefix exists or parameters then/else.
+     * Validate: not replace is `@INLINE` prefix exists or parameters then/else.
      *
      * @param string $name name of param
      * @param string $value value of param

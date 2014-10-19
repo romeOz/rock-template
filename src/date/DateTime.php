@@ -303,7 +303,7 @@ class DateTime extends \DateTime implements DateTimeInterface
     }
 
     /**
-     * Get DateTimezone object by timezone name.
+     * Get @see \DateTimezone object by timezone name.
      *
      * @param string|\DateTimezone $timezone
      * @return \DateTimezone|null
@@ -313,7 +313,6 @@ class DateTime extends \DateTime implements DateTimeInterface
         if (!isset($timezone)) {
             return null;
         }
-
         $key = $timezone instanceof \DateTimeZone ? $timezone->getName() : $timezone;
         if(!isset(static::$timezonesObjects[$key])) {
             static::$timezonesObjects[$key] = is_string($timezone) ? new \DateTimezone($timezone) : $timezone;
