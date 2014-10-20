@@ -15,7 +15,7 @@ Features
  * Supports native PHP engine and declarative MODx-like syntax (placeholders, chunk, snippet,...)
  * Supports multi-engines
  * The variety of filters (arithmetic/bitwise operations, conditions, string, date, and url)
- * Custom autoescaping
+ * Custom auto-escaping
  * Support adding/customization filters and snippets
  * There is a possibility of adding custom extensions
  * Caching all entities template engine (suggest [Rock Cache](https://github.com/romeOz/rock-cache))
