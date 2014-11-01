@@ -89,7 +89,7 @@ Destination:
 
 or local:
 
-Use a specially prepared environment (Vagrant + Ansible) with preinstalled and configured storages.
+Use a specially prepared environment (Vagrant + Ansible).
 
 ###Out of the box:
 
