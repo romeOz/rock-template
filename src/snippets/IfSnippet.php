@@ -91,6 +91,6 @@ class IfSnippet extends Snippet
                 : null
             );
 
-        return $this->execute->get(String::trimSpaces($value), $paramsTpl, $data);
+        return $this->execute->get(String::removeSpaces($value), $paramsTpl, $data);
     }
 }

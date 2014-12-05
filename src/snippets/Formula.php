@@ -56,7 +56,7 @@ class Formula extends Snippet
         }
 
         return $this->execute->get(
-            String::trimSpaces('return ' . preg_replace('/:([\\w]+)/', '$data[\'$1\']', $this->subject) . ';'),
+            String::removeSpaces('return ' . preg_replace('/:([\\w]+)/', '$data[\'$1\']', $this->subject) . ';'),
             [
                 'subject'   => $this->subject,
                 'operands'    => $this->operands
