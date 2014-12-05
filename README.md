@@ -83,15 +83,19 @@ Documentation
 Demo & Tests (one of three ways)
 -------------------
 
- 1. [Destination](http://demo.template.framerock.net/)
- 2. Docker + Ansible
-    * `docker run -d -p 8080:80 romeoz/vagrant-rock-template`
-    * Open demo [http://localhost:8080/](http://localhost:8080/)
- 3. Vagrant + Ansible
-    * `git clone https://github.com/romeOz/vagrant-rock-template.git`
-    * [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins `vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier`
-    * `vagrant up`
-    * Open demo [http://rock.tpl/](http://rock.tpl/) or [http://192.168.33.34/](http://192.168.33.34/)
+####[Destination](http://demo.template.framerock.net/)
+
+####Docker + Ansible
+
+ * `docker run -d -p 8080:80 romeoz/vagrant-rock-template`
+ * Open demo [http://localhost:8080/](http://localhost:8080/)
+ 
+####Vagrant + Ansible
+
+ * `git clone https://github.com/romeOz/vagrant-rock-template.git`
+ * [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins `vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier`
+ * `vagrant up`
+ * Open demo [http://rock.tpl/](http://rock.tpl/) or [http://192.168.33.34/](http://192.168.33.34/)
 
 > Work/editing the project can be done via ssh:
 
