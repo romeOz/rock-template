@@ -654,7 +654,7 @@ class TemplateTest extends TemplateCommon
 
         // Rock engine
         $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
-        $this->assertTrue($cache->has($className));
+        $this->assertTrue($cache->exists($className));
         $this->assertSame($cache->get($className), '<b>test snippet</b>');
         $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
 
@@ -676,7 +676,7 @@ class TemplateTest extends TemplateCommon
             'cacheKey' => 'key_layout'
         ];
         $this->assertSame($this->template->render($this->path . '/layout', $placeholders), file_get_contents($this->path . '/_layout.html'));
-        $this->assertTrue($cache->has('key_layout'));
+        $this->assertTrue($cache->exists('key_layout'));
         $this->assertSame($this->template->render($this->path . '/layout', $placeholders), file_get_contents($this->path . '/_layout.html'));
     }
 
