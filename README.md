@@ -85,12 +85,12 @@ Demo & Tests (one of three ways)
 
 ####1. [Destination](http://demo.template.framerock.net/)
 
-####2. Docker + Ansible
+####2. Docker + Ansible (see [out of the box](https://github.com/romeOz/vagrant-rock-template#out-of-the-box))
 
  * `docker run -d -p 8080:80 romeoz/vagrant-rock-template`
  * Open demo [http://localhost:8080/](http://localhost:8080/)
  
-####3. Vagrant + Ansible
+####3. Vagrant + Ansible (see [out of the box](https://github.com/romeOz/vagrant-rock-template#out-of-the-box))
 
  * `git clone https://github.com/romeOz/vagrant-rock-template.git`
  * [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins `vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier`
