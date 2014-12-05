@@ -83,14 +83,14 @@ Documentation
 Demo & Tests (one of three ways)
 -------------------
 
-####[Destination](http://demo.template.framerock.net/)
+####1. [Destination](http://demo.template.framerock.net/)
 
-####Docker + Ansible
+####2. Docker + Ansible
 
  * `docker run -d -p 8080:80 romeoz/vagrant-rock-template`
  * Open demo [http://localhost:8080/](http://localhost:8080/)
  
-####Vagrant + Ansible
+####3. Vagrant + Ansible
 
  * `git clone https://github.com/romeOz/vagrant-rock-template.git`
  * [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins `vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier`
