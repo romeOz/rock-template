@@ -148,7 +148,7 @@ class ListViewTest extends TemplateCommon
             ')),
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'))
         );
-        $this->assertTrue($cache->has('list'));
+        $this->assertTrue($cache->exists('list'));
 
         // cache toPlaceholder
         $this->template->removeAllPlaceholders(true);
@@ -164,7 +164,7 @@ class ListViewTest extends TemplateCommon
             ')),
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'))
         );
-        $this->assertTrue($cache->has('list'));
+        $this->assertTrue($cache->exists('list'));
         $this->assertNotEmpty($this->template->getPlaceholder('pagination', false, true));
     }
 
@@ -189,9 +189,9 @@ class ListViewTest extends TemplateCommon
             ')),
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'))
         );
-        $this->assertTrue($cache->has('list'));
+        $this->assertTrue($cache->exists('list'));
         sleep(2);
-        $this->assertFalse($cache->has('list'));
+        $this->assertFalse($cache->exists('list'));
     }
 
     public static function getAll()
