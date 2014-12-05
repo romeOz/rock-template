@@ -231,7 +231,6 @@ class ListViewTest extends TemplateCommon
             ]
         );
         return new \rock\cache\CacheFile([
-               'enabled' => true,
                'adapter' => $adapter,
            ]);
     }

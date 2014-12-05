@@ -25,7 +25,7 @@
         "phpunit/phpunit": "4.2.*"
     },
     "suggest": {
-        "romeOz/rock-cache": "required by rock-cache"
+        "romeoz/rock-cache": "required by Rock Cache"
     },
     "autoload": {
         "psr-4": {
