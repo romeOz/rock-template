@@ -87,6 +87,7 @@ Demo & Tests (one of three ways)
 
 ####2. Docker + Ansible (see [out of the box](https://github.com/romeOz/vagrant-rock-template#out-of-the-box))
 
+ * [Install Docker](https://docs.docker.com/installation/) or [askubuntu](http://askubuntu.com/a/473720)
  * `docker run -d -p 8080:80 romeoz/vagrant-rock-template`
  * Open demo [http://localhost:8080/](http://localhost:8080/)
  
