@@ -16,20 +16,51 @@
             "email": "serggalka@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/romeOz/rock-base"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/romeOz/rock-components"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/romeOz/rock-execute"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/romeOz/rock-file"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/romeOz/rock-access"
+        }
+    ],
     "require": {
         "php": ">=5.4.0",
-        "romeoz/rock-helpers" : "*@dev"
+        "romeoz/rock-base" : "*@dev",
+        "romeoz/rock-helpers" : "*@dev",
+        "romeoz/rock-components" : "*@dev",
+        "romeoz/rock-url" : "*@dev",
+        "romeoz/rock-execute" : "*@dev"
     },
     "require-dev": {
-        "romeoz/rock-cache" : "*",
-        "phpunit/phpunit": "4.2.*"
+        "phpunit/phpunit": "4.4.*",
+        "romeoz/rock-file" : "*@dev",
+        "romeoz/rock-cache" : "*@dev",
+        "romeoz/rock-request" : "*@dev",
+        "romeoz/rock-date" : "*@dev",
+        "romeoz/rock-access" : "*@dev"
     },
     "suggest": {
         "romeoz/rock-cache": "required by Rock Cache"
     },
     "autoload": {
         "psr-4": {
-            "rock\\template\\": "src/"
+            "rock\\template\\": "src/template/",
+            "rock\\snippets\\": "src/snippets/"
         }
     },
     "extra": {

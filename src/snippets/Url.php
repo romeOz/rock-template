@@ -1,10 +1,9 @@
 <?php
-namespace rock\template\snippets;
+namespace rock\snippets;
 
-use rock\template\request\Request;
-use rock\template\Snippet;
+use rock\helpers\Instance;
 use rock\template\Template;
-use rock\template\url\UrlInterface;
+use rock\url\UrlInterface;
 
 /**
  * Snippet "Url"
@@ -30,20 +29,20 @@ class Url extends Snippet implements UrlInterface
      */
     public $url;
     /**
-     * Referrer URL for formatting.
+     * Adding CSRF-token.
      * @var bool
      */
-    public $referrer = false;
+    public $addCSRF = false;
     /**
      * URL-arguments for set.
      * @var array
      */
-    public $args;
+    public $args = [];
     /**
      * URL-arguments for adding.
      * @var array
      */
-    public $addArgs;
+    public $addArgs = [];
     /**
      * Anchor for adding.
      * @var string
@@ -83,7 +82,7 @@ class Url extends Snippet implements UrlInterface
      */
     public $removeAnchor;
     /**
-     * Adduce URL to: `\rock\template\url\UrlInterface::ABS`, `\rock\template\url\UrlInterface::HTTP`, `\rock\template\url\UrlInterface::HTTPS`.
+     * Adduce URL to: `\rock\url\UrlInterface::ABS`, `\rock\url\UrlInterface::HTTP`, `\rock\url\UrlInterface::HTTPS`.
      * @var int
      * @see UrlInterface
      */
@@ -97,16 +96,21 @@ class Url extends Snippet implements UrlInterface
      * @inheritdoc
      */
     public $autoEscape = Template::STRIP_TAGS;
+    /** @var  \rock\csrf\CSRF|string|array */
+    public $csrf = 'csrf';
+
+    public function init()
+    {
+        parent::init();
+        $this->csrf = Instance::ensure($this->csrf, '\rock\csrf\CSRF', false);
+    }
 
     /**
      * @inheritdoc
      */
     public function get()
     {
-        if ($this->referrer) {
-            $this->url = Request::getReferrer() ? : '';
-        }
-        $urlBuilder = new \rock\template\url\Url($this->url);
+        $urlBuilder = \rock\url\Url::set($this->url);
         if (isset($this->removeArgs)) {
             $urlBuilder->removeArgs($this->removeArgs);
         }
@@ -129,10 +133,13 @@ class Url extends Snippet implements UrlInterface
             list($search, $replace) = $this->replace;
             $urlBuilder->replacePath($search, $replace);
         }
-        if (isset($this->args)) {
+        if ($this->addCSRF && $this->csrf instanceof \rock\csrf\CSRF) {
+            $this->addArgs[$this->csrf->csrfParam] = $this->csrf->get();
+        }
+        if (!empty($this->args)) {
             $urlBuilder->setArgs($this->args);
         }
-        if (isset($this->addArgs)) {
+        if (!empty($this->addArgs)) {
             $urlBuilder->addArgs($this->addArgs);
         }
         if (isset($this->anchor)) {

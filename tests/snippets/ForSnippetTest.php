@@ -3,7 +3,6 @@
 namespace rockunit\snippets;
 
 
-
 use rockunit\template\TemplateCommon;
 
 class ForSnippetTest extends TemplateCommon
@@ -16,15 +15,16 @@ class ForSnippetTest extends TemplateCommon
 
     public function testGet()
     {
-        $this->assertSame(
-            $this->template->replace('[[!For?count=`2`
-                                            ?tpl=`@INLINE<b>[[+title]]</b>`
-                                            ?addPlaceholders=`["title"]`
+        $actual = $this->template->replace('[[!For?count=`2`
+                                            ?tpl=`@INLINE<b>[[+$parent.title]][[+title]]</b>`
+                                            ?addPlaceholders=`["$parent.title"]`
                                             ?wrapperTpl=`@INLINE<p>[[!+output]]</p>`
                                       ]]',
-                                     ['title'=> 'hello world']
-            ),
-            '<p><b>hello world</b><b>hello world</b></p>'
+            ['title'=> 'hello world']
+        );
+        $this->assertSame(
+            '<p><b>hello worldhello world</b><b>hello worldhello world</b></p>',
+            $actual
         );
     }
 }

@@ -8,6 +8,6 @@ Test <?=$this->getChunk('@rockunit.tpl\subchunk')?>
 
 [[+escape]]
 <?=$this->getPlaceholder('hi')?>, <?=$this->getPlaceholder('world')?>!!!
-<?=$this->getPlaceholder(['foo', 'bar'], false, true)?>
+<?=$this->getPlaceholder(['$root', 'foo', 'bar'])?>
 
-<?=$this->{'baz.bar'}?>
+<?=$this->{'$root.baz.bar'}?>

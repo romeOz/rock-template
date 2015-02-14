@@ -2,12 +2,15 @@
 
 namespace rockunit\template;
 
+
+use rock\base\Alias;
+use rock\helpers\Instance;
 use rock\template\Template;
-use rockunit\common\CommonTrait;
+use rockunit\common\CommonTestTrait;
 
 abstract class TemplateCommon extends \PHPUnit_Framework_TestCase
 {
-    use CommonTrait;
+    use CommonTestTrait;
 
     protected $path;
 
@@ -22,13 +25,13 @@ abstract class TemplateCommon extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $this->calculatePath();
-        Template::setAlias('rockunit.tpl', $this->path);
+        Alias::setAlias('rockunit.tpl', $this->path);
 
-        $this->template = new Template();
-        $this->template->defaultEngine = Template::ENGINE_ROCK;
-        $this->template->autoEscape = Template::ESCAPE | Template::TO_TYPE;
-        $this->template->removeAllPlaceholders(true);
-        $this->template->removeAllResource();
+        $config  = [
+            'autoEscape' => Template::ESCAPE | Template::TO_TYPE
+        ];
+        $this->template = new Template($config);
+        $this->template->removeAllPlaceholders();
     }
 
     public function removeSpace($value)

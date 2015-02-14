@@ -1,13 +1,12 @@
 <?php
-namespace rock\template\snippets;
+namespace rock\snippets;
 
 use rock\helpers\ArrayHelper;
 use rock\helpers\Helper;
 use rock\helpers\Json;
-use rock\template\Snippet;
 
 /**
- * Snippet "ListView"
+ * Snippet "ListView".
  *
  * Examples:
  *
@@ -29,7 +28,7 @@ use rock\template\Snippet;
  * ]]
  * ```
  *
- * As PHP engine
+ * As PHP engine:
  *
  * ```php
  * $template = new \rock\Template;
@@ -49,26 +48,46 @@ use rock\template\Snippet;
  * $params = [
  *      'array' => $items
  *      'pagination' => [
- *          'array' => \rock\template\helpers\Pagination::get(count($items), (int)$_GET['page'])
+ *          'array' => \rock\helpers\Pagination::get(count($items), (int)$_GET['page'])
  *      ]
  * ];
  * $template->getSnippet('ListView', $params);
  * ```
  *
+ * With ActiveDataProvider:
+ *
+ * ```php
+ * $provider = new \rock\db\ActiveDataProvider(
+ *  [
+ *      'query' => Post::find()->asArray()->all(),
+ *      'pagination' => ['limit' => 10, 'sort' => SORT_DESC, 'pageCurrent' => (int)$_GET['num']]
+ *  ]
+ * );
+ *
+ *  $params = [
+ *      'array' => $provider->get()
+ *      'pagination' => [
+ *          'array' => $provider->getPagination(),
+ *          'pageVar' => 'num'
+ *      ]
+ *      '
+ * ];
+ * $template->getSnippet('ListView', $params);
+ * ```
  *
  */
 class ListView extends Snippet
 {
     /**
-     * The data as an array
+     * The data as an array.
      *
      * @var array
      */
     public $array = [];
-
     /**
-     * The data as an call
-     * May be a callable, snippet, and instance
+     * The data as an call.
+     *
+     * May be a callable, snippet, and instance.
      *
      * ```
      * [[ListView?call=`\foo\FooController.getAll`]]
@@ -79,43 +98,39 @@ class ListView extends Snippet
      * $params = [
      *  'call' => ['\foo\FooController', 'getAll']
      * ];
-     * (new \rock\template\Template)->getSnippet('ListView', $params);
+     * (new \rock\Template)->getSnippet('ListView', $params);
      * ```
      *
      * @var mixed
      */
     public $call;
-
     /**
      * Adding external placeholders in `tpl` and `wrapperTpl`.
      *
      * @var array
      */
     public $addPlaceholders = [];
-
     /**
      * Params pagination:
      *
-     * - array: data of pagination as an array
-     * - call: data of pagination as an call
-     * - toPlaceholder: the name of global placeholder to adding the pagination
-     * - pageLimit: count buttons of pagination
-     * - pageVar: name url-argument of pagination (`page` by default)
-     * - pageArgs: url-arguments of pagination
-     * - pageAnchor: url-anchor of pagination
-     * - wrapperTpl: wrapper template of pagination
-     * - pageNumTpl: template for buttons
-     * - pageActiveTpl: template for active button
-     * - pageFirstTpl: template for button "first"
-     * - pageLastTpl: template for button  "last"
+     * - array - data of pagination as an array
+     * - call -  data of pagination as an call
+     * - toPlaceholder - the name of global placeholder to adding the pagination
+     * - pageLimit -        count buttons of pagination
+     * - pageVar -          name url-argument of pagination ("page" by default)
+     * - pageArgs -         url-arguments of pagination
+     * - pageAnchor -       url-anchor of pagination
+     * - wrapperTpl -       wrapper template for pagination
+     * - pageNumTpl -       template for buttons
+     * - pageActiveTpl -    template for active button
+     * - pageFirstTpl -     template for button "first"
+     * - pageLastTpl -      template for button  "last"
      *
      * @var array
      */
     public $pagination = [];
-
     /**
-     * Prepare item
-     * @var array
+     * Prepare item.
      *
      * ```php
      * ['call' => '\foo\Snippet', 'params' => [...]]
@@ -123,43 +138,43 @@ class ListView extends Snippet
      * ['call' => [Foo::className(), 'staticMethod']]
      * ['call' => [new Foo(), 'method']]
      * ```
+     * @var array
      */
     public $prepare;
 
     /**
-     * name of template
+     * Name/inline template for items.
      *
      * @var string
      */
     public $tpl;
 
     /**
-     * name of wrapper template
+     * Name/inline wrapper template for snippet.
      *
      * @var string
      */
     public $wrapperTpl;
-
     /**
-     * result to global placeholder (name of global placeholder)
+     * Result to global placeholder (name of global placeholder).
      *
      * @var string
      */
     public $toPlaceholder;
-
     /**
-     * text of error
+     * Text of error.
      *
      * @var string
      */
     public $errorText = '';
-
     /**
      * @var int|bool
      */
     public $autoEscape = false;
 
-
+    /**
+     * @inheritdoc
+     */
     public function get()
     {
         if (empty($this->array) && empty($this->call)) {
@@ -174,7 +189,7 @@ class ListView extends Snippet
     }
 
     /**
-     * Get text of error
+     * Get text of error.
      *
      * @return string
      */
@@ -198,7 +213,7 @@ class ListView extends Snippet
     }
 
     /**
-     * Adding pagination
+     * Adding pagination.
      *
      * @return void
      */
@@ -232,7 +247,7 @@ class ListView extends Snippet
         ];
         $pagination = $this->template->getSnippet('Pagination', ArrayHelper::intersectByKeys($this->pagination, $keys));
         if (!empty($this->pagination['toPlaceholder'])) {
-            $this->template->addPlaceholder($this->pagination['toPlaceholder'], $pagination, true);
+            $this->template->addPlaceholder($this->pagination['toPlaceholder'], $pagination);
             $this->template->cachePlaceholders[$this->pagination['toPlaceholder']] = $pagination;
             return;
         }
@@ -241,7 +256,7 @@ class ListView extends Snippet
 
 
     /**
-     * Parsing template
+     * Parsing template.
      *
      * @return string|null
      */
@@ -254,7 +269,7 @@ class ListView extends Snippet
         $result = '';
         $countItems = count($this->array);
         //Adding placeholders
-        $addPlaceholders = $this->template->calculateAddPlaceholders($this->addPlaceholders);
+        $addPlaceholders = $this->template->findPlaceholders($this->addPlaceholders);
         $addPlaceholders['countItems'] = $countItems;
         $placeholders = [];
 
@@ -321,9 +336,9 @@ class ListView extends Snippet
     }
 
     /**
-     * Inserting content into wrapper template
+     * Inserting content into wrapper template.
      *
-     * @param string $value - content
+     * @param string $value content
      * @param array  $placeholders
      * @return string
      */

@@ -1,11 +1,10 @@
 <?php
-namespace rock\template\snippets;
+namespace rock\snippets;
 
+use rock\execute\Execute;
 use rock\helpers\Helper;
-use rock\helpers\String;
-use rock\template\execute\CacheExecute;
-use rock\template\execute\Execute;
-use rock\template\Snippet;
+use rock\helpers\Instance;
+use rock\helpers\StringHelper;
 
 /**
  * Snippet "IfSnippet"
@@ -38,19 +37,16 @@ class IfSnippet extends Snippet
      * @var array
      */
     public $addPlaceholders = [];
-    /** @var Execute|\Closure|string */
-    public $execute;
+    /** @var  Execute|string|array */
+    protected $execute = 'execute';
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
-        if (!isset($this->execute)) {
-            $this->execute = new CacheExecute;
-        } elseif($this->execute instanceof \Closure) {
-            $this->execute = call_user_func($this->execute, $this);
-        }
-
-        $this->execute = new $this->execute;
+        $this->execute = Instance::ensure($this->execute, '\rock\execute\EvalExecute');
     }
 
     public function get()
@@ -60,7 +56,7 @@ class IfSnippet extends Snippet
             return null;
         }
         $operands = $this->operands;
-        $this->template->addMultiPlaceholders($this->template->calculateAddPlaceholders($this->addPlaceholders));
+        $this->template->addMultiPlaceholders($this->template->findPlaceholders($this->addPlaceholders));
         $paramsTpl = [
             'subject'   => $this->subject,
             'params'    => $operands,
@@ -91,6 +87,6 @@ class IfSnippet extends Snippet
                 : null
             );
 
-        return $this->execute->get(String::removeSpaces($value), $paramsTpl, $data);
+        return $this->execute->get(StringHelper::removeSpaces($value), $paramsTpl, $data);
     }
 }

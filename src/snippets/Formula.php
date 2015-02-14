@@ -1,11 +1,10 @@
 <?php
-namespace rock\template\snippets;
+namespace rock\snippets;
 
+use rock\execute\Execute;
 use rock\helpers\Helper;
-use rock\helpers\String;
-use rock\template\execute\CacheExecute;
-use rock\template\execute\Execute;
-use rock\template\Snippet;
+use rock\helpers\Instance;
+use rock\helpers\StringHelper;
 
 /**
  * Snippet "Formula"
@@ -25,18 +24,18 @@ class Formula extends Snippet
      */
     public $subject;
     public $operands;
-    /** @var Execute */
-    public $execute;
+    /** @var  Execute|string|array */
+    protected $execute = 'execute';
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
-        if (!isset($this->execute)) {
-            $this->execute = new CacheExecute;
-        } elseif($this->execute instanceof \Closure) {
-            $this->execute = call_user_func($this->execute);
-        }
+        $this->execute = Instance::ensure($this->execute, '\rock\execute\EvalExecute');
     }
+
 
     public function get()
     {
@@ -55,8 +54,8 @@ class Formula extends Snippet
             $data[$keyParam] = $valueParam;
         }
 
-        return $this->execute->get(
-            String::removeSpaces('return ' . preg_replace('/:([\\w]+)/', '$data[\'$1\']', $this->subject) . ';'),
+        return $this-> execute->get(
+            StringHelper::removeSpaces('return ' . preg_replace('/:([\\w]+)/', '$data[\'$1\']', $this->subject) . ';'),
             [
                 'subject'   => $this->subject,
                 'operands'    => $this->operands
@@ -65,4 +64,3 @@ class Formula extends Snippet
         );
     }
 }
-

@@ -14,6 +14,7 @@ Features
 
  * Supports native PHP engine and declarative MODx-like syntax (placeholders, chunk, snippet,...)
  * Supports multi-engines
+ * Multi-scopes (`$root` and `$parent`)
  * The variety of filters (arithmetic/bitwise operations, conditions, string, date, and url)
  * Custom auto-escaping
  * Support adding/customization filters and snippets

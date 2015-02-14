@@ -1,7 +1,5 @@
 <?php
-namespace rock\template\snippets;
-
-use rock\template\Snippet;
+namespace rock\snippets;
 
 /**
  * Snippet "ForSnippet"
@@ -40,6 +38,7 @@ class ForSnippet extends Snippet
      * @var string
      */
     public $wrapperTpl;
+
     /**
      * @var int|bool
      */
@@ -49,12 +48,12 @@ class ForSnippet extends Snippet
     public function get()
     {
         if (!isset($this->count, $this->tpl)) {
-            return null;
+            return '';
         }
 
-        $result = null;
+        $result = '';
         while ($this->count > 0) {
-            $result .= $this->template->replaceByPrefix($this->tpl, $this->template->calculateAddPlaceholders($this->addPlaceholders));
+            $result .= $this->template->replaceByPrefix($this->tpl, $this->template->findPlaceholders($this->addPlaceholders));
             --$this->count;
         }
         /**

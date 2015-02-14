@@ -1,23 +1,39 @@
 <?php
-namespace rock\template\snippets;
+namespace rock\snippets;
 
 use rock\helpers\Helper;
-use rock\helpers\String;
-use rock\template\Snippet;
-use rock\template\url\Url;
+use rock\helpers\StringHelper;
+use rock\url\Url;
 
 /**
- * Snippet "Pagination"
+ * Snippet "Pagination".
  *
  * Examples:
  *
  * ```php
- * $template = new \rock\template\Template;
+ * $template = new \rock\Template;
  * $countItems = 10;
  * $params = [
- *      'array' => \rock\template\helpers\Pagination::get($countItems, (int)$_GET['page'])
+ *      'array' => \rock\helpers\Pagination::get($countItems, (int)$_GET['page'], SORT_DESC)
  * ];
  * $template->getSnippet('Pagination', $params);
+ * ```
+ *
+ * With ActiveDataProvider:
+ *
+ * ```php
+ * $provider = new \rock\db\ActiveDataProvider(
+ *  [
+ *      'query' => Post::find()->asArray()->all(),
+ *      'pagination' => ['limit' => 10, 'sort' => SORT_DESC, 'pageCurrent' => (int)$_GET['num']]
+ *  ]
+ * );
+ *
+ *  $params = [
+ *      'array' => $provider->getPagination(),
+ *      'pageVar' => 'num'
+ * ];
+ * $template->getSnippet('\rock\snippet\Pagination', $params);
  * ```
  */
 class Pagination extends Snippet
@@ -26,9 +42,8 @@ class Pagination extends Snippet
      * @var array
      */
     public $array;
-
     /**
-     * May be a callable, snippet, and instance
+     * May be a callable, snippet, and instance.
      *
      * ```
      * [[Pagination?call=`\foo\FooController.getPagination`]]
@@ -45,38 +60,48 @@ class Pagination extends Snippet
      * @var string|array
      */
     public $call;
-
     public $pageVar;
-
     /**
-     * tpl active
+     * Template for active page.
      *
      * @var string
      */
-    public $pageActiveTpl;
-
-    public $pageNumTpl;
-
-    public $pageFirstName;
-
-    public $pageFirstTpl;
-
-    public $pageLastName;
-
-    public $pageLastTpl;
-
-    public $wrapperTpl;
-
+    public $pageActiveTpl = '@template.views/pagination/numActive';
+    public $pageNumTpl = '@template.views/pagination/num';
+    public $pageFirstName = 'page first';
+    public $pageFirstTpl = '@template.views/pagination/first';
+    public $pageLastName = 'page last';
+    public $pageLastTpl = '@template.views/pagination/last';
+    public $wrapperTpl = '@template.views/pagination/wrapper';
     /**
-     * url-arguments
+     * URL-arguments.
      *
-     * @var
+     * @var array
      */
     public $pageArgs = [];
     public $pageAnchor;
-
     public $autoEscape = false;
+    /** @var  Url */
+    public $url = 'url';
 
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if (!is_object($this->url)) {
+            if (class_exists('\rock\di\Container')) {
+                $this->url =  \rock\di\Container::load($this->url);
+            } else {
+                $this->url = new Url(null, is_array($this->url) ? $this->url : []);
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function get()
     {
         if (empty($this->array) && empty($this->call)) {
@@ -90,38 +115,30 @@ class Pagination extends Snippet
             return null;
         }
         $data = $this->array;
-        /**
-         * if exits args-url
-         */
+        // if exits args-url
         if (!$this->calculateArgs()) {
             return null;
         }
-        /**
-         * set name of arg-url by pagination
-         */
+        // set name of arg-url by pagination
         $pageVar = !empty($this->pageVar)
             ? $this->pageVar
             : (!empty($data['pageVar'])
                 ? $data['pageVar']
                 : \rock\helpers\Pagination::PAGE_VAR
             );
-        /**
-         * Numeration
-         */
+        // Numeration
         $num = $this->calculateNum($data, $pageVar);
         $pageFirstName = $this->calculateFirstPage($data, $pageVar);
         $pageLastName = $this->calculateLastPage($data, $pageVar);
+        $placeholders = [
+            'num' => $num,
+            'pageFirst' => $pageFirstName,
+            'pageLast' => $pageLastName,
+            'pageCurrent' => Helper::getValue($data['pageCurrent']),
+            'countMore' => Helper::getValue($data['countMore'])
+        ];
 
-        return $this->template->replaceByPrefix(
-            isset($this->wrapperTpl) ? $this->wrapperTpl : '@rock.views/pagination/wrapper',
-            [
-                'num' => $num,
-                'pageFirst' => $pageFirstName,
-                'pageLast' => $pageLastName,
-                'pageCurrent' => Helper::getValue($data['pageCurrent']),
-                'countMore' => Helper::getValue($data['countMore'])
-            ]
-        );
+        return $this->template->replaceByPrefix($this->wrapperTpl, $placeholders);
     }
 
     protected function calculateArray()
@@ -144,7 +161,7 @@ class Pagination extends Snippet
         }
         if (is_string($this->pageArgs)) {
             parse_str(
-                String::removeSpaces($this->pageArgs),
+                StringHelper::removeSpaces($this->pageArgs),
                 $this->pageArgs
             );
         }
@@ -166,33 +183,14 @@ class Pagination extends Snippet
         $result = '';
         foreach ($data['pageDisplay'] as $num) {
             $this->pageArgs[$pageVar] = $num;
-            $url = (new Url)->addArgs($this->pageArgs)->addAnchor($this->pageAnchor)->get();
-            /**
-             * for active page
-             */
+            $url = $this->url->addArgs($this->pageArgs)->addAnchor($this->pageAnchor)->get();
+            // for active page
             if ((int)$data['pageCurrent'] === (int)$num) {
-                $result .=
-                    $this->template->replaceByPrefix(
-                        isset($this->pageActiveTpl) ? $this->pageActiveTpl
-                            : '@rock.views/pagination/numActive',
-                        [
-                            'num' => $num,
-                            'url' => $url
-                        ]
-                    );
+                $result .= $this->template->replaceByPrefix($this->pageActiveTpl, ['num' => $num, 'url' => $url]);
                 continue;
             }
-            /**
-             * for default page
-             */
-            $result .=
-                $this->template->replaceByPrefix(
-                    isset($this->pageNumTpl) ? $this->pageNumTpl : '@rock.views/pagination/num',
-                    [
-                        'num' => $num,
-                        'url' => $url
-                    ]
-                );
+            // for default page
+            $result .= $this->template->replaceByPrefix($this->pageNumTpl, ['num' => $num, 'url' => $url]);
         }
 
         return $result;
@@ -203,19 +201,15 @@ class Pagination extends Snippet
         if (!$pageFirst = (int)$data['pageFirst']) {
             return null;
         }
-        $pageFirstName = !empty($this->pageFirstName) ? $this->pageFirstName : 'page first';
         $this->pageArgs[$pageVar] = $pageFirst;
-
-        return $this->template->replaceByPrefix(
-            isset($this->pageFirstTpl) ? $this->pageFirstTpl : '@rock.views/pagination/first',
-            [
-                'url' => (new Url)
-                        ->addArgs($this->pageArgs)
-                        ->addAnchor($this->pageAnchor)
-                        ->get(),
-                'pageFirstName' => $pageFirstName
-            ]
-        );
+        $placeholders = [
+            'url' => $this->url
+                ->addArgs($this->pageArgs)
+                ->addAnchor($this->pageAnchor)
+                ->get(),
+            'pageFirstName' => $this->pageFirstName
+        ];
+        return $this->template->replaceByPrefix($this->pageFirstTpl, $placeholders);
     }
 
     protected function calculateLastPage(array $data, $pageVar)
@@ -223,18 +217,14 @@ class Pagination extends Snippet
         if (!$pageLast = (int)$data['pageLast']) {
             return null;
         }
-        $pageLastName = !empty($this->pageLastName) ? $this->pageLastName : 'page last';
         $this->pageArgs[$pageVar] = $pageLast;
-
-        return $this->template->replaceByPrefix(
-            isset($this->pageLastTpl) ? $this->pageLastTpl : '@rock.views/pagination/last',
-            [
-                'url' => (new Url)
-                        ->addArgs($this->pageArgs)
-                        ->addAnchor($this->pageAnchor)
-                        ->get(),
-                'pageLastName' => $pageLastName
-            ]
-        );
+        $placeholders = [
+            'url' => $this->url
+                ->addArgs($this->pageArgs)
+                ->addAnchor($this->pageAnchor)
+                ->get(),
+            'pageLastName' => $this->pageLastName
+        ];
+        return $this->template->replaceByPrefix($this->pageLastTpl, $placeholders);
     }
 }

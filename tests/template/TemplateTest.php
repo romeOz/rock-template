@@ -3,47 +3,23 @@
 namespace rockunit\template;
 
 
-use rock\template\BaseException;
-use rock\template\filters\BaseFilter;
-use rock\helpers\String;
-use rock\template\request\Request;
+use rock\base\Alias;
+use rock\helpers\StringHelper;
+use rock\template\TemplateException;
 use rock\template\Template;
-use rock\template\url\Url;
 use rockunit\template\snippets\NullSnippet;
 use rockunit\template\snippets\TestSnippet;
 
-class Foo{
-    public $foo = 'foo';
-    private $bar = 'bar';
-
-    public function getFoo()
-    {
-        return $this->getBar();
-    }
-
-    private function getBar()
-    {
-        return $this->bar;
-    }
-}
-
+/**
+ * @group template
+ */
 class TemplateTest extends TemplateCommon
 {
-    public $aliases;
-
     protected function setUp()
     {
         parent::setUp();
         static::clearRuntime();
-        $this->aliases = Template::$aliases;
     }
-
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        $_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'site.com';
-    }
-
 
     public static function tearDownAfterClass()
     {
@@ -51,108 +27,106 @@ class TemplateTest extends TemplateCommon
         static::clearRuntime();
     }
 
-    protected function tearDown()
-    {
-        parent::tearDown();
-        Template::$aliases = $this->aliases;
-    }
-
     protected function calculatePath()
     {
         $this->path = __DIR__ . '/data';
     }
 
-    public function testAlias()
+    public function testPlaceholderAsMagic()
     {
-        Template::$aliases = [];
-        $this->assertFalse(Template::getAlias('@rock', [], false));
-
-        Template::setAlias('@rock', '/rock/framework');
-        $this->assertEquals('/rock/framework', Template::getAlias('@rock'));
-        $this->assertEquals('/rock/framework/test/file', Template::getAlias('@rock/test/file'));
-        Template::setAlias('@rock/runtime', '/rock/runtime');
-        $this->assertEquals('/rock/framework', Template::getAlias('@rock'));
-        $this->assertEquals('/rock/framework/test/file', Template::getAlias('@rock/test/file'));
-        $this->assertEquals('/rock/runtime', Template::getAlias('@rock/runtime'));
-        $this->assertEquals('/rock/runtime/file', Template::getAlias('@rock/runtime/file'));
-
-        Template::setAlias('@rock.test', '@rock/test');
-        $this->assertEquals('/rock/framework/test', Template::getAlias('@rock.test'));
-
-        Template::setAlias('@rock', null);
-        $this->assertFalse(Template::getAlias('@rock', [], false));
-        $this->assertEquals('/rock/runtime/file', Template::getAlias('@rock/runtime/file'));
-
-        Template::setAlias('@some/alias', '/www');
-        $this->assertEquals('/www', Template::getAlias('@some/alias'));
-
-        // namespace
-        Template::setAlias('@rock.ns', '\rock\core');
-        $this->assertEquals('\rock\core', Template::getAlias('@rock.ns'));
-
-        Template::setAliases(['@web' => '/assets', '@app' => '/apps/common']);
-        $this->assertEquals('/assets', Template::getAlias('@web'));
-        $this->assertEquals('/apps/common', Template::getAlias('@app'));
-
-        $this->setExpectedException(get_class(new \Exception));
-        Template::getAlias('@rock');
+        $this->template->foo = 'foo text';
+        $this->assertTrue(isset($this->template->foo));
+        $this->assertSame('foo text', $this->template->foo);
+        unset($this->template->foo);
+        $this->assertFalse(isset($this->template->foo));
     }
 
     public function testPlaceholder()
     {
-        // magic methods
-        $this->template->text = 'foo';
-        $this->assertTrue(isset($this->template->text));
-        $this->assertSame($this->template->text, 'foo');
-        unset($this->template->text);
-        $this->assertFalse(isset($this->template->text));
-        $this->template->addPlaceholder('bar', 'test', true);
-        $this->assertTrue(isset($this->template->bar));
-        $this->assertSame($this->template->bar, 'test');
+        // add
+        $this->template->foo = 'foo text';
+        $this->template->addPlaceholder('$root.bar', 'bar text');
+        $this->template->addPlaceholder('$parent.baz', 'baz text');
 
-        // get all local
-        $this->template->text = 'foo';
-        $this->assertSame($this->template->getAllPlaceholders(), ['text' => 'foo']);
+        // exists
+        $this->assertTrue($this->template->existsPlaceholder('bar'));
+        $this->assertTrue($this->template->existsPlaceholder('$parent.bar'));
+        $this->assertTrue($this->template->existsPlaceholder('$root.bar'));
 
-        // get all global
-        $this->template->addPlaceholder('bar', 'test', true);
-        $this->assertTrue($this->template->hasPlaceholder('bar', true));
-        $this->assertSame($this->template->getAllPlaceholders(false, true), ['bar' => 'test']);
+        // get all
+        $this->assertSame(['foo' => 'foo text', 'bar' => 'bar text', 'baz' => 'baz text'], $this->template->getAllPlaceholders());
 
-        // remove global  placeholder
-        $this->template->removePlaceholder('test', true);
+        // remove
+        $this->template->removePlaceholder('bar');
+        $this->assertFalse($this->template->existsPlaceholder('bar'));
+        $this->assertFalse($this->template->existsPlaceholder('$parent.bar'));
+        $this->assertFalse($this->template->existsPlaceholder('$root.bar'));
+        $this->assertSame(['foo' => 'foo text', 'baz' => 'baz text'], $this->template->getAllPlaceholders());
 
-        // remove multi global placeholder
-        $this->template->removeMultiPlaceholders(['bar'], true);
-        $this->assertFalse($this->template->hasPlaceholder('bar', true));
+        // remove multi
+        $this->template->removeMultiPlaceholders(['baz']);
+        $this->assertFalse($this->template->existsPlaceholder('baz'));
+        $this->assertSame(['foo' => 'foo text'], $this->template->getAllPlaceholders());
 
         // null name
         $this->template->removePlaceholder(null);
     }
 
-    public function testResource()
+    public function testParent()
     {
-        $this->template->addResource('foo', 'foo');
-        $this->template->addResource('bar', 'bar');
-        $this->template->addResource('baz', 'baz');
-        $this->assertTrue(isset($this->template->foo));
-        $this->assertSame($this->template->getAllResources(true, ['foo', 'bar'], ['foo']), ['bar' => 'bar']);
+        $expected = static::removeSpace(file_get_contents($this->path . '/parent/_html.html'));
+        $actual = static::removeSpace($this->template->render($this->path . '/parent/foo', ['name'=> 'Tom']));
+        $this->assertSame($expected, $actual);
 
-        // remove resource
-        $this->template->removeResource('bar');
-        $this->assertFalse($this->template->hasResource('bar'));
+        $expected = static::removeSpace(file_get_contents($this->path . '/parent/_php.html'));
+        $actual = static::removeSpace($this->template->render($this->path . '/parent/foo.php', ['name'=> 'Tom']));
+        $this->assertSame($expected, $actual);
     }
 
-    public function testRender()
+    public function testConst()
     {
-        $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>']], true);
-        $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']]);
-        $this->assertSame($this->template->render($this->path . '/layout', ['text' => 'world']), file_get_contents($this->path . '/_layout.html'));
+        $this->template->addConst('foo', 'foo text');
+        $this->assertSame('test: foo text', $this->template->replace('test: [[++foo]]'));
+        $this->assertTrue($this->template->existsConst('foo'));
+        $this->assertSame('foo text', $this->template->getConst('foo'));
+
+        $this->template->addConst('foo', 'bar text', false, true);
+        $this->assertSame('bar text', $this->template->getConst('foo'));
+    }
+
+    public function testAlias()
+    {
+        Alias::setAlias('@bar', '/bar');
+        $this->assertSame('path: /bar', $this->template->replace('path: [[@@bar]]'));
+    }
+
+    /**
+     * @throws TemplateException
+     * @depends testConst
+     */
+    public function testConstThrowException()
+    {
+        $this->setExpectedException(TemplateException::className());
+        $this->template->addConst('foo', 'foo text');
+    }
+
+//    public function testLink()
+//    {
+//        $class = TestController::className();
+//        // context
+//        $this->assertSame($this->template->replace("[[~{$class}]]"), '/test/');
+//    }
+
+    public function testRenderAsRock()
+    {
+        $template = $this->template;
+        $template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>'], 'baz'=> ['bar' => '<b>text_baz</b>']]);
+        $this->assertSame(file_get_contents($this->path . '/_layout.html'), $template->render($this->path . '/layout', ['text' => 'world']));
     }
 
     public function testRenderUnknownFileException()
     {
-        $this->setExpectedException(BaseException::className());
+        $this->setExpectedException(TemplateException::className());
         $this->template->render($this->path . '/unknown');
     }
 
@@ -208,7 +182,6 @@ class TemplateTest extends TemplateCommon
                 ]
             ]
         ];
-
         // Rock engine
         $this->assertSame(
             static::removeSpace((new Template($config))->render($this->path . '/meta.html', ['about' => 'demo'])),
@@ -267,10 +240,11 @@ class TemplateTest extends TemplateCommon
         $template->registerJs('end = "test"', Template::POS_END);
         $template->registerCss('.title {color: #354a57;}');
         $this->assertSame(
-            static::removeSpace($template->render($this->path . '/meta.php', ['about' => 'demo'])),
-            static::removeSpace(file_get_contents($this->path . '/_meta.html'))
+            static::removeSpace(file_get_contents($this->path . '/_meta.html')),
+            static::removeSpace($template->render($this->path . '/meta.php', ['about' => 'demo']))
         );
     }
+
     public function testCurrentPathTpl()
     {
         $template = new Template();
@@ -280,22 +254,22 @@ class TemplateTest extends TemplateCommon
 
     public function testHasChunk()
     {
-        $this->assertTrue($this->template->hasChunk($this->path . '/layout'));
-        $this->assertTrue($this->template->hasChunk($this->path . '/layout.php'));
+        $this->assertTrue($this->template->existsChunk($this->path . '/layout'));
+        $this->assertTrue($this->template->existsChunk($this->path . '/layout.php'));
     }
 
     public function testConditionFilter()
     {
-        $this->assertSame($this->template->getChunk('@rockunit.tpl/condition_filter', ['title' => '<b>test</b>', 'number' => 3]), file_get_contents($this->path . '/_condition_filter.html'));
+        $this->assertSame($this->template->getChunk('@rockunit.tpl/condition_filter.html', ['title' => '<b>test</b>', 'number' => 3]), file_get_contents($this->path . '/_condition_filter.html'));
 
         // unknown param
-        $this->setExpectedException(BaseException::className());
+        $this->setExpectedException(TemplateException::className());
         $this->template->replace('[[+content:if&foo=`null`&then=`[[!+title]]`]]');
     }
 
     public function testIfException()
     {
-        $this->setExpectedException(BaseException::className());
+        $this->setExpectedException(TemplateException::className());
         $this->template->replace('[[+title:if]]', ['title'=> 'Hello World']);
     }
 
@@ -378,7 +352,7 @@ class TemplateTest extends TemplateCommon
         $this->template->removeAllPlaceholders();
 
         // encode
-        $this->assertSame($this->template->replace('[[!+title:encode]]', ['title'=> '<b>Hello World</b>']), String::encode('<b>Hello World</b>'));
+        $this->assertSame($this->template->replace('[[!+title:encode]]', ['title'=> '<b>Hello World</b>']), StringHelper::encode('<b>Hello World</b>'));
         $this->template->removeAllPlaceholders();
 
         // decode
@@ -428,18 +402,13 @@ class TemplateTest extends TemplateCommon
         $this->template->removeAllPlaceholders();
 
         // modify date
-        $replace = '[[+date:modifyDate&format=`dmyhm`]]';
-        $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '12 February 2012 15:01');
-        $this->template->removeAllPlaceholders();
-
-        // modify date
-        $replace = '[[+date:modifyDate&format=`dmy`]]';
-        $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '12 February 2012');
+        $replace = '[[+date:modifyDate&format=`j F Y H:i`]]';
+        $this->assertSame('12 February 2012 15:01', $this->template->replace($replace, ['date'=> '2012-02-12 15:01']));
         $this->template->removeAllPlaceholders();
 
         // modify date + default format
         $replace = '[[+date:modifyDate]]';
-        $this->assertSame($this->template->replace($replace, ['date'=> '2012-02-12 15:01']), '2012-02-12 15:01:00');
+        $this->assertSame('2012-02-12 15:01:00', $this->template->replace($replace, ['date'=> '2012-02-12 15:01']));
         $this->template->removeAllPlaceholders();
 
         // modify date + input null
@@ -512,27 +481,8 @@ class TemplateTest extends TemplateCommon
 
         $this->template->replace('[[+num:formula&operator=`<<`]]', ['num'=> 2], '2');
 
-        $this->setExpectedException(BaseException::className());
+        $this->setExpectedException(TemplateException::className());
         $this->template->replace('[[+num:formula&operator=`<!<!<`&operand=`4`]]', ['num'=> 2]);
-    }
-
-
-    public function testUrlFilter()
-    {
-        $this->template->filters['url'] = [
-            'method' => 'modifyUrl',
-            'class' => BaseFilter::className(),
-            'urlBuilder' => function(){return new Url;}
-        ];
-
-        $replace = '[[+url:modifyUrl
-                        &args=`{"page" : 1}`
-                        &beginPath=`/parts`
-                        &endPath=`/news/`
-                        &anchor=`name`
-                        &const=`32`
-                     ]]';
-        $this->assertSame($this->template->replace($replace, ['url'=> '/categories/?view=all']), 'http://site.com/parts/categories/news/?page=1#name');
     }
 
     public function testAutomaticConversionArrayToJSON()
@@ -549,19 +499,19 @@ class TemplateTest extends TemplateCommon
 
     public function testContainsException()
     {
-        $this->setExpectedException(BaseException::className());
+        $this->setExpectedException(TemplateException::className());
         $this->template->replace('[[+title:contains]]', ['title'=> 'Hello World']);
     }
 
     public function testIsParityException()
     {
-        $this->setExpectedException(BaseException::className());
+        $this->setExpectedException(TemplateException::className());
         $this->template->replace('[[+num:isParity]]', ['num'=> 2]);
     }
 
     public function testUnknownFilter()
     {
-        $this->setExpectedException(BaseException::className());
+        $this->setExpectedException(TemplateException::className());
         $this->template->replace('[[+num:foo&operator=`<<`]]', ['num'=> 2], '2');
     }
 
@@ -597,28 +547,23 @@ class TemplateTest extends TemplateCommon
 
     public function testSnippet()
     {
-        $className = TestSnippet::className();
-        $this->assertSame($this->template->getSnippet($className, ['param' => '<b>test snippet</b>']), String::encode('<b>test snippet</b>'));
-        $this->assertSame($this->template->getSnippet(new TestSnippet(), ['param' => '<b>test snippet</b>']), String::encode('<b>test snippet</b>'));
-        $this->assertSame($this->template->replace('[['.$className.'?param=`<b>test snippet</b>`]]'), String::encode('<b>test snippet</b>'));
-        $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`]]'), '<b>test snippet</b>');
+        $this->template->snippets['test']['class'] = TestSnippet::className();
+        $this->assertSame($this->template->getSnippet('test', ['param' => '<b>test snippet</b>']), StringHelper::encode('<b>test snippet</b>'));
+        $this->assertSame($this->template->getSnippet(new TestSnippet(), ['param' => '<b>test snippet</b>']), StringHelper::encode('<b>test snippet</b>'));
+        $this->assertSame($this->template->replace('[[test?param=`<b>test snippet</b>`]]'), StringHelper::encode('<b>test snippet</b>'));
+        $this->assertSame($this->template->replace('[[!test?param=`<b>test snippet</b>`]]'), '<b>test snippet</b>');
     }
 
     public function testNullSnippet()
     {
-        $this->assertEmpty($this->template->getSnippet(NullSnippet::className()));
+        $this->template->snippets['nullSnippet']['class'] = NullSnippet::className();
+        $this->assertEmpty($this->template->getSnippet('nullSnippet'));
     }
 
     public function testUnknownSnippet()
     {
-        $this->setExpectedException(BaseException::className());
+        $this->setExpectedException(TemplateException::className());
         $this->template->getSnippet('Unknown');
-    }
-
-    public function testUnknown2Snippet()
-    {
-        $this->setExpectedException(BaseException::className());
-        $this->template->getSnippet(Request::className());
     }
 
     public function testExtensions()
@@ -632,45 +577,44 @@ class TemplateTest extends TemplateCommon
             },
         ];
 
-        $this->assertSame($this->template->replace('[[#extension.get?param=`<b>test extension</b>`]]'), String::encode('<b>test extension</b>'));
+        $this->assertSame($this->template->replace('[[#extension.get?param=`<b>test extension</b>`]]'), StringHelper::encode('<b>test extension</b>'));
         $this->assertSame($this->template->replace('[[!#extension.get?param=`<b>test extension</b>`]]'), '<b>test extension</b>');
     }
 
-    public function testRockCacheExists()
+    public function testCacheSnippet()
+    {
+        if (!interface_exists('\rock\cache\CacheInterface') || !class_exists('\League\Flysystem\Filesystem')) {
+            $this->markTestSkipped('Rock cache not installed.');
+            return;
+        }
+
+        $cache = static::getCache();
+
+        $className = TestSnippet::className();
+        $this->template = new Template();
+        $this->template->cache = $cache;
+        $this->template->snippets['test']['class'] = TestSnippet::className();
+
+        // Rock engine
+        $this->assertSame($this->template->replace('[[!test?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
+        $this->assertTrue($cache->exists($className));
+        $this->assertSame($cache->get($className), '<b>test snippet</b>');
+        $this->assertSame($this->template->replace('[[!test?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
+
+        // PHP engine
+        $this->assertSame($this->template->getSnippet('test', ['cacheKey' => $className]), '<b>test snippet</b>');
+    }
+
+    public function testCacheLayout()
     {
         if (!interface_exists('\rock\cache\CacheInterface') || !class_exists('\League\Flysystem\Filesystem')) {
             $this->markTestSkipped('Rock cache not installed.');
         }
-    }
 
-    /**
-     * @depends testRockCacheExists
-     */
-    public function testCacheSnippet()
-    {
-        $cache = $this->getCache();
-        $className = TestSnippet::className();
+        $cache = static::getCache();
+        $this->template = new Template();
         $this->template->cache = $cache;
-
-        // Rock engine
-        $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
-        $this->assertTrue($cache->exists($className));
-        $this->assertSame($cache->get($className), '<b>test snippet</b>');
-        $this->assertSame($this->template->replace('[[!'.$className.'?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
-
-        // PHP engine
-        $this->assertSame($this->template->getSnippet($className, ['cacheKey' => $className]), '<b>test snippet</b>');
-    }
-
-    /**
-     * @depends testRockCacheExists
-     */
-    public function testCacheLayout()
-    {
-        $cache = $this->getCache();
-        $this->template->cache = $cache;
-        $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>']], true);
-        $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']]);
+        $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>'], 'baz'=> ['bar' => '<b>text_baz</b>']]);
         $placeholders = [
             'text' => 'world',
             'cacheKey' => 'key_layout'
@@ -682,29 +626,26 @@ class TemplateTest extends TemplateCommon
 
     public function testRenderAsPHP()
     {
-        $this->template = new Template();;
-        $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>']], true);
-        $this->template->addMultiResources(['baz'=> ['bar' => '<b>text_baz</b>']], true);
-        $this->assertSame($this->template->render($this->path . '/layout', ['text' => 'world']), file_get_contents($this->path . '/_layout.html'));
-        $this->assertSame($this->template->getChunk($this->path . '/subchunk', ['title'=> 'test']), '<b>subchunk</b>test');
+        $this->template = new Template();
+        $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>'], 'baz'=> ['bar' => '<b>text_baz</b>']]);
+        $this->assertSame($this->template->render($this->path . '/layout.php', ['text' => 'world']), file_get_contents($this->path . '/_layout.html'));
+        $this->assertSame($this->template->getChunk($this->path . '/subchunk.php', ['title'=> 'test']), '<b>subchunk</b>test');
     }
 
-    protected function getCache()
-    {
-        $adapter = new \rock\cache\filemanager\FileManager(
-            [
-                'adapter' =>
-                    function () {
-                        return new \League\Flysystem\Adapter\Local(Template::getAlias('@runtime/cache'));
-                    },
-                'cache' => function () {
-                        $local = new \League\Flysystem\Adapter\Local(Template::getAlias('@runtime'));
-                        $cache = new \League\Flysystem\Cache\Adapter($local, 'cache.tmp');
 
-                        return $cache;
-                    }
-            ]
-        );
-        return new \rock\cache\CacheFile(['adapter' => $adapter]);
+}
+
+class Foo{
+    public $foo = 'foo';
+    private $bar = 'bar';
+
+    public function getFoo()
+    {
+        return $this->getBar();
+    }
+
+    private function getBar()
+    {
+        return $this->bar;
     }
 }

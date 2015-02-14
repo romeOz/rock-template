@@ -1,5 +1,9 @@
 <?php
-namespace rock\template\snippets;
+namespace rock\snippets;
+
+use rock\date\DateTime;
+use rock\date\DateTimeInterface;
+use rock\template\TemplateException;
 
 /**
  * Snippet "DateView"
@@ -20,10 +24,6 @@ namespace rock\template\snippets;
  * ]]
  * ```
  */
-use rock\template\date\DateTime;
-use rock\template\date\DateTimeInterface;
-use rock\template\Snippet;
-
 /** @noinspection PhpHierarchyChecksInspection */
 class Date extends Snippet implements DateTimeInterface
 {
@@ -42,6 +42,10 @@ class Date extends Snippet implements DateTimeInterface
 
     public function get()
     {
-        return (new DateTime($this->date, null, $this->config))->convertTimezone($this->timezone)->format($this->format);
+        $dateTime = DateTime::set($this->date, null, $this->config);
+        if (isset($this->timezone)) {
+            $dateTime->convertTimezone($this->timezone);
+        }
+        return $dateTime->format($this->format);
     }
 }

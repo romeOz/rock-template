@@ -21,6 +21,18 @@
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <blacklist>
+            <file>./src/template/HtmlException.php</file>
+            <file>./src/template/TemplateException.php</file>
+            <directory>./src/views</directory>
+            <file>./src/snippets/filters/RateLimiter.php</file>
+            <file>./src/snippets/filters/RateLimiterException.php</file>
+            <file>./src/snippets/filters/RateLimiterTrait.php</file>
+            <file>./src/snippets/SnippetEvent.php</file>
+            <file>./src/snippets/SnippetException.php</file>
+        </blacklist>
+    </filter>
     <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>

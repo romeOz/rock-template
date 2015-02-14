@@ -3,7 +3,6 @@
 namespace rockunit\snippets;
 
 
-use rock\template\snippets\Date;
 use rockunit\template\TemplateCommon;
 
 class DateTest extends TemplateCommon
@@ -18,7 +17,7 @@ class DateTest extends TemplateCommon
         $this->assertSame(
             $this->template->replace('[[Date
                         ?date=`2012-02-12 15:01`
-                        ?format=`dmyhm`
+                        ?format=`j F Y H:i`
                     ]]'
             ),
             '12 February 2012 15:01'
@@ -36,7 +35,7 @@ class DateTest extends TemplateCommon
 
         // default format
         $this->assertSame(
-            $this->template->getSnippet(Date::className(), ['date' => '2012-02-12 15:01']),
+            $this->template->getSnippet('Date', ['date' => '2012-02-12 15:01']),
             '2012-02-12 15:01:00'
         );
     }

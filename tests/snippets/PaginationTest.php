@@ -3,13 +3,18 @@
 namespace rockunit\snippets;
 
 
-use rock\template\BaseException;
-use rock\template\snippets\Pagination;
+use rock\snippets\Pagination;
+use rock\template\TemplateException;
 use rock\template\Template;
 use rockunit\template\TemplateCommon;
 
 class PaginationTest extends TemplateCommon
 {
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+    }
+
     protected function calculatePath()
     {
         $this->path = __DIR__ . '/data';
@@ -32,7 +37,7 @@ class PaginationTest extends TemplateCommon
                   return \rock\helpers\Pagination::get(0, null, 10, SORT_DESC);
               }
         ];
-        $this->assertEmpty($this->template->getSnippet(Pagination::className(), $params));
+        $this->assertEmpty($this->template->getSnippet('Pagination', $params));
 
         // with args + anchor
         $params = [
@@ -43,7 +48,7 @@ class PaginationTest extends TemplateCommon
         ];
 
         $this->assertSame(
-            static::removeSpace($this->template->getSnippet(Pagination::className(), $params)),
+            static::removeSpace($this->template->getSnippet('Pagination', $params)),
             static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_args.html'))
         );
 
@@ -52,7 +57,7 @@ class PaginationTest extends TemplateCommon
             'array' => \rock\helpers\Pagination::get(7, null, 5, SORT_DESC),
         ];
         $this->assertSame(
-            static::removeSpace($this->template->getSnippet(Pagination::className(), $params)),
+            static::removeSpace($this->template->getSnippet('Pagination', $params)),
             static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_not_args.html'))
         );
     }
@@ -62,8 +67,8 @@ class PaginationTest extends TemplateCommon
         $params = [
             'call' => 'Foo.method'
         ];
-        $this->setExpectedException(BaseException::className());
-        $this->template->getSnippet(Pagination::className(), $params);
+        $this->setExpectedException(TemplateException::className());
+        $this->template->getSnippet('Pagination', $params);
     }
 }
  
