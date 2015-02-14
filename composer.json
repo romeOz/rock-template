@@ -1,7 +1,7 @@
 {
     "name": "romeoz/rock-template",
     "description": "Flexible template engine for PHP with MODx-like syntax.",
-    "keywords": ["template", "template-engine", "templating"],
+    "keywords": ["template", "template engine", "templating"],
     "type": "library",
     "license": "MIT",
     "support": {
