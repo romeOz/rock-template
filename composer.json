@@ -55,7 +55,9 @@
         "romeoz/rock-access" : "*@dev"
     },
     "suggest": {
-        "romeoz/rock-cache": "required by Rock Cache"
+        "romeoz/rock-cache": "required by Rock Cache",
+        "romeoz/rock-widgets": "required by Rock Widgets",
+        "romeoz/rock-di": "required by module Rock Dependency Injection"
     },
     "autoload": {
         "psr-4": {
