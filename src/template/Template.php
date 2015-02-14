@@ -1615,8 +1615,8 @@ class Template implements EventsInterface
     /**
      * Caching template.
      *
-     * @param null $key
-     * @param null $value
+     * @param string $key
+     * @param mixed $value
      * @param int  $expire
      * @param array $tags
      */
