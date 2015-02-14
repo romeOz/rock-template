@@ -2,8 +2,6 @@
 namespace rock\snippets;
 
 use rock\date\DateTime;
-use rock\date\DateTimeInterface;
-use rock\template\TemplateException;
 
 /**
  * Snippet "DateView"
@@ -24,8 +22,7 @@ use rock\template\TemplateException;
  * ]]
  * ```
  */
-/** @noinspection PhpHierarchyChecksInspection */
-class Date extends Snippet implements DateTimeInterface
+class Date extends Snippet
 {
     /**
      * Datetime. `now` by default.
