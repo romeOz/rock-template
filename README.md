@@ -4,7 +4,8 @@ Template engine for PHP
 [![Latest Stable Version](https://poser.pugx.org/romeOz/rock-template/v/stable.svg)](https://packagist.org/packages/romeOz/rock-template)
 [![Total Downloads](https://poser.pugx.org/romeOz/rock-template/downloads.svg)](https://packagist.org/packages/romeOz/rock-template)
 [![Build Status](https://travis-ci.org/romeOz/rock-template.svg?branch=master)](https://travis-ci.org/romeOz/rock-template)
-[![Coverage Status](https://coveralls.io/repos/romeOz/rock-template/badge.png?branch=master)](https://coveralls.io/r/romeOz/rock-template?branch=master)
+[![HHVM Status](http://hhvm.h4cc.de/badge/romeoz/ock-template.svg)](http://hhvm.h4cc.de/package/romeoz/rock-template)
+[![Coverage Status](https://coveralls.io/repos/romeOz/rock-template/badge.svg?branch=master)](https://coveralls.io/r/romeOz/rock-template?branch=master)
 [![License](https://poser.pugx.org/romeOz/rock-template/license.svg)](https://packagist.org/packages/romeOz/rock-template)
 
 [Rock template on Packagist](https://packagist.org/packages/romeOz/rock-template)
