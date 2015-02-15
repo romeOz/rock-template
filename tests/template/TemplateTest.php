@@ -269,7 +269,7 @@ class TemplateTest extends TemplateCommon
     public function testFilters()
     {
         // php-function filter
-        $this->assertSame('2', $this->template->replace('[[+title:substr&start=`6`&length=`2`:strlen]]', ['title'=> 'hello world']));
+        $this->assertSame(2, $this->template->replace('[[+title:substr&start=`6`&length=`2`:strlen]]', ['title'=> 'hello world']));
         $this->template->removeAllPlaceholders();
 
         // replaceTpl
@@ -277,7 +277,7 @@ class TemplateTest extends TemplateCommon
         $this->template->removeAllPlaceholders();
 
         // size as string
-        $this->assertSame('3', $this->template->replace('[[!+title:size]]', ['title'=> 'абв']));
+        $this->assertSame(3, $this->template->replace('[[!+title:size]]', ['title'=> 'абв']));
         $this->template->removeAllPlaceholders();
 
         // unserialize
@@ -285,7 +285,7 @@ class TemplateTest extends TemplateCommon
         $this->template->removeAllPlaceholders();
 
         // unserialize + input array + size
-        $this->assertSame('1', $this->template->replace('[[!+title:toArray:size]]', ['title'=> '{"bar" : {"subbar" : "test"}}']));
+        $this->assertSame(1, $this->template->replace('[[!+title:toArray:size]]', ['title'=> '{"bar" : {"subbar" : "test"}}']));
         $this->template->removeAllPlaceholders();
 
         // unserialize + input null
@@ -345,11 +345,11 @@ class TemplateTest extends TemplateCommon
         $this->template->removeAllPlaceholders();
 
         // to positive
-        $this->assertSame('7', $this->template->replace('[[+num:positive]]', ['num'=> '7']));
+        $this->assertSame(7, $this->template->replace('[[+num:positive]]', ['num'=> '7']));
         $this->template->removeAllPlaceholders();
 
         // to positive
-        $this->assertSame('0',$this->template->replace('[[+num:positive]]', ['num'=> '-7']));
+        $this->assertSame(0,$this->template->replace('[[+num:positive]]', ['num'=> '-7']));
         $this->template->removeAllPlaceholders();
 
         // encode
@@ -433,54 +433,54 @@ class TemplateTest extends TemplateCommon
         $this->template->removeAllPlaceholders();
 
         // multiplication
-        $this->assertSame('12', $this->template->replace('[[+num * `4`]]', ['num'=> 3]));
+        $this->assertSame(12, $this->template->replace('[[+num * `4`]]', ['num'=> 3]));
         $this->template->removeAllPlaceholders();
 
         // repeat multiplication
-        $this->assertSame('42', $this->template->replace('[[+num * `4` + `2`:formula&operator=`*`&operand=`3`]]', ['num'=> 3]));
+        $this->assertSame(42, $this->template->replace('[[+num * `4` + `2`:formula&operator=`*`&operand=`3`]]', ['num'=> 3]));
         $this->template->removeAllPlaceholders();
 
         // exponential expression
-        $this->assertSame('9', $this->template->replace('[[+num ** `2`]]', ['num'=> '3']));
+        $this->assertSame(9, $this->template->replace('[[+num ** `2`]]', ['num'=> '3']));
         $this->template->removeAllPlaceholders();
 
         // division
-        $this->assertSame('5', $this->template->replace('[[+num / `2`]]', ['num'=> 10]));
+        $this->assertSame(5, $this->template->replace('[[+num / `2`]]', ['num'=> 10]));
         $this->template->removeAllPlaceholders();
 
         // modulus
-        $this->assertSame('1', $this->template->replace('[[+num mod `2`]]', ['num'=> 3]));
+        $this->assertSame(1, $this->template->replace('[[+num mod `2`]]', ['num'=> 3]));
         $this->template->removeAllPlaceholders();
 
         // negation
-        $this->assertSame('7', $this->template->replace('[[+num - `3`]]', ['num'=> 10]));
+        $this->assertSame(7, $this->template->replace('[[+num - `3`]]', ['num'=> 10]));
         $this->template->removeAllPlaceholders();
 
         // addition
-        $this->assertSame('12', $this->template->replace('[[+num + `5`]]', ['num'=> 7]));
+        $this->assertSame(12, $this->template->replace('[[+num + `5`]]', ['num'=> 7]));
         $this->template->removeAllPlaceholders();
 
         // bit or
-        $this->assertSame('10',$this->template->replace('[[+num | `8`]]', ['num'=> 2]));
+        $this->assertSame(10,$this->template->replace('[[+num | `8`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
         // bit and
-        $this->assertSame('2', $this->template->replace('[[+num & `10`]]', ['num'=> 2]));
+        $this->assertSame(2, $this->template->replace('[[+num & `10`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
         // bit xor
-        $this->assertSame('8', $this->template->replace('[[+num ^ `10`]]', ['num'=> 2]));
+        $this->assertSame(8, $this->template->replace('[[+num ^ `10`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
         // bit shift the bits to the left
-        $this->assertSame('256', $this->template->replace('[[+num << `7`]]', ['num'=> 2]));
+        $this->assertSame(256, $this->template->replace('[[+num << `7`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
         // bit shift the bits to the right
-        $this->assertSame('1', $this->template->replace('[[+num >> `1`]]', ['num'=> 2]));
+        $this->assertSame(1, $this->template->replace('[[+num >> `1`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
-        $this->assertSame('2', $this->template->replace('[[+num:formula&operator=`<<`]]', ['num'=> 2]));
+        $this->assertSame(2, $this->template->replace('[[+num:formula&operator=`<<`]]', ['num'=> 2]));
 
         $this->setExpectedException(TemplateException::className());
         $this->template->replace('[[+num:formula&operator=`<!<!<`&operand=`4`]]', ['num'=> 2]);

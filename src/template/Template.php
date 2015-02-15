@@ -280,7 +280,7 @@ class Template implements EventsInterface
             [$this, 'replaceCallback'],
             $code
         );
-        return $code;
+        return Helper::toType($code);
     }
 
     /**

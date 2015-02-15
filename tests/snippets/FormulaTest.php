@@ -33,7 +33,7 @@ class FormulaTest extends TemplateCommon
                     ]]',
             ['num'=> 8]
         );
-        $this->assertSame('7', $actual);
+        $this->assertSame(7, $actual);
 
         // null
         $this->assertSame('', $this->template->replace('[[Formula]]'));
