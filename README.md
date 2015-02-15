@@ -20,7 +20,9 @@ Features
  * Custom auto-escaping
  * Support adding/customization filters and snippets
  * There is a possibility of adding custom extensions
+ * Widgets (suggest [Rock Widgets](https://github.com/romeOz/rock-widgets))
  * Caching all entities template engine (suggest [Rock Cache](https://github.com/romeOz/rock-cache))
+ * Module for [Rock Framework](https://github.com/romeOz/rock)
 
 Installation
 -------------------
