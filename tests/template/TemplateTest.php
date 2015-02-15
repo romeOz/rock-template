@@ -419,7 +419,7 @@ class TemplateTest extends TemplateCommon
 
         // modify date + default format + timezone
         $replace = '[[+date:modifyDate&timezone=`America/Chicago`]]';
-        $this->assertSame('2012-02-12 05:01:00', $this->template->replace($replace, ['date'=> '2012-02-12 15:01']));
+        $this->assertSame('2012-02-12 09:01:00', $this->template->replace($replace, ['date'=> '2012-02-12 15:01']));
         $this->template->removeAllPlaceholders();
 
         // modify date + input null

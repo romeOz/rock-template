@@ -42,7 +42,7 @@ class DateTest extends TemplateCommon
         );
 
         $this->assertSame(
-            '2012-02-12 05:01:00',
+            '2012-02-12 09:01:00',
             $this->template->getSnippet('Date', ['date' => '2012-02-12 15:01', 'timezone' => 'America/Chicago'])
         );
     }
