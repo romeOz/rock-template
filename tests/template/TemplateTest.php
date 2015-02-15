@@ -407,9 +407,19 @@ class TemplateTest extends TemplateCommon
         $this->assertSame('12 February 2012 15:01', $this->template->replace($replace, ['date'=> '2012-02-12 15:01']));
         $this->template->removeAllPlaceholders();
 
+        // modify date + locale
+        $replace = '[[+date:modifyDate&format=`j F Y H:i`&locale=`ru`]]';
+        $this->assertSame('12 февраля 2012 15:01', $this->template->replace($replace, ['date'=> '2012-02-12 15:01']));
+        $this->template->removeAllPlaceholders();
+
         // modify date + default format
         $replace = '[[+date:modifyDate]]';
         $this->assertSame('2012-02-12 15:01:00', $this->template->replace($replace, ['date'=> '2012-02-12 15:01']));
+        $this->template->removeAllPlaceholders();
+
+        // modify date + default format + timezone
+        $replace = '[[+date:modifyDate&timezone=`America/Chicago`]]';
+        $this->assertSame('2012-02-12 05:01:00', $this->template->replace($replace, ['date'=> '2012-02-12 15:01']));
         $this->template->removeAllPlaceholders();
 
         // modify date + input null
