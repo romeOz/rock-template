@@ -61,6 +61,8 @@
     "suggest": {
         "romeoz/rock-cache": "required by Rock Cache",
         "romeoz/rock-widgets": "required by Rock Widgets",
+        "romeoz/rock-validate": "required by Rock Valiadte",
+        "romeoz/rock-sanitize": "required by Rock Sanitize",
         "romeoz/rock-di": "required by module Rock Dependency Injection"
     },
     "autoload": {
