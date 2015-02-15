@@ -110,13 +110,6 @@ class TemplateTest extends TemplateCommon
         $this->template->addConst('foo', 'foo text');
     }
 
-//    public function testLink()
-//    {
-//        $class = TestController::className();
-//        // context
-//        $this->assertSame($this->template->replace("[[~{$class}]]"), '/test/');
-//    }
-
     public function testRenderAsRock()
     {
         $template = $this->template;
@@ -276,87 +269,95 @@ class TemplateTest extends TemplateCommon
     public function testFilters()
     {
         // php-function filter
-        $this->assertSame($this->template->replace('[[+title:substr&start=`6`&length=`2`:strlen]]', ['title'=> 'hello world']), '2');
+        $this->assertSame('2', $this->template->replace('[[+title:substr&start=`6`&length=`2`:strlen]]', ['title'=> 'hello world']));
         $this->template->removeAllPlaceholders();
 
         // replaceTpl
-        $this->assertSame($this->template->replace('[[+content:replaceTpl&title=`[[+title]]`:upper]]', ['content' => '[[+title]]', 'title' => 'hello']), 'HELLO');
+        $this->assertSame('HELLO', $this->template->replace('[[+content:replaceTpl&title=`[[+title]]`:upper]]', ['content' => '[[+title]]', 'title' => 'hello']));
+        $this->template->removeAllPlaceholders();
+
+        // size as string
+        $this->assertSame('3', $this->template->replace('[[!+title:size]]', ['title'=> 'абв']));
         $this->template->removeAllPlaceholders();
 
         // unserialize
-        $this->assertSame($this->template->replace('[[!+title:unserialize&key=`foo.bar`]]', ['title'=> json_encode(['baz' => 'baz_text', 'foo' => ['bar' => 'bar_text']])]), 'bar_text');
+        $this->assertSame('bar_text', $this->template->replace('[[!+title:unserialize&key=`foo.bar`]]', ['title'=> json_encode(['baz' => 'baz_text', 'foo' => ['bar' => 'bar_text']])]));
         $this->template->removeAllPlaceholders();
 
         // unserialize + input array + size
-        $this->assertSame($this->template->replace('[[!+title:toArray:size]]', ['title'=> '{"bar" : {"subbar" : "test"}}']), '1');
+        $this->assertSame('1', $this->template->replace('[[!+title:toArray:size]]', ['title'=> '{"bar" : {"subbar" : "test"}}']));
         $this->template->removeAllPlaceholders();
 
         // unserialize + input null
-        $this->assertSame($this->template->replace('[[!+title:unserialize&key=`foo.bar`]]', ['title'=> null]), '');
+        $this->assertSame('', $this->template->replace('[[!+title:unserialize&key=`foo.bar`]]', ['title'=> null]));
         $this->template->removeAllPlaceholders();
 
         // truncate
-        $this->assertSame($this->template->replace('[[+title:truncate&length=`5`]]', ['title'=> 'Hello world']), 'Hello...');
+        $this->assertSame('Hello...', $this->template->replace('[[+title:truncate&length=`5`]]', ['title'=> 'Hello world']));
         $this->template->removeAllPlaceholders();
 
         // truncate + input null
-        $this->assertSame($this->template->replace('[[+title:truncate]]', ['title'=> null]), '');
+        $this->assertSame('', $this->template->replace('[[+title:truncate]]', ['title'=> null]));
         $this->template->removeAllPlaceholders();
 
         // truncate words
-        $this->assertSame($this->template->replace('[[+title:truncateWords&length=`6`]]', ['title'=> 'Hello world']), 'Hello...');
+        $this->assertSame('Hello...', $this->template->replace('[[+title:truncateWords&length=`6`]]', ['title'=> 'Hello world']));
         $this->template->removeAllPlaceholders();
 
         // truncate words + input null
-        $this->assertSame($this->template->replace('[[+title:truncateWords]]', ['title'=> null]), '');
+        $this->assertSame('', $this->template->replace('[[+title:truncateWords]]', ['title'=> null]));
         $this->template->removeAllPlaceholders();
 
         // lower
-        $this->assertSame($this->template->replace('[[+title:lower]]', ['title'=> 'Hello World']), 'hello world');
+        $this->assertSame('hello world', $this->template->replace('[[+title:lower]]', ['title'=> 'Hello World']));
         $this->template->removeAllPlaceholders();
 
         // upper
-        $this->assertSame($this->template->replace('[[+title:upper]]', ['title'=> 'Hello World']), 'HELLO WORLD');
+        $this->assertSame('HELLO WORLD', $this->template->replace('[[+title:upper]]', ['title'=> 'Hello World']));
         $this->template->removeAllPlaceholders();
 
         // upper first character
-        $this->assertSame($this->template->replace('[[+title:upperFirst]]', ['title'=> 'hello world']), 'Hello world');
+        $this->assertSame('Hello world', $this->template->replace('[[+title:upperFirst]]', ['title'=> 'hello world']));
         $this->template->removeAllPlaceholders();
 
         // trim pattern
-        $this->assertSame($this->template->replace('[[+title:trimPattern&pattern=`/l{2}/`]]', ['title'=> 'Hello World']), 'Heo World');
+        $this->assertSame('Heo World', $this->template->replace('[[+title:trimPattern&pattern=`/l{2}/`]]', ['title'=> 'Hello World']));
+        $this->template->removeAllPlaceholders();
+
+        // trim pattern as empty
+        $this->assertSame('', $this->template->replace('[[+title:trimPattern&pattern=`/l{2}/`]]', ['title'=> '']));
         $this->template->removeAllPlaceholders();
 
         // contains success
-        $this->assertSame($this->template->replace('[[+title:contains&is=`Wo`&then=`[[+title]]`]]', ['title'=> 'Hello World']), 'Hello World');
+        $this->assertSame('Hello World', $this->template->replace('[[+title:contains&is=`Wo`&then=`[[+title]]`]]', ['title'=> 'Hello World']));
         $this->template->removeAllPlaceholders();
 
         // contains fail
-        $this->assertSame($this->template->replace('[[+title:contains&is=`woo`&then=`[[+title]]`]]', ['title'=> 'Hello World']), '');
+        $this->assertSame('', $this->template->replace('[[+title:contains&is=`woo`&then=`[[+title]]`]]', ['title'=> 'Hello World']));
         $this->template->removeAllPlaceholders();
 
         // isParity success
-        $this->assertSame($this->template->replace('[[+num:isParity&then=`success`]]', ['num'=> 2]), 'success');
+        $this->assertSame('success', $this->template->replace('[[+num:isParity&then=`success`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
         // isParity fail
-        $this->assertSame($this->template->replace('[[+num:isParity&then=`success`&else=`fail`]]', ['num'=> '3']), 'fail');
+        $this->assertSame('fail', $this->template->replace('[[+num:isParity&then=`success`&else=`fail`]]', ['num'=> '3']));
         $this->template->removeAllPlaceholders();
 
         // to positive
-        $this->assertSame($this->template->replace('[[+num:positive]]', ['num'=> '7']), '7');
+        $this->assertSame('7', $this->template->replace('[[+num:positive]]', ['num'=> '7']));
         $this->template->removeAllPlaceholders();
 
         // to positive
-        $this->assertSame($this->template->replace('[[+num:positive]]', ['num'=> '-7']), '0');
+        $this->assertSame('0',$this->template->replace('[[+num:positive]]', ['num'=> '-7']));
         $this->template->removeAllPlaceholders();
 
         // encode
-        $this->assertSame($this->template->replace('[[!+title:encode]]', ['title'=> '<b>Hello World</b>']), StringHelper::encode('<b>Hello World</b>'));
+        $this->assertSame(StringHelper::encode('<b>Hello World</b>'), $this->template->replace('[[!+title:encode]]', ['title'=> '<b>Hello World</b>']));
         $this->template->removeAllPlaceholders();
 
         // decode
-        $this->assertSame($this->template->replace('[[+title:decode]]', ['title'=> '<b>Hello World</b>']), '<b>Hello World</b>');
+        $this->assertSame('<b>Hello World</b>', $this->template->replace('[[+title:decode]]', ['title'=> '<b>Hello World</b>']));
         $this->template->removeAllPlaceholders();
 
         // modify url
@@ -413,73 +414,73 @@ class TemplateTest extends TemplateCommon
 
         // modify date + input null
         $replace = '[[+date:modifyDate]]';
-        $this->assertSame($this->template->replace($replace, ['date'=> 'null']), '');
+        $this->assertSame('', $this->template->replace($replace, ['date'=> 'null']));
         $this->template->removeAllPlaceholders();
 
         // arrayToJson
         $replace = '[[+array:arrayToJson]]';
-        $this->assertSame($this->template->replace($replace, ['array'=> ['foo' => 'test']]), json_encode(['foo' => 'test']));
+        $this->assertSame(json_encode(['foo' => 'test']), $this->template->replace($replace, ['array'=> ['foo' => 'test']]));
         $this->template->removeAllPlaceholders();
 
         // arrayToJson + input null
         $replace = '[[+array:toJson]]';
-        $this->assertSame($this->template->replace($replace, ['array'=> '']), '');
+        $this->assertSame('', $this->template->replace($replace, ['array'=> '']));
         $this->template->removeAllPlaceholders();
 
         // jsonToArray + serialize
         $replace = '[[!+array:toArray:serialize]]';
-        $this->assertSame($this->template->replace($replace, ['array'=> json_encode(['foo' => 'test'])]), serialize(['foo' => 'test']));
+        $this->assertSame(serialize(['foo' => 'test']), $this->template->replace($replace, ['array'=> json_encode(['foo' => 'test'])]));
         $this->template->removeAllPlaceholders();
 
         // multiplication
-        $this->assertSame($this->template->replace('[[+num * `4`]]', ['num'=> 3]), '12');
+        $this->assertSame('12', $this->template->replace('[[+num * `4`]]', ['num'=> 3]));
         $this->template->removeAllPlaceholders();
 
         // repeat multiplication
-        $this->assertSame($this->template->replace('[[+num * `4` + `2`:formula&operator=`*`&operand=`3`]]', ['num'=> 3]), '42');
+        $this->assertSame('42', $this->template->replace('[[+num * `4` + `2`:formula&operator=`*`&operand=`3`]]', ['num'=> 3]));
         $this->template->removeAllPlaceholders();
 
         // exponential expression
-        $this->assertSame($this->template->replace('[[+num ** `2`]]', ['num'=> '3']), '9');
+        $this->assertSame('9', $this->template->replace('[[+num ** `2`]]', ['num'=> '3']));
         $this->template->removeAllPlaceholders();
 
         // division
-        $this->assertSame($this->template->replace('[[+num / `2`]]', ['num'=> 10]), '5');
+        $this->assertSame('5', $this->template->replace('[[+num / `2`]]', ['num'=> 10]));
         $this->template->removeAllPlaceholders();
 
         // modulus
-        $this->assertSame($this->template->replace('[[+num mod `2`]]', ['num'=> 3]), '1');
+        $this->assertSame('1', $this->template->replace('[[+num mod `2`]]', ['num'=> 3]));
         $this->template->removeAllPlaceholders();
 
         // negation
-        $this->assertSame($this->template->replace('[[+num - `3`]]', ['num'=> 10]), '7');
+        $this->assertSame('7', $this->template->replace('[[+num - `3`]]', ['num'=> 10]));
         $this->template->removeAllPlaceholders();
 
         // addition
-        $this->assertSame($this->template->replace('[[+num + `5`]]', ['num'=> 7]), '12');
+        $this->assertSame('12', $this->template->replace('[[+num + `5`]]', ['num'=> 7]));
         $this->template->removeAllPlaceholders();
 
         // bit or
-        $this->assertSame($this->template->replace('[[+num | `8`]]', ['num'=> 2]), '10');
+        $this->assertSame('10',$this->template->replace('[[+num | `8`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
         // bit and
-        $this->assertSame($this->template->replace('[[+num & `10`]]', ['num'=> 2]), '2');
+        $this->assertSame('2', $this->template->replace('[[+num & `10`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
         // bit xor
-        $this->assertSame($this->template->replace('[[+num ^ `10`]]', ['num'=> 2]), '8');
+        $this->assertSame('8', $this->template->replace('[[+num ^ `10`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
         // bit shift the bits to the left
-        $this->assertSame($this->template->replace('[[+num << `7`]]', ['num'=> 2]), '256');
+        $this->assertSame('256', $this->template->replace('[[+num << `7`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
         // bit shift the bits to the right
-        $this->assertSame($this->template->replace('[[+num >> `1`]]', ['num'=> 2]), '1');
+        $this->assertSame('1', $this->template->replace('[[+num >> `1`]]', ['num'=> 2]));
         $this->template->removeAllPlaceholders();
 
-        $this->template->replace('[[+num:formula&operator=`<<`]]', ['num'=> 2], '2');
+        $this->assertSame('2', $this->template->replace('[[+num:formula&operator=`<<`]]', ['num'=> 2]));
 
         $this->setExpectedException(TemplateException::className());
         $this->template->replace('[[+num:formula&operator=`<!<!<`&operand=`4`]]', ['num'=> 2]);
@@ -518,11 +519,11 @@ class TemplateTest extends TemplateCommon
     public function testAutoEscape()
     {
         $this->template->autoEscape = false;
-        $this->assertSame($this->template->replace('[[+title?autoEscape=`2`]]', ['title'=> '<b>Hello World</b>']), 'Hello World');
+        $this->assertSame('Hello World', $this->template->replace('[[+title?autoEscape=`2`]]', ['title'=> '<b>Hello World</b>']));
         $this->template->removeAllPlaceholders();
 
         $this->template->autoEscape = Template::ESCAPE | Template::TO_TYPE;
-        $this->assertSame($this->template->replace('[[+title?autoEscape=`false`]]', ['title'=> '<b>Hello World</b>']), '<b>Hello World</b>');
+        $this->assertSame('<b>Hello World</b>', $this->template->replace('[[+title?autoEscape=`false`]]', ['title'=> '<b>Hello World</b>']));
     }
 
     public function testGetNamePrefix()
@@ -530,11 +531,11 @@ class TemplateTest extends TemplateCommon
         // null
         $this->assertEmpty($this->template->getNamePrefix(null));
         $this->assertSame(
-            $this->template->getNamePrefix('@INLINE<b>foo</b>'),
-            array (
+            [
                 'prefix' => 'INLINE',
                 'value' => '<b>foo</b>',
-            )
+            ],
+            $this->template->getNamePrefix('@INLINE<b>foo</b>')
         );
     }
 
@@ -542,16 +543,16 @@ class TemplateTest extends TemplateCommon
     {
         // null
         $this->assertEmpty($this->template->removePrefix(null));
-        $this->assertSame($this->template->removePrefix('@INLINE<b>foo</b>'), '<b>foo</b>');
+        $this->assertSame('<b>foo</b>', $this->template->removePrefix('@INLINE<b>foo</b>'));
     }
 
     public function testSnippet()
     {
         $this->template->snippets['test']['class'] = TestSnippet::className();
-        $this->assertSame($this->template->getSnippet('test', ['param' => '<b>test snippet</b>']), StringHelper::encode('<b>test snippet</b>'));
-        $this->assertSame($this->template->getSnippet(new TestSnippet(), ['param' => '<b>test snippet</b>']), StringHelper::encode('<b>test snippet</b>'));
-        $this->assertSame($this->template->replace('[[test?param=`<b>test snippet</b>`]]'), StringHelper::encode('<b>test snippet</b>'));
-        $this->assertSame($this->template->replace('[[!test?param=`<b>test snippet</b>`]]'), '<b>test snippet</b>');
+        $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet('test', ['param' => '<b>test snippet</b>']));
+        $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet(new TestSnippet(), ['param' => '<b>test snippet</b>']));
+        $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->replace('[[test?param=`<b>test snippet</b>`]]'));
+        $this->assertSame('<b>test snippet</b>', $this->template->replace('[[!test?param=`<b>test snippet</b>`]]'));
     }
 
     public function testNullSnippet()
@@ -577,8 +578,8 @@ class TemplateTest extends TemplateCommon
             },
         ];
 
-        $this->assertSame($this->template->replace('[[#extension.get?param=`<b>test extension</b>`]]'), StringHelper::encode('<b>test extension</b>'));
-        $this->assertSame($this->template->replace('[[!#extension.get?param=`<b>test extension</b>`]]'), '<b>test extension</b>');
+        $this->assertSame(StringHelper::encode('<b>test extension</b>'), $this->template->replace('[[#extension.get?param=`<b>test extension</b>`]]'));
+        $this->assertSame('<b>test extension</b>', $this->template->replace('[[!#extension.get?param=`<b>test extension</b>`]]'));
     }
 
     public function testCacheSnippet()
@@ -596,13 +597,13 @@ class TemplateTest extends TemplateCommon
         $this->template->snippets['test']['class'] = TestSnippet::className();
 
         // Rock engine
-        $this->assertSame($this->template->replace('[[!test?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
+        $this->assertSame('<b>test snippet</b>', $this->template->replace('[[!test?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'));
         $this->assertTrue($cache->exists($className));
-        $this->assertSame($cache->get($className), '<b>test snippet</b>');
-        $this->assertSame($this->template->replace('[[!test?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'), '<b>test snippet</b>');
+        $this->assertSame('<b>test snippet</b>', $cache->get($className));
+        $this->assertSame('<b>test snippet</b>', $this->template->replace('[[!test?param=`<b>test snippet</b>`?cacheKey=`'.$className.'`]]'));
 
         // PHP engine
-        $this->assertSame($this->template->getSnippet('test', ['cacheKey' => $className]), '<b>test snippet</b>');
+        $this->assertSame('<b>test snippet</b>', $this->template->getSnippet('test', ['cacheKey' => $className]));
     }
 
     public function testCacheLayout()
@@ -619,17 +620,17 @@ class TemplateTest extends TemplateCommon
             'text' => 'world',
             'cacheKey' => 'key_layout'
         ];
-        $this->assertSame($this->template->render($this->path . '/layout', $placeholders), file_get_contents($this->path . '/_layout.html'));
+        $this->assertSame(file_get_contents($this->path . '/_layout.html'),$this->template->render($this->path . '/layout', $placeholders));
         $this->assertTrue($cache->exists('key_layout'));
-        $this->assertSame($this->template->render($this->path . '/layout', $placeholders), file_get_contents($this->path . '/_layout.html'));
+        $this->assertSame(file_get_contents($this->path . '/_layout.html'), $this->template->render($this->path . '/layout', $placeholders));
     }
 
     public function testRenderAsPHP()
     {
         $this->template = new Template();
         $this->template->addMultiPlaceholders(['foo'=> ['bar' => '<b>text_bar</b>'], 'baz'=> ['bar' => '<b>text_baz</b>']]);
-        $this->assertSame($this->template->render($this->path . '/layout.php', ['text' => 'world']), file_get_contents($this->path . '/_layout.html'));
-        $this->assertSame($this->template->getChunk($this->path . '/subchunk.php', ['title'=> 'test']), '<b>subchunk</b>test');
+        $this->assertSame(file_get_contents($this->path . '/_layout.html'), $this->template->render($this->path . '/layout.php', ['text' => 'world']));
+        $this->assertSame('<b>subchunk</b>test', $this->template->getChunk($this->path . '/subchunk.php', ['title'=> 'test']));
     }
 
 

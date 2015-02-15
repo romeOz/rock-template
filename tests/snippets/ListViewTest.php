@@ -175,9 +175,8 @@ class ListViewTest extends TemplateCommon
         static::clearRuntime();
         $cache = static::getCache();
         $this->template->cache = $cache;
-        $this->assertSame(
-            $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')),
-            $this->removeSpace($this->template->replace('
+        $expected =$this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'));
+        $actual =$this->removeSpace($this->template->replace('
                 [[ListView
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
@@ -186,8 +185,8 @@ class ListViewTest extends TemplateCommon
                     ?cacheKey=`list`
                     ?cacheExpire=`1`
                 ]]
-            '))
-        );
+            '));
+        $this->assertSame($expected, $actual);
         $this->assertTrue($cache->exists('list'));
         sleep(4);
         $this->assertFalse($cache->exists('list'));

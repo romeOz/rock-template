@@ -30,7 +30,7 @@ class PaginationTest extends TemplateCommon
             ]
         ];
 
-        $this->assertSame($template->getSnippet('Pagination'), null);
+        $this->assertSame(null, $template->getSnippet('Pagination'));
 
         $params = [
           'call' => function(){
@@ -48,8 +48,8 @@ class PaginationTest extends TemplateCommon
         ];
 
         $this->assertSame(
-            static::removeSpace($this->template->getSnippet('Pagination', $params)),
-            static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_args.html'))
+            static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_args.html')),
+            static::removeSpace($this->template->getSnippet('Pagination', $params))
         );
 
         // not args
@@ -57,8 +57,8 @@ class PaginationTest extends TemplateCommon
             'array' => \rock\helpers\Pagination::get(7, null, 5, SORT_DESC),
         ];
         $this->assertSame(
-            static::removeSpace($this->template->getSnippet('Pagination', $params)),
-            static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_not_args.html'))
+            static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_not_args.html')),
+            static::removeSpace($this->template->getSnippet('Pagination', $params))
         );
     }
 

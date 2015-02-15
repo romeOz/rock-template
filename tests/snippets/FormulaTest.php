@@ -27,26 +27,21 @@ class FormulaTest extends TemplateCommon
 
     public function testGet()
     {
-        $this->assertSame(
-            $this->template->replace('[[Formula
+        $actual = $this->template->replace('[[Formula
                         ?subject=`:num - 1`
                         ?operands=`{"num" : "[[+num]]"}`
                     ]]',
-                    ['num'=> 8]
-            ),
-            '7'
+            ['num'=> 8]
         );
+        $this->assertSame('7', $actual);
 
         // null
-        $this->assertSame(
-            $this->template->replace('[[Formula]]'),
-            ''
-        );
+        $this->assertSame('', $this->template->replace('[[Formula]]'));
 
-        $this->assertSame($this->template->getSnippet('Formula', ['subject' => ':num - 1', 'operands' => ['num' => 8]]), 7);
+        $this->assertSame(7, $this->template->getSnippet('Formula', ['subject' => ':num - 1', 'operands' => ['num' => 8]]));
 
         // string
-        $this->assertSame($this->template->getSnippet('Formula', ['subject' => ':num - 1', 'operands' => ['num' => 'foo']]), -1);
+        $this->assertSame(-1, $this->template->getSnippet('Formula', ['subject' => ':num - 1', 'operands' => ['num' => 'foo']]));
     }
 }
  
