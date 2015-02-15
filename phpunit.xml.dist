@@ -26,6 +26,7 @@
             <file>./src/template/HtmlException.php</file>
             <file>./src/template/TemplateException.php</file>
             <directory>./src/views</directory>
+            <directory>./tests</directory>
             <file>./src/snippets/filters/RateLimiter.php</file>
             <file>./src/snippets/filters/RateLimiterException.php</file>
             <file>./src/snippets/filters/RateLimiterTrait.php</file>
