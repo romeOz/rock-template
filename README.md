@@ -113,22 +113,8 @@ Requirements
 -------------------
 
  * **PHP 5.4+**
- * **For caching (optional):**
- suggested to use [Rock Cache](https://github.com/romeOz/rock-cache). Should be installed:
-
-```
- composer require romeoz/rock-cache:*
-```
-
-or in your composer.json:
-
-```json
- {
-    "require": {
-        "romeoz/rock-cache": "*"
-    }
- }
-```
+ * [Rock Cache](https://github.com/romeOz/rock-cache) **(optional)**. Should be installed: `composer require romeoz/rock-cache:*`
+ * [Rock Widgets](https://github.com/romeOz/rock-widgets) **(optional)**. Should be installed: `composer require romeoz/rock-widgets:*`
 
 License
 -------------------
