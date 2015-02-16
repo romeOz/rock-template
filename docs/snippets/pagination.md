@@ -35,7 +35,7 @@ $template->getSnippet('Pagination', ['call' => 'FooSnippet']);
 
 Count buttons of pagination.
 
-###pageVar
+###pageArgUrl
 
 Name url-argument of pagination ("page" by default).
 

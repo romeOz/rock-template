@@ -87,7 +87,7 @@ Params:
  * array - the data returned `\rock\template\helpers\Pagination::get()`.
  * call - the data as an call. May be an callable, snippet, or instance.
  * pageLimit - count buttons of pagination.
- * pageVar - name url-argument of pagination ("page" by default).
+ * pageArgUrl - name url-argument of pagination ("page" by default).
  * pageArgs - url-arguments of pagination.
  * pageAnchor - url-anchor of pagination.
  * wrapperTpl - wrapper template.
@@ -143,7 +143,7 @@ Contents layout.html:
     ?tpl = `@views/chunks/item`
     ?pagination=`{
        "call" : "context.getPagination",
-       "pageVar" : "num"
+       "pageArgUrl" : "num"
     }`
 ]]
 ```
@@ -158,7 +158,7 @@ $params = [
     'tpl' => '@views/chunks/item',
     'pagination' => [
         'array' => $this->context->getPagination(),
-        'pageVar' => 'num'
+        'pageArgUrl' => 'num'
     ]
 ];
 

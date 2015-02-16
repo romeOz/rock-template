@@ -68,7 +68,7 @@ use rock\helpers\Json;
  *      'array' => $provider->get()
  *      'pagination' => [
  *          'array' => $provider->getPagination(),
- *          'pageVar' => 'num'
+ *          'pageArgUrl' => 'num'
  *      ]
  *      '
  * ];
@@ -117,7 +117,7 @@ class ListView extends Snippet
      * - call -  data of pagination as an call
      * - toPlaceholder - the name of global placeholder to adding the pagination
      * - pageLimit -        count buttons of pagination
-     * - pageVar -          name url-argument of pagination ("page" by default)
+     * - pageArgUrl -          name url-argument of pagination ("page" by default)
      * - pageArgs -         url-arguments of pagination
      * - pageAnchor -       url-anchor of pagination
      * - wrapperTpl -       wrapper template for pagination
@@ -235,7 +235,7 @@ class ListView extends Snippet
 
         $keys = [
             'array',
-            'pageVar',
+            'pageArgUrl',
             'pageArgs',
             'wrapperTpl',
             'pageNumTpl',
