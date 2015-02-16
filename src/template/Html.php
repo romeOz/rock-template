@@ -520,7 +520,9 @@ class Html
      */
     public static function input($type, $name = null, $value = null, $options = [])
     {
-        $options['type'] = $type;
+        if (!isset($options['type'])) {
+            $options['type'] = $type;
+        }
         $options['name'] = $name;
         $options['value'] = $value === null ? null : (string)$value;
 
