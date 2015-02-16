@@ -25,8 +25,8 @@
     "require": {
         "php": ">=5.4.0",
         "romeoz/rock-helpers" : "0.10.*",
-        "romeoz/rock-components" : "*@dev",
-        "romeoz/rock-url" : "*@dev",
+        "romeoz/rock-components" : "0.10.*",
+        "romeoz/rock-url" : "0.10.*",
         "romeoz/rock-execute" : "*@dev"
     },
     "require-dev": {
