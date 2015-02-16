@@ -88,8 +88,6 @@ Params:
  * call - the data as an call. May be an callable, snippet, or instance.
  * pageLimit - count buttons of pagination.
  * pageArgUrl - name url-argument of pagination ("page" by default).
- * pageArgs - url-arguments of pagination.
- * pageAnchor - url-anchor of pagination.
  * wrapperTpl - wrapper template.
  * pageNumTpl - template for buttons.
  * pageActiveTpl - template for active button.
