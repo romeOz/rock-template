@@ -6,6 +6,7 @@ namespace rockunit\snippets;
 use rock\snippets\Pagination;
 use rock\template\TemplateException;
 use rock\template\Template;
+use rock\url\Url;
 use rockunit\template\TemplateCommon;
 
 class PaginationTest extends TemplateCommon
@@ -42,15 +43,21 @@ class PaginationTest extends TemplateCommon
         // with args + anchor
         $params = [
             'array' => \rock\helpers\Pagination::get(7, null, 5, SORT_DESC),
-            'pageArgs' => 'view=all&sort=desc',
-            'pageAnchor' => 'name'
-
+            'url' => Url::set()->addArgs(['view' => 'all', 'sort' => 'desc'])->addAnchor('name'),
         ];
 
-        $this->assertSame(
-            static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_args.html')),
-            static::removeSpace($this->template->getSnippet('Pagination', $params))
-        );
+        $expected = static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_args.html'));
+        $actual = static::removeSpace($this->template->getSnippet('Pagination', $params));
+        $this->assertSame($expected, $actual);
+
+        // rock engine
+        $actual = static::removeSpace($template->replace('
+            [[Pagination
+                ?array = `'.json_encode(\rock\helpers\Pagination::get(7, null, 5, SORT_DESC)).'`
+                ?url = `{"class" : "\\\rock\\\url\\\Url", "query": "view=all&sort=desc", "fragment" : "name"}`
+            ]]
+        '));
+        $this->assertSame($expected, $actual);
 
         // not args
         $params = [

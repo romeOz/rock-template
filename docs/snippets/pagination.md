@@ -30,6 +30,24 @@ $template->getSnippet('Pagination', ['call' => [new \foo\FooController(), 'getPa
 $template->getSnippet('Pagination', ['call' => function(){}]);
 $template->getSnippet('Pagination', ['call' => 'FooSnippet']);
 ```
+###url
+Set instance `\rock\url\Url` or config as array/JSON
+
+```
+[[Pagination
+    ?url=`{"class" : "\rock\url\Url", "query": "view=all&order=desc"}`
+]]
+```
+
+or
+
+
+```php
+$config = [
+    'url' => \rock\url\Url::set()->addArgs(['views' => 'all', 'order' => 'desc']);
+];
+$template->getSnippet('Pagination', $config);
+```
 
 ###pageLimit
 
@@ -38,32 +56,6 @@ Count buttons of pagination.
 ###pageArgUrl
 
 Name url-argument of pagination ("page" by default).
-
-###pageArgs
-
-Url-arguments of pagination.
-
-```
-?pageArgs=`{"view" : "all"}`
-```
-
-or
-
-```php
-[
-    'pageArgs' => [
-        'view' => 'all'
-    ]
-]
-```
-
-###pageAnchor
-
-Url-anchor of pagination.
-
-```
-?pageAnchor=`anchor`
-```
 
 ###pageNumTpl
 

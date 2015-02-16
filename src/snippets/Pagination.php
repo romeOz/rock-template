@@ -2,7 +2,6 @@
 namespace rock\snippets;
 
 use rock\helpers\Helper;
-use rock\helpers\StringHelper;
 use rock\url\Url;
 
 /**
@@ -60,29 +59,56 @@ class Pagination extends Snippet
      * @var string|array
      */
     public $call;
-    public $pageArgUrl;
+    public $pageArgUrl = \rock\helpers\Pagination::PAGE_ARG_URL;
     /**
      * Template for active page.
      *
      * @var string
      */
     public $pageActiveTpl = '@template.views/pagination/numActive';
+    /**
+     * Template for num page.
+     *
+     * @var string
+     */
     public $pageNumTpl = '@template.views/pagination/num';
+    /**
+     * Caption of first page
+     * @var string
+     */
     public $pageFirstName = 'page first';
+    /**
+     * Template for first page.
+     *
+     * @var string
+     */
     public $pageFirstTpl = '@template.views/pagination/first';
+    /**
+     *  Caption of last page
+     * @var string
+     */
     public $pageLastName = 'page last';
+    /**
+     * Template for last page.
+     *
+     * @var string
+     */
     public $pageLastTpl = '@template.views/pagination/last';
+    /**
+     * Template for wrapper.
+     *
+     * @var string
+     */
     public $wrapperTpl = '@template.views/pagination/wrapper';
+    /** @var  Url */
+    public $url = 'url';
+    public $autoEscape = false;
     /**
      * URL-arguments.
      *
      * @var array
      */
-    public $pageArgs = [];
-    public $pageAnchor;
-    public $autoEscape = false;
-    /** @var  Url */
-    public $url = 'url';
+    private $_pageArgs = [];
 
     /**
      * @inheritdoc
@@ -115,17 +141,8 @@ class Pagination extends Snippet
             return null;
         }
         $data = $this->array;
-        // if exits args-url
-        if (!$this->calculateArgs()) {
-            return null;
-        }
         // set name of arg-url by pagination
-        $pageArgUrl = !empty($this->pageArgUrl)
-            ? $this->pageArgUrl
-            : (!empty($data['pageArgUrl'])
-                ? $data['pageArgUrl']
-                : \rock\helpers\Pagination::PAGE_ARG_URL
-            );
+        $pageArgUrl = !empty($data['pageArgUrl']) ? $data['pageArgUrl'] : $this->pageArgUrl;
         // Numeration
         $num = $this->calculateNum($data, $pageArgUrl);
         $pageFirstName = $this->calculateFirstPage($data, $pageArgUrl);
@@ -149,41 +166,12 @@ class Pagination extends Snippet
         }
     }
 
-    /**
-     * Calculate url args
-     *
-     * @return bool
-     */
-    protected function calculateArgs()
-    {
-        if (empty($this->pageArgs)) {
-            return true;
-        }
-        if (is_string($this->pageArgs)) {
-            parse_str(
-                StringHelper::removeSpaces($this->pageArgs),
-                $this->pageArgs
-            );
-        }
-        if (empty($this->pageArgs) || !is_array($this->pageArgs)) {
-            return false;
-        }
-        foreach ($this->pageArgs as $key => $val) {
-            if (empty($key) || empty($val)) {
-                continue;
-            }
-            $this->pageArgs[$key] = strip_tags($val);
-        }
-
-        return true;
-    }
-
     protected function calculateNum(array $data, $pageArgUrl)
     {
         $result = '';
         foreach ($data['pageDisplay'] as $num) {
-            $this->pageArgs[$pageArgUrl] = $num;
-            $url = $this->url->addArgs($this->pageArgs)->addAnchor($this->pageAnchor)->get();
+            $this->_pageArgs[$pageArgUrl] = $num;
+            $url = $this->url->addArgs($this->_pageArgs)->get();
             // for active page
             if ((int)$data['pageCurrent'] === (int)$num) {
                 $result .= $this->template->replaceByPrefix($this->pageActiveTpl, ['num' => $num, 'url' => $url]);
@@ -201,11 +189,10 @@ class Pagination extends Snippet
         if (!$pageFirst = (int)$data['pageFirst']) {
             return null;
         }
-        $this->pageArgs[$pageArgUrl] = $pageFirst;
+        $this->_pageArgs[$pageArgUrl] = $pageFirst;
         $placeholders = [
             'url' => $this->url
-                ->addArgs($this->pageArgs)
-                ->addAnchor($this->pageAnchor)
+                ->addArgs($this->_pageArgs)
                 ->get(),
             'pageFirstName' => $this->pageFirstName
         ];
@@ -217,11 +204,10 @@ class Pagination extends Snippet
         if (!$pageLast = (int)$data['pageLast']) {
             return null;
         }
-        $this->pageArgs[$pageArgUrl] = $pageLast;
+        $this->_pageArgs[$pageArgUrl] = $pageLast;
         $placeholders = [
             'url' => $this->url
-                ->addArgs($this->pageArgs)
-                ->addAnchor($this->pageAnchor)
+                ->addArgs($this->_pageArgs)
                 ->get(),
             'pageLastName' => $this->pageLastName
         ];
