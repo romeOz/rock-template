@@ -41,13 +41,8 @@ class RateLimiter extends SnippetFilter
 
     public function init()
     {
-        if (!is_object($this->response)) {
-            $this->response = Instance::ensure($this->response, '\rock\response\Response', false);
-        }
-
-        if (!is_object($this->session)) {
-            $this->session = Instance::ensure($this->session, '\rock\session\Session');
-        }
+        $this->response = Instance::ensure($this->response, '\rock\response\Response', false);
+        $this->session = Instance::ensure($this->session, '\rock\session\Session');
     }
 
     /**
