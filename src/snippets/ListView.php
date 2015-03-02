@@ -117,9 +117,8 @@ class ListView extends Snippet
      * - call -  data of pagination as an call
      * - toPlaceholder - the name of global placeholder to adding the pagination
      * - pageLimit -        count buttons of pagination
+     * - url - the current url. If not set, the `url` application component will be used.
      * - pageArgUrl -          name url-argument of pagination ("page" by default)
-     * - pageArgs -         url-arguments of pagination
-     * - pageAnchor -       url-anchor of pagination
      * - wrapperTpl -       wrapper template for pagination
      * - pageNumTpl -       template for buttons
      * - pageActiveTpl -    template for active button
@@ -222,30 +221,12 @@ class ListView extends Snippet
         if (empty($this->pagination['array']) && empty($this->pagination['call'])) {
             return;
         }
-        if (empty($this->pagination['pageSort'])) {
-            $this->pagination['pageSort'] = SORT_DESC;
-        }
-        if (empty($this->pagination['pageLimit'])) {
-            $this->pagination['pageLimit'] = \rock\helpers\Pagination::PAGE_LIMIT;
-        }
-
         if (isset($this->pagination['call'])) {
             $this->pagination['array'] = $this->callFunction($this->pagination['call']);
         }
 
-        $keys = [
-            'array',
-            'pageArgUrl',
-            'pageArgs',
-            'wrapperTpl',
-            'pageNumTpl',
-            'pageActiveTpl',
-            'pageFirstTpl',
-            'pageLastTpl',
-            'pageArgs',
-            'pageAnchor'
-        ];
-        $pagination = $this->template->getSnippet('Pagination', ArrayHelper::intersectByKeys($this->pagination, $keys));
+        $keys = ['toPlaceholder'];
+        $pagination = $this->template->getSnippet('Pagination', ArrayHelper::diffByKeys($this->pagination, $keys));
         if (!empty($this->pagination['toPlaceholder'])) {
             $this->template->addPlaceholder($this->pagination['toPlaceholder'], $pagination);
             $this->template->cachePlaceholders[$this->pagination['toPlaceholder']] = $pagination;
