@@ -34,13 +34,15 @@
         "romeoz/rock-cache" : "0.10.*",
         "romeoz/rock-request" : "*@dev",
         "romeoz/rock-date" : "*@dev",
-        "romeoz/rock-access" : "*@dev"
+        "romeoz/rock-access" : "*@dev",
+        "romeoz/rock-image" : "*@dev"
     },
     "suggest": {
         "romeoz/rock-cache": "required by Rock Cache",
         "romeoz/rock-widgets": "required by Rock Widgets",
         "romeoz/rock-validate": "required by Rock Valiadte",
         "romeoz/rock-sanitize": "required by Rock Sanitize",
+        "romeoz/rock-image": "required by Rock Image",
         "romeoz/rock-di": "required by module Rock Dependency Injection"
     },
     "autoload": {

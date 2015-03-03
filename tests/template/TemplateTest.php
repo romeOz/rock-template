@@ -3,8 +3,11 @@
 namespace rockunit\template;
 
 
+use League\Flysystem\Adapter\Local;
 use rock\base\Alias;
+use rock\file\FileManager;
 use rock\helpers\StringHelper;
+use rock\image\ImageProvider;
 use rock\template\TemplateException;
 use rock\template\Template;
 use rockunit\template\snippets\NullSnippet;
@@ -488,6 +491,24 @@ class TemplateTest extends TemplateCommon
 
         // bit shift the bits to the right
         $this->assertSame(1, $this->template->replace('[[+num >> `1`]]', ['num'=> 2]));
+        $this->template->removeAllPlaceholders();
+
+        // thumb
+        $config = [
+            'adapter' => [
+                'class' => FileManager::className(),
+                'adapter' => new Local(Alias::getAlias('@rockunit/data/imagine')),
+            ],
+            'adapterCache' => [
+                'class' => FileManager::className(),
+                'adapter' => new Local(Alias::getAlias('@rockunit/runtime/cache')),
+            ],
+        ];
+        $placeholders = [
+            'imageProvider' => new ImageProvider($config),
+            'src'=> 'large.jpg'
+        ];
+        $this->assertSame('/assets/cache/45x40/large.jpg', $this->template->replace('[[+src:thumb&h=`40`&w=`45`&imageProvider=`[[!+imageProvider]]`]]', $placeholders));
         $this->template->removeAllPlaceholders();
 
         $this->assertSame(2, $this->template->replace('[[+num:formula&operator=`<<`]]', ['num'=> 2]));

@@ -1788,7 +1788,10 @@ class Template implements EventsInterface
             ],
             'Url' => [
                 'class'        => \rock\snippets\Url::className(),
-            ]
+            ],
+            'Thumb' => [
+                'class'        => \rock\snippets\Thumb::className(),
+            ],
         ];
     }
 }

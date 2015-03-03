@@ -203,7 +203,7 @@ class BaseFilter
         }
         $const = Helper::getValue($params['const'], 1, true);
             /** @var ImageProvider $imageProvider */
-        $imageProvider = Instance::ensure(isset($params['imageProvider']) ? $params['imageProvider'] : 'imageProvider', '\rock\image\ImageProvider');
+        $imageProvider = Instance::ensure(isset($params['imageProvider']) ? $params['imageProvider'] : 'imageProvider');
         $src = $imageProvider->get($path, Helper::getValue($params['w']), Helper::getValue($params['h']));
         if (!($const & ThumbInterface::WITHOUT_WIDTH_HEIGHT)) {
             $params['width'] = $imageProvider->width;
