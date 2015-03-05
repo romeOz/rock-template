@@ -13,7 +13,7 @@ use rock\template\Html;
  *
  * @see Thumb
  */
-class Thumb extends Snippet implements ThumbInterface
+class Thumb extends Snippet
 {
     /**
      * Src to image.
@@ -77,11 +77,11 @@ class Thumb extends Snippet implements ThumbInterface
 
         $src = $this->imageProvider->get($this->src, $this->w, $this->h);
 
-        if (!((int)$this->const & self::WITHOUT_WIDTH_HEIGHT)) {
+        if (!((int)$this->const & ThumbInterface::WITHOUT_WIDTH_HEIGHT)) {
             $options['width'] = $this->imageProvider->width;
             $options['height'] = $this->imageProvider->height;
         }
 
-        return (int)$this->const & self::OUTPUT_IMG ? Html::img($src, $options) : $src;
+        return (int)$this->const & ThumbInterface::OUTPUT_IMG ? Html::img($src, $options) : $src;
     }
 }
