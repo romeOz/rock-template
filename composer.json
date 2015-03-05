@@ -16,15 +16,8 @@
             "email": "serggalka@gmail.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/romeOz/rock-access"
-        }
-    ],
     "require": {
         "php": ">=5.4.0",
-        "romeoz/rock-helpers" : "0.10.*",
         "romeoz/rock-components" : "0.10.*",
         "romeoz/rock-url" : "0.10.*",
         "romeoz/rock-execute" : "*@dev"
@@ -32,10 +25,10 @@
     "require-dev": {
         "phpunit/phpunit": "4.4.*",
         "romeoz/rock-cache" : "0.10.*",
-        "romeoz/rock-request" : "*@dev",
-        "romeoz/rock-date" : "*@dev",
-        "romeoz/rock-access" : "*@dev",
-        "romeoz/rock-image" : "*@dev"
+        "romeoz/rock-request" : "0.10.*",
+        "romeoz/rock-date" : "0.10.*",
+        "romeoz/rock-access" : "0.10.*",
+        "romeoz/rock-image" : "0.10.*"
     },
     "suggest": {
         "romeoz/rock-cache": "required by Rock Cache",
@@ -53,7 +46,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.9-dev"
+            "dev-master": "0.10-dev"
         }
     }
 }
