@@ -201,12 +201,7 @@ class Template implements EventsInterface
             Alias::setAlias('template.views', dirname(__DIR__) . '/views');
         }
         $this->locale = strtolower($this->locale);
-        if (!is_object($this->cache)) {
-            if (class_exists('\rock\di\Container')) {
-                $this->cache =  \rock\di\Container::load($this->cache);
-            }
-        }
-
+        $this->cache = Instance::ensure($this->cache, null, false);
         $this->snippets = array_merge($this->defaultSnippets(), $this->snippets);
         $this->filters = array_merge($this->defaultFilters(), $this->filters);
     }
