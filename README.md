@@ -20,8 +20,8 @@ Features
  * Custom auto-escaping
  * Support adding/customization filters and snippets
  * There is a possibility of adding custom extensions
- * Widgets (suggest [Rock Widgets](https://github.com/romeOz/rock-widgets))
- * Caching all entities template engine (suggest [Rock Cache](https://github.com/romeOz/rock-cache))
+ * Widgets **(option)**
+ * Caching all entities template engine **(option)**
  * Module for [Rock Framework](https://github.com/romeOz/rock)
 
 Installation
@@ -95,12 +95,13 @@ Demo & Tests (one of three ways)
  * `docker run -d -p 8080:80 romeoz/vagrant-rock-template`
  * Open demo [http://localhost:8080/](http://localhost:8080/)
  
-####3. Vagrant + Ansible (see [out of the box](https://github.com/romeOz/vagrant-rock-template#out-of-the-box))
+####3. VirtualBox + Vagrant + Ansible
 
  * `git clone https://github.com/romeOz/vagrant-rock-template.git`
+ * [Install VirtualBox](https://www.virtualbox.org/wiki/Downloads)
  * [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins `vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier`
  * `vagrant up`
- * Open demo [http://rock.tpl/](http://rock.tpl/) or [http://192.168.33.34/](http://192.168.33.34/)
+ * Open demo [http://www.rock-template/](http://www.rock-template/) or [http://192.168.33.34/](http://192.168.33.34/)
 
 > Work/editing the project can be done via ssh:
 
