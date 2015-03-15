@@ -1435,7 +1435,9 @@ class Template implements EventsInterface
             }
             return $snippet;
         }
-
+        if (!isset($this->snippets[$snippet])) {
+            throw new TemplateException(TemplateException::UNKNOWN_SNIPPET, ['name' => $snippet]);
+        }
         $config = $this->snippets[$snippet];
         if (is_callable($config)) {
             if (($config = call_user_func($this->snippets[$snippet], $params)) instanceof Snippet) {
