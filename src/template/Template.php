@@ -227,12 +227,6 @@ class Template implements EventsInterface
             return $resultCache;
         }
         $result = $this->renderInternal($path, $placeholders);
-        foreach (['jsFiles', 'js', 'linkTags', 'cssFiles', 'css', 'linkTags', 'title', 'metaTags', 'head'] as $property)
-        {
-            if ($this->$property instanceof \Closure) {
-                $this->$property = call_user_func($this->$property, $this);
-            }
-        }
         $result = implode("\n", [$this->beginPage(), $this->beginBody(), $result, $this->endBody(), $this->endPage()]);
         // Set cache
         $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags ? : []);
