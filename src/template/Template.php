@@ -1349,7 +1349,7 @@ class Template implements EventsInterface
             return null;
         }
         $name = strtolower($names[0]);
-        if ($this->extensions[$name] instanceof \Closure) {
+        if (is_callable($this->extensions[$name])) {
             unset($names[0]);
 
             return call_user_func($this->extensions[$name], array_values($names), $params, $this);
@@ -1373,7 +1373,7 @@ class Template implements EventsInterface
 
     private function _calculateLink($link)
     {
-        if (empty($link) || !$this->handlerLink instanceof \Closure) {
+        if (empty($link) || !is_callable($this->handlerLink)) {
             return '#';
         }
         $link = explode('.', $link);
@@ -1384,23 +1384,7 @@ class Template implements EventsInterface
     protected function getSnippetInternal($snippet, array $params = [], $autoEscape = true)
     {
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($params);
-        if ($snippet instanceof Snippet) {
-            if (!empty($params)) {
-                $snippet->setProperties($params);
-            }
-        } else {
-            if (!isset($this->snippets[$snippet]['class'])) {
-                throw new TemplateException(TemplateException::UNKNOWN_SNIPPET, ['name' => $snippet]);
-            }
-            $config = array_merge($this->snippets[$snippet], $params);
-
-            /** @var \rock\snippets\Snippet $snippet */
-            $snippet = Instance::ensure($config);
-
-            if (!$snippet instanceof Snippet) {
-                throw new TemplateException(TemplateException::UNKNOWN_SNIPPET, ['name' => $snippet::className()]);
-            }
-        }
+        $snippet = $this->getInstanceSnippet($snippet, $params);
         if ($autoEscape === false) {
             $snippet->autoEscape = false;
         }
@@ -1434,6 +1418,43 @@ class Template implements EventsInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param $snippet
+     * @param array $params
+     * @return Snippet
+     * @throws TemplateException
+     * @throws \rock\helpers\InstanceException
+     */
+    protected function getInstanceSnippet($snippet, array $params = [])
+    {
+        if ($snippet instanceof Snippet) {
+            if (!empty($params)) {
+                $snippet->setProperties($params);
+            }
+            return $snippet;
+        }
+
+        $config = $this->snippets[$snippet];
+        if (is_callable($config)) {
+            if (($config = call_user_func($this->snippets[$snippet], $params)) instanceof Snippet) {
+                return $config;
+            }
+        }
+
+        if (!isset($config['class'])) {
+            throw new TemplateException(TemplateException::UNKNOWN_SNIPPET, ['name' => $snippet]);
+        }
+        $config = array_merge($config, $params);
+
+        /** @var \rock\snippets\Snippet $snippet */
+        $snippet = Instance::ensure($config);
+
+        if (!$snippet instanceof Snippet) {
+            throw new TemplateException(TemplateException::UNKNOWN_SNIPPET, ['name' => $snippet::className()]);
+        }
+        return $snippet;
     }
 
     protected function replaceSugar($matches)
