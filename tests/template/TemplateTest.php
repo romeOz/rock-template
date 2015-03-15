@@ -131,17 +131,13 @@ class TemplateTest extends TemplateCommon
         $config = [
             'head' => '<!DOCTYPE html>
             <!--[if !IE]>--><html class="no-js"><!--<![endif]-->',
-            'title' => function(){
-                    return 'Demo';
-                },
-            'metaTags' => function(){
-                    return [
-                        '<meta charset="UTF-8">',
-                        'language' => '<meta http-equiv="Content-Language" content="en">',
-                        'robots' => '<meta name="robots" content="all">',
-                        'description' => '<meta name="description" content="about">',
-                    ];
-                },
+            'title' => 'Demo',
+            'metaTags' => [
+                '<meta charset="UTF-8">',
+                'language' => '<meta http-equiv="Content-Language" content="en">',
+                'robots' => '<meta name="robots" content="all">',
+                'description' => '<meta name="description" content="about">',
+            ],
             'linkTags' => [
                 '<link type="image/x-icon" href="/favicon.ico?10" rel="Shortcut Icon">',
                 '<link type="application/rss+xml" href="/feed.rss" title="rss"  rel="alternate">'
@@ -580,6 +576,17 @@ class TemplateTest extends TemplateCommon
     public function testSnippet()
     {
         $this->template->snippets['test']['class'] = TestSnippet::className();
+        $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet('test', ['param' => '<b>test snippet</b>']));
+        $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet(new TestSnippet(), ['param' => '<b>test snippet</b>']));
+        $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->replace('[[test?param=`<b>test snippet</b>`]]'));
+        $this->assertSame('<b>test snippet</b>', $this->template->replace('[[!test?param=`<b>test snippet</b>`]]'));
+
+        // as callable
+        $this->template->snippets['test'] = function (){
+            return [
+                'class' => TestSnippet::className()
+            ];
+        };
         $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet('test', ['param' => '<b>test snippet</b>']));
         $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet(new TestSnippet(), ['param' => '<b>test snippet</b>']));
         $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->replace('[[test?param=`<b>test snippet</b>`]]'));
