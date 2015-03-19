@@ -28,7 +28,7 @@ class ListViewTest extends TemplateCommon
 
         // pagination
         $params['pagination']['array'] = Pagination::get(count($params['array']), 1, 1, SORT_DESC);
-        $params['pagination']['pageArgUrl'] = 'num';
+        $params['pagination']['pageParam'] = 'num';
         $params['pagination']['toPlaceholder'] = '$parent.pagination';
         $this->assertSame($this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')), $this->removeSpace($this->template->getSnippet('ListView', $params)));
         $this->assertNotEmpty($this->template->getPlaceholder('pagination'));

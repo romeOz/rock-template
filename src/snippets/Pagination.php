@@ -30,7 +30,7 @@ use rock\url\Url;
  *
  *  $params = [
  *      'array' => $provider->getPagination(),
- *      'pageArgUrl' => 'num'
+ *      'pageParam' => 'num'
  * ];
  * $template->getSnippet('\rock\snippet\Pagination', $params);
  * ```
@@ -59,7 +59,7 @@ class Pagination extends Snippet
      * @var string|array
      */
     public $call;
-    public $pageArgUrl = \rock\helpers\Pagination::PAGE_ARG_URL;
+    public $pageParam = \rock\helpers\Pagination::PAGE_PARAM;
     /**
      * Template for active page.
      *
@@ -142,11 +142,11 @@ class Pagination extends Snippet
         }
         $data = $this->array;
         // set name of arg-url by pagination
-        $pageArgUrl = !empty($data['pageArgUrl']) ? $data['pageArgUrl'] : $this->pageArgUrl;
+        $pageParam = !empty($data['pageParam']) ? $data['pageParam'] : $this->pageParam;
         // Numeration
-        $num = $this->calculateNum($data, $pageArgUrl);
-        $pageFirstName = $this->calculateFirstPage($data, $pageArgUrl);
-        $pageLastName = $this->calculateLastPage($data, $pageArgUrl);
+        $num = $this->calculateNum($data, $pageParam);
+        $pageFirstName = $this->calculateFirstPage($data, $pageParam);
+        $pageLastName = $this->calculateLastPage($data, $pageParam);
         $placeholders = [
             'num' => $num,
             'pageFirst' => $pageFirstName,
@@ -166,11 +166,11 @@ class Pagination extends Snippet
         }
     }
 
-    protected function calculateNum(array $data, $pageArgUrl)
+    protected function calculateNum(array $data, $pageParam)
     {
         $result = '';
         foreach ($data['pageDisplay'] as $num) {
-            $this->_pageArgs[$pageArgUrl] = $num;
+            $this->_pageArgs[$pageParam] = $num;
             $url = $this->url->addArgs($this->_pageArgs)->get();
             // for active page
             if ((int)$data['pageCurrent'] === (int)$num) {
@@ -184,12 +184,12 @@ class Pagination extends Snippet
         return $result;
     }
 
-    protected function calculateFirstPage(array $data, $pageArgUrl)
+    protected function calculateFirstPage(array $data, $pageParam)
     {
         if (!$pageFirst = (int)$data['pageFirst']) {
             return null;
         }
-        $this->_pageArgs[$pageArgUrl] = $pageFirst;
+        $this->_pageArgs[$pageParam] = $pageFirst;
         $placeholders = [
             'url' => $this->url
                 ->addArgs($this->_pageArgs)
@@ -199,12 +199,12 @@ class Pagination extends Snippet
         return $this->template->replaceByPrefix($this->pageFirstTpl, $placeholders);
     }
 
-    protected function calculateLastPage(array $data, $pageArgUrl)
+    protected function calculateLastPage(array $data, $pageParam)
     {
         if (!$pageLast = (int)$data['pageLast']) {
             return null;
         }
-        $this->_pageArgs[$pageArgUrl] = $pageLast;
+        $this->_pageArgs[$pageParam] = $pageLast;
         $placeholders = [
             'url' => $this->url
                 ->addArgs($this->_pageArgs)
