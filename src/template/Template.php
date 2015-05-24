@@ -1088,12 +1088,12 @@ class Template implements EventsInterface
         // Search of filters (modifiers)
         $filters = $this->_searchFilters($matches[0], $dataRecursive);
         $matches['name'] = trim($matches['name']);
+        $params = Serialize::unserializeRecursive($params);
         // Get cache
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($params);
         if (($resultCache = $this->getCache($cacheKey)) !== false) {
             return $resultCache;
         }
-        $params = Serialize::unserializeRecursive($params);
         $filters = Serialize::unserializeRecursive($filters);
         $escape = !$matches['escape'];
 
