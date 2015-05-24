@@ -281,7 +281,9 @@ class ListView extends Snippet
             $result = $this->renderWrapperTpl($result, $addPlaceholders);
         }
         // Concat pagination
-        $result .= $this->template->getPlaceholder('pagination', false);
+        if (empty($this->pagination['toPlaceholder'])) {
+            $result .= $this->template->getPlaceholder('pagination', false);
+        }
         // Deleting placeholders
         $this->template->removePlaceholder('pagination');
         $this->template->removeMultiPlaceholders(array_keys($addPlaceholders));
