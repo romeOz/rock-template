@@ -35,7 +35,7 @@ Removing all arguments.
 ###removeAnchor
 Removing anchor.
 
-###const
+###scheme
 All constants are see in `\rock\template\url\UrlInterface`.
 
 Example
@@ -48,6 +48,6 @@ Example
     ?beginPath=`/parts`
     ?endPath=`/news/`
     ?anchor=`name`
-    ?const=`32`
+    ?scheme=`abs`
 ]]
  ```

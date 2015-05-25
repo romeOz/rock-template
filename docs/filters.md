@@ -323,7 +323,7 @@ $replace =
          &beginPath=`/parts`
          &endPath=`/news/`
          &anchor=`name`
-         &const=`32`
+         &scheme=`abs`
     ]]';
 
 echo (new Template)->replace($replace,['url'=> 'http://site.com/categories/?view=all']); // result: http://site.com/parts/categories/news/?page=1#name
