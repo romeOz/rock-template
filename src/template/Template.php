@@ -1009,18 +1009,19 @@ class Template implements EventsInterface
     protected function renderInternal($path, array $placeholders = [])
     {
         $path = Alias::getAlias($path, ['lang' => $this->locale]);
+        $path = FileHelper::normalizePath($path, DIRECTORY_SEPARATOR, false);
         if (!pathinfo($path, PATHINFO_EXTENSION)) {
             $path .= '.' . $this->engines[$this->defaultEngine];
         }
-        $path = FileHelper::normalizePath($path);
-        // Current path
-        if (strpos($path, DIRECTORY_SEPARATOR) === false && $this->path) {
+        // relative path
+        if ((strpos($path, DIRECTORY_SEPARATOR) === false || strpos($path, '.'. DIRECTORY_SEPARATOR) !== false) && $this->path) {
             $path = dirname($this->path) . DIRECTORY_SEPARATOR . $path;
+            $path = realpath($path);
         }
-        $this->path = $path;
         if (!file_exists($path)) {
             throw new TemplateException(TemplateException::UNKNOWN_FILE, ['path' => $path]);
         }
+        $this->path = $path;
         if (current(array_keys($this->engines, pathinfo($path, PATHINFO_EXTENSION))) === self::ENGINE_PHP) {
             $this->addMultiPlaceholders($placeholders ?: []);
 

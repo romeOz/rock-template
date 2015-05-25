@@ -237,11 +237,11 @@ class TemplateTest extends TemplateCommon
         );
     }
 
-    public function testCurrentPathTpl()
+    public function testRelativePathTpl()
     {
         $template = new Template();
-        $this->assertSame('hello', $template->getChunk('@rockunit.tpl\current\chunk'));
-        $this->assertSame('hello', $template->getChunk('@rockunit.tpl\current\chunk.php'));
+        $this->assertSame('hellohello', $template->getChunk('@rockunit.tpl\relative\chunk'));
+        $this->assertSame('hellohello', $template->getChunk('@rockunit.tpl\relative\chunk.php'));
     }
 
     public function testHasChunk()
