@@ -1127,7 +1127,7 @@ class Template implements EventsInterface
             );
             // link to resource
         } elseif ($matches['type'] === '~') {
-            $result = $this->_calculateLink($matches['name']);
+            $result = $this->_calculateLink($matches['name'], $params);
             // snippet
         } elseif (empty($matches['type'])) {
             $result = $this->getSnippet($matches['name'], $params, $escape);
@@ -1366,14 +1366,13 @@ class Template implements EventsInterface
         );
     }
 
-    private function _calculateLink($link)
+    private function _calculateLink($link, array $params = [])
     {
         if (empty($link) || !is_callable($this->handlerLink)) {
             return '#';
         }
-        $link = explode('.', $link);
 
-        return call_user_func($this->handlerLink, $link, $this);
+        return call_user_func($this->handlerLink, $link, $this, $params);
     }
 
     protected function getSnippetInternal($snippet, array $params = [], $autoEscape = true)
