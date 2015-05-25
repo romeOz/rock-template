@@ -107,7 +107,7 @@ class BaseFilter
      * - replace:       the replacement data.
      * - anchor:       anchor for adding.
      * - removeAnchor:       remove anchor.
-     * - const: adduce URL to: {@see \rock\url\Url::ABS}, {@see \rock\url\Url::HTTP},
+     * - scheme: adduce URL to: {@see \rock\url\Url::ABS}, {@see \rock\url\Url::HTTP},
      *                  and {@see \rock\url\Url::HTTPS}.
      * @return string
      */
@@ -159,7 +159,7 @@ class BaseFilter
             $urlBuilder->addAnchor($params['anchor']);
         }
 
-        return $urlBuilder->get(Helper::getValue($params['const'], 0), (bool)Helper::getValue($params['selfHost']));
+        return $urlBuilder->get(Helper::getValue($params['scheme'], Url::REL), (bool)Helper::getValue($params['selfHost']));
     }
 
     /**

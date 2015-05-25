@@ -365,7 +365,7 @@ class TemplateTest extends TemplateCommon
                         &beginPath=`/parts`
                         &endPath=`/news/`
                         &anchor=`name`
-                        &const=`32`
+                        &scheme=`abs`
                      ]]';
         $this->assertSame('http://site.com/parts/categories/news/?page=1#name', $this->template->replace($replace, ['url'=> '/categories/?view=all']));
         $this->template->removeAllPlaceholders();
@@ -373,7 +373,7 @@ class TemplateTest extends TemplateCommon
         // modify url + replacing URL
         $replace = '[[+url:modifyUrl
                         &replace=`["news/"]`
-                        &const=`32`
+                        &scheme=`abs`
                      ]]';
         $this->assertSame('http://site.com/?view=all', $this->template->replace($replace, ['url'=> '/news/?view=all']));
         $this->template->removeAllPlaceholders();
@@ -382,7 +382,7 @@ class TemplateTest extends TemplateCommon
         $replace = '[[+url:modifyUrl
                         &removeArgs=`["view"]`
                         &addArgs=`{"page" : 1}`
-                        &const=`32`
+                        &scheme=`abs`
                      ]]';
         $this->assertSame('http://site.com/categories/?page=1', $this->template->replace($replace, ['url'=> '/categories/?view=all']));
         $this->template->removeAllPlaceholders();
@@ -391,7 +391,7 @@ class TemplateTest extends TemplateCommon
         $replace = '[[+url:modifyUrl
                         &removeAllArgs=`true`
                         &removeAnchor=`true`
-                        &const=`32`
+                        &scheme=`abs`
                      ]]';
         $this->assertSame('http://site.com/categories/', $this->template->replace($replace, ['url'=> '/categories/?view=all#name']));
         $this->template->removeAllPlaceholders();

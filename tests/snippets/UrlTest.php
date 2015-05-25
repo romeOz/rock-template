@@ -24,7 +24,7 @@ class UrlTest extends TemplateCommon
                         ?beginPath=`/parts`
                         ?endPath=`/news/`
                         ?anchor=`name`
-                        ?const=`32`
+                        ?scheme=`abs`
                     ]]'
             )
         );
@@ -35,7 +35,7 @@ class UrlTest extends TemplateCommon
             $this->template->replace('[[Url
                         ?url=`http://site.com/news/?view=all`
                         ?replace=`["news/", ""]`
-                        ?const=`32`
+                        ?scheme=`abs`
                     ]]'
             )
         );
@@ -49,7 +49,7 @@ class UrlTest extends TemplateCommon
                     'url' => 'http://site.com/categories/?view=all',
                     'removeArgs' => ['view'],
                     'args' => ['page' => 1],
-                    'const' => Url::ABS
+                    'scheme' => Url::ABS
                 ]
             )
         );
@@ -64,7 +64,7 @@ class UrlTest extends TemplateCommon
                     'url' => 'http://site.com/categories/?view=all#name',
                     'removeAllArgs' => true,
                     'removeAnchor' => true,
-                    'const' => Url::ABS
+                    'scheme' => Url::ABS
                 ]
             )
         );
@@ -76,7 +76,7 @@ class UrlTest extends TemplateCommon
                 'Url',
                 [
                     'removeAllArgs' => true,
-                    'const' => Url::ABS
+                    'scheme' => Url::ABS
                 ]
             )
         );

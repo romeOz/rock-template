@@ -17,7 +17,7 @@ use rock\url\UrlInterface;
  *  ?beginPath=`/parts`
  *  ?endPath=`/news/`
  *  ?anchor=`name`
- *  ?const=`32`
+ *  ?const=`abs`
  * ]]
  * ```
  */
@@ -83,10 +83,10 @@ class Url extends Snippet implements UrlInterface
     public $removeAnchor;
     /**
      * Adduce URL to: `\rock\url\UrlInterface::ABS`, `\rock\url\UrlInterface::HTTP`, `\rock\url\UrlInterface::HTTPS`.
-     * @var int
+     * @var string
      * @see UrlInterface
      */
-    public $const;
+    public $scheme;
     /**
      * Use self host.
      * @var bool
@@ -146,6 +146,6 @@ class Url extends Snippet implements UrlInterface
             $urlBuilder->addAnchor($this->anchor);
         }
 
-        return $urlBuilder->get((int)$this->const, (bool)$this->selfHost);
+        return $urlBuilder->get($this->scheme, (bool)$this->selfHost);
     }
 }
