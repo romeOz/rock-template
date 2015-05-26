@@ -1139,9 +1139,7 @@ class Template implements EventsInterface
             $result = $this->makeFilter($result, $filters);
         }
         if ($this->autoSerialize) {
-            if (is_array($result)) {
-                $result = Json::encode($result);
-            } elseif (is_object($result) && !is_callable($result)) {
+            if (is_array($result) || (is_object($result) && !$result instanceof \Closure)) {
                 $result = serialize($result);
             }
         }

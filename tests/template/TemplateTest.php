@@ -516,7 +516,7 @@ class TemplateTest extends TemplateCommon
     public function testAutomaticConversionArrayToJSON()
     {
         $array = ['foo' => 'test'];
-        $this->assertSame(json_encode($array), $this->template->replace('[[+array]]', ['array'=> $array]));
+        $this->assertSame(serialize($array), $this->template->replace('[[+array]]', ['array'=> $array]));
     }
 
     public function testAutomaticConversionObjectToSerialize()
