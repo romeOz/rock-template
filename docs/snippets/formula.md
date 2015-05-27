@@ -1,4 +1,4 @@
-Formula
+formula
 ====================
 
 Params
@@ -20,7 +20,7 @@ Example
 --------------------
 
 ```html
-[[Formula
+[[formula
     ?subject=`:pageCurrent - 1`
     ?operands=`{"pageCurrent" : "[[+pageCurrent]]"}`
 ]]

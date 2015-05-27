@@ -15,7 +15,7 @@ class ForSnippetTest extends TemplateCommon
 
     public function testGet()
     {
-        $actual = $this->template->replace('[[!For?count=`2`
+        $actual = $this->template->replace('[[!for?count=`2`
                                             ?tpl=`@INLINE<b>[[+$parent.title]][[+title]]</b>`
                                             ?addPlaceholders=`["$parent.title"]`
                                             ?wrapperTpl=`@INLINE<p>[[!+output]]</p>`

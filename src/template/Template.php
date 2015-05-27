@@ -1775,31 +1775,31 @@ class Template implements EventsInterface
     protected function defaultSnippets()
     {
         return [
-            'ListView' => [
+            'listView' => [
                 'class'        => \rock\snippets\ListView::className(),
             ],
-            'List' => [
+            'list' => [
                 'class'        => \rock\snippets\ListView::className(),
             ],
-            'Date' => [
+            'date' => [
                 'class'        => \rock\snippets\Date::className(),
             ],
-            'For' => [
+            'for' => [
                 'class'        => \rock\snippets\ForSnippet::className(),
             ],
-            'Formula' => [
+            'formula' => [
                 'class'        => \rock\snippets\Formula::className(),
             ],
-            'If' => [
+            'if' => [
                 'class'        => \rock\snippets\IfSnippet::className(),
             ],
-            'Pagination' => [
+            'pagination' => [
                 'class'        => \rock\snippets\Pagination::className(),
             ],
-            'Url' => [
+            'url' => [
                 'class'        => \rock\snippets\Url::className(),
             ],
-            'Thumb' => [
+            'thumb' => [
                 'class'        => \rock\snippets\Thumb::className(),
             ],
         ];

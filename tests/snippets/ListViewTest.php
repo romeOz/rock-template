@@ -19,18 +19,18 @@ class ListViewTest extends TemplateCommon
             'array' => $this->getAll(),
         ];
         // null tpl
-        $this->assertSame($this->template->getSnippet('ListView', $params), json_encode($params['array']));
+        $this->assertSame($this->template->getSnippet('listView', $params), json_encode($params['array']));
 
         // tpl + wrapper tpl
         $params['tpl'] = "@INLINE<h1>[[+name]]</h1>\n<p>[[+email]]</p>\n[[!+about]]\n[[+currentItem]]";
         $params['wrapperTpl'] = "@INLINE[[!+output]]\n[[+countItems]]";
-        $this->assertSame($this->removeSpace($this->template->getSnippet('ListView', $params)), $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')));
+        $this->assertSame($this->removeSpace($this->template->getSnippet('listView', $params)), $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')));
 
         // pagination
         $params['pagination']['array'] = Pagination::get(count($params['array']), 1, 1, SORT_DESC);
         $params['pagination']['pageParam'] = 'num';
         $params['pagination']['toPlaceholder'] = '$parent.pagination';
-        $this->assertSame($this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')), $this->removeSpace($this->template->getSnippet('ListView', $params)));
+        $this->assertSame($this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')), $this->removeSpace($this->template->getSnippet('listView', $params)));
         $this->assertNotEmpty($this->template->getPlaceholder('pagination'));
         $this->assertNotEmpty($this->template->getPlaceholder('$parent.pagination'));
         $this->assertNotEmpty($this->template->getPlaceholder('$root.pagination'));
@@ -42,12 +42,12 @@ class ListViewTest extends TemplateCommon
         $params['array'] = ['foo', 'bar'];
         $params['tpl'] = "@INLINE<li>[[!+output]][[+currentItem]]</li>";
         $params['wrapperTpl'] = "@INLINE<ul>[[!+output]]</ul>";
-        $this->assertSame('<ul><li>foo1</li><li>bar2</li></ul>', $this->removeSpace($this->template->getSnippet('ListView', $params)));
+        $this->assertSame('<ul><li>foo1</li><li>bar2</li></ul>', $this->removeSpace($this->template->getSnippet('listView', $params)));
     }
 
     public function testGetAsMethod()
     {
-        $class = 'ListView';
+        $class = 'listView';
         // null tpl
         $this->assertSame(
             json_encode($this->getAll()),
@@ -60,7 +60,7 @@ class ListViewTest extends TemplateCommon
         $this->assertSame(
             '',
             trim($this->template->replace('
-                [[ListView?array=`[]`]]
+                [[listView?array=`[]`]]
             '))
         );
 
@@ -68,7 +68,7 @@ class ListViewTest extends TemplateCommon
         $this->assertSame(
             'empty',
             trim($this->template->replace('
-                [[ListView?array=`[]`?errorText=`empty`]]
+                [[listView?array=`[]`?errorText=`empty`]]
             '))
         );
 
@@ -76,7 +76,7 @@ class ListViewTest extends TemplateCommon
         $this->assertSame(
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')),
             $this->removeSpace($this->template->replace('
-                [[ListView
+                [[listView
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
                     ?wrapperTpl=`'. $this->path . '/wrapper`
@@ -88,7 +88,7 @@ class ListViewTest extends TemplateCommon
         $this->assertSame(
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')),
             $this->removeSpace($this->template->replace('
-                [[ListView
+                [[listView
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
                     ?wrapperTpl=`'. $this->path . '/wrapper`
@@ -133,7 +133,7 @@ class ListViewTest extends TemplateCommon
         $this->assertSame(
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')),
             $this->removeSpace($this->template->replace('
-                [[ListView
+                [[listView
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
                     ?wrapperTpl=`'. $this->path . '/wrapper`
@@ -149,7 +149,7 @@ class ListViewTest extends TemplateCommon
         $this->assertSame(
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')),
             $this->removeSpace($this->template->replace('
-                [[ListView
+                [[listView
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
                     ?wrapperTpl=`'. $this->path . '/wrapper`
@@ -177,7 +177,7 @@ class ListViewTest extends TemplateCommon
         $this->template->cache = $cache;
         $expected =$this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'));
         $actual =$this->removeSpace($this->template->replace('
-                [[ListView
+                [[listView
                     ?call=`'.__CLASS__.'.getAll`
                     ?tpl=`'. $this->path . '/item`
                     ?wrapperTpl=`'. $this->path . '/wrapper`

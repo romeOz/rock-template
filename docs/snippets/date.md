@@ -1,4 +1,4 @@
-Date
+date
 ====================
 
 Build is performed `\rock\template\date\DateTime`.
@@ -22,7 +22,7 @@ Example
 Get formatted now date:
 
 ```html
-[[Date
+[[date
     ?format=`j n`
 ]]
 ```
@@ -30,7 +30,7 @@ Get formatted now date:
 With custom format:
 
 ```html
-[[Date
+[[date
     ?date=`2014-02-12 15:01`
     ?format=`dmyhm`
 ]]

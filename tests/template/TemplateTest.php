@@ -670,8 +670,6 @@ class TemplateTest extends TemplateCommon
         $this->assertSame(file_get_contents($this->path . '/_layout.html'), $this->template->render($this->path . '/layout.php', ['text' => 'world']));
         $this->assertSame('<b>subchunk</b>test', $this->template->getChunk($this->path . '/subchunk.php', ['title'=> 'test']));
     }
-
-
 }
 
 class Foo{

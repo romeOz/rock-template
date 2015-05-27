@@ -20,7 +20,7 @@ class IfSnippetTest extends TemplateCommon
 
     public function testGet()
     {
-        $actual =             $this->template->replace('[[If
+        $actual =             $this->template->replace('[[if
                                             ?subject=`:foo > 1 && :foo < 3`
                                             ?operands=`{"foo" : "[[+foo]]"}`
                                             ?then=`[[+$parent.result]][[+result]]`
@@ -30,8 +30,7 @@ class IfSnippetTest extends TemplateCommon
         );
         $this->assertSame('success', $actual);
 
-        $className = 'If';
-        $actual =             $this->template->replace('[['.$className.'
+        $actual =             $this->template->replace('[[if
                                             ?subject=`:foo > 1 && :foo < 3`
                                             ?operands=`{"foo" : "[[+foo]]"}`
                                             ?then=`[[+result]]`

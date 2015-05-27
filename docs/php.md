@@ -95,7 +95,7 @@ echo $template->getChunk('@views/chunk.php', ['foo' => 'text']);
 Autoescape
 -----------------
 
-By default, escaping be made on all entities of a template, except chunks and some snippets (`ListView`, `For`,... see to the docs snippet).
+By default, escaping be made on all entities of a template, except chunks and some snippets (`listView`, `for`,... see to the docs snippet).
 
 ###Include
 
@@ -185,7 +185,7 @@ $params = [
     'cacheKey' => 'list',
     'cacheTags' => ['articles', 'news']
 ];
-echo $template->getSnippet('ListView', $params);
+echo $template->getSnippet('listView', $params);
 ```
 
 Grouping multiple entities:
@@ -199,7 +199,7 @@ if (($result = $cache->get('list')) !== false) {
 }
 
 $result = $template->getPlaceholder('placeholder');
-$result .= $template->getSnippet('ListView');
+$result .= $template->getSnippet('listView');
 
 // set cache
 $cache->set('list', $result, 3600);

@@ -7,10 +7,10 @@ use rock\helpers\Instance;
 use rock\helpers\StringHelper;
 
 /**
- * Snippet "Formula"
+ * Snippet "formula"
  *
  * ```html
- * [[Formula
+ * [[formula
  *      ?subject=`:pageCurrent - 1`
  *      ?operands=`{"pageCurrent" : "[[+pageCurrent]]"}`
  * ]]

@@ -6,18 +6,18 @@ use rock\helpers\Helper;
 use rock\helpers\Json;
 
 /**
- * Snippet "ListView".
+ * Snippet "listView".
  *
  * Examples:
  *
  * ```
- * [[ListView
+ * [[listView
  *      ?array=`[{"name" : "Tom", "email" : "tom@site.com"}, {"name" : "Chuck", "email" : "chuck@site.com"}]`
  *      ?tpl=`@INLINE<h1>[[+name]]</h1>[[+email]]`
  *      ?wrapperTpl=`@INLINE<p>[[+output]]</p>`
  * ]]
  *
- * [[ListView
+ * [[listView
  *      ?call=`\foo\FooController.getAll`
  *      ?tpl=`/path/to/chunk_item`
  *      ?wrapperTpl=`@INLINE<p>[[+output]][[++pagination]]</p>`
@@ -51,7 +51,7 @@ use rock\helpers\Json;
  *          'array' => \rock\helpers\Pagination::get(count($items), (int)$_GET['page'])
  *      ]
  * ];
- * $template->getSnippet('ListView', $params);
+ * $template->getSnippet('listView', $params);
  * ```
  *
  * With ActiveDataProvider:
@@ -72,7 +72,7 @@ use rock\helpers\Json;
  *      ]
  *      '
  * ];
- * $template->getSnippet('ListView', $params);
+ * $template->getSnippet('listView', $params);
  * ```
  *
  */
@@ -90,15 +90,15 @@ class ListView extends Snippet
      * May be a callable, snippet, and instance.
      *
      * ```
-     * [[ListView?call=`\foo\FooController.getAll`]]
-     * [[ListView?call=`context.getAll`]] - self context
+     * [[listView?call=`\foo\FooController.getAll`]]
+     * [[listView?call=`context.getAll`]] - self context
      * ```
      *
      * ```php
      * $params = [
      *  'call' => ['\foo\FooController', 'getAll']
      * ];
-     * (new \rock\Template)->getSnippet('ListView', $params);
+     * (new \rock\Template)->getSnippet('listView', $params);
      * ```
      *
      * @var mixed
@@ -226,7 +226,7 @@ class ListView extends Snippet
         }
 
         $keys = ['toPlaceholder'];
-        $pagination = $this->template->getSnippet('Pagination', ArrayHelper::diffByKeys($this->pagination, $keys));
+        $pagination = $this->template->getSnippet('pagination', ArrayHelper::diffByKeys($this->pagination, $keys));
         if (!empty($this->pagination['toPlaceholder'])) {
             $this->template->addPlaceholder($this->pagination['toPlaceholder'], $pagination);
             $this->template->cachePlaceholders[$this->pagination['toPlaceholder']] = $pagination;

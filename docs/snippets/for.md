@@ -1,4 +1,4 @@
-For
+for
 ====================
 **Autoescape: disabled**
 
@@ -22,7 +22,7 @@ Example
 --------------------
 
 ```html
-[[For
+[[for
     ?count=`2`
     ?tpl=`@INLINE<b>[[+foo]]</b>`
     ?addPlaceholders=`["foo"]`

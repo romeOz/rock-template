@@ -6,13 +6,13 @@ For Rock engine parameters of snippet are specified in the string type. The arra
 All parameters of snippet are automatically converted to the type (e.g. ``` ?is=`null` ```).
 
  * [Usage](#usage)
- * [ListView](https://github.com/romeOz/rock-template/blob/master/docs/snippets/list-view.md)
- * [Pagination](https://github.com/romeOz/rock-template/blob/master/docs/snippets/pagination.md)
- * [For](https://github.com/romeOz/rock-template/blob/master/docs/snippets/for.md)
- * [If](https://github.com/romeOz/rock-template/blob/master/docs/snippets/if.md)
- * [Formula](https://github.com/romeOz/rock-template/blob/master/docs/snippets/formula.md)
- * [Date](https://github.com/romeOz/rock-template/blob/master/docs/snippets/date.md)
- * [Url](https://github.com/romeOz/rock-template/blob/master/docs/snippets/url.md)
+ * [listView](https://github.com/romeOz/rock-template/blob/master/docs/snippets/list-view.md)
+ * [pagination](https://github.com/romeOz/rock-template/blob/master/docs/snippets/pagination.md)
+ * [for](https://github.com/romeOz/rock-template/blob/master/docs/snippets/for.md)
+ * [if](https://github.com/romeOz/rock-template/blob/master/docs/snippets/if.md)
+ * [formula](https://github.com/romeOz/rock-template/blob/master/docs/snippets/formula.md)
+ * [date](https://github.com/romeOz/rock-template/blob/master/docs/snippets/date.md)
+ * [url](https://github.com/romeOz/rock-template/blob/master/docs/snippets/url.md)
  * [Custom snippet](#custom-snippet)
 
 Usage
@@ -21,13 +21,13 @@ Usage
 For Rock engine:
 
 ```html
-[[ListView]]
+[[listView]]
 ```
 
 For PHP engine:
 
 ```php
-echo $template->getSnippet('ListView');
+echo $template->getSnippet('listView');
 ```
 
 Custom snippet

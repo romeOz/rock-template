@@ -15,14 +15,14 @@ class DateTest extends TemplateCommon
 
     public function testGet()
     {
-        $actual = $this->template->replace('[[Date
+        $actual = $this->template->replace('[[date
                         ?date=`2012-02-12 15:01`
                         ?format=`j F Y H:i`
                     ]]'
         );
         $this->assertSame('12 February 2012 15:01', $actual);
 
-        $actual = $this->template->replace('[[Date
+        $actual = $this->template->replace('[[date
                         ?date=`2012-02-12 15:01`
                         ?format=`j n`
                     ]]'
@@ -32,18 +32,18 @@ class DateTest extends TemplateCommon
         // default format
         $this->assertSame(
             '2012-02-12 15:01:00',
-            $this->template->getSnippet('Date', ['date' => '2012-02-12 15:01'])
+            $this->template->getSnippet('date', ['date' => '2012-02-12 15:01'])
         );
 
         //timezone
         $this->assertSame(
             (new DateTime('now', 'America/Chicago'))->isoDatetime(),
-            $this->template->getSnippet('Date', ['timezone' => 'America/Chicago'])
+            $this->template->getSnippet('date', ['timezone' => 'America/Chicago'])
         );
 
         $this->assertSame(
             '2012-02-12 09:01:00',
-            $this->template->getSnippet('Date', ['date' => '2012-02-12 15:01', 'timezone' => 'America/Chicago'])
+            $this->template->getSnippet('date', ['date' => '2012-02-12 15:01', 'timezone' => 'America/Chicago'])
         );
     }
 }

@@ -5,7 +5,7 @@ namespace rock\snippets;
  * Snippet "ForSnippet"
  *
  * ```
- * [[For
+ * [[for
  *      ?count=`2`
  *      ?tpl=`@INLINE<b>[[+plh]]</b>`
  *      ?addPlaceholders=`["plh"]`

@@ -110,7 +110,7 @@ echo $template->replace('[[#user.firstname]]');
 Autoescape
 -----------------
 
-By default, escaping be made on all entities of a template, except chunks and some snippets (`ListView`, `For`,... see to the docs snippet).
+By default, escaping be made on all entities of a template, except chunks and some snippets (`listView`, `For`,... see to the docs snippet).
 
 ###Include
 
@@ -181,7 +181,7 @@ Shielding
 Necessary for displaying the entities of the template engine.
 
 ```html
-{! [[ListView]] !}
+{! [[listView]] !}
 ```
 
 Text located between `{! ... !}` will not be replaced.
@@ -228,7 +228,7 @@ The parameters to use for caching:
     ?cacheExpire=`3600`
 ]]
 
-[[ListView
+[[listView
     ?call=`\foo\FooController.getAll`
     ?cacheKey=`list`
     ?cacheTags=`["articles", "news"]`

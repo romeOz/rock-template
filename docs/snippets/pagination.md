@@ -18,23 +18,23 @@ The data returned `\rock\template\helpers\Pagination::get()`.
 The data as an call. May be an callable, snippet, or instance.
 
 ```html
-[[Pagination?call=`\foo\FooController.getPagination`]]
-[[Pagination?call=`context.getPagination`]]
-[[Pagination?call=`FooSnippet`]]
+[[pagination?call=`\foo\FooController.getPagination`]]
+[[pagination?call=`context.getPagination`]]
+[[pagination?call=`FooSnippet`]]
 ```
 or
 
 ```php
-$template->getSnippet('Pagination', ['call' => ['\foo\FooController', 'getPagination']]);
-$template->getSnippet('Pagination', ['call' => [new \foo\FooController(), 'getPagination']]);
-$template->getSnippet('Pagination', ['call' => function(){}]);
-$template->getSnippet('Pagination', ['call' => 'FooSnippet']);
+$template->getSnippet('pagination', ['call' => ['\foo\FooController', 'getPagination']]);
+$template->getSnippet('pagination', ['call' => [new \foo\FooController(), 'getPagination']]);
+$template->getSnippet('pagination', ['call' => function(){}]);
+$template->getSnippet('pagination', ['call' => 'FooSnippet']);
 ```
 ###url
 Set instance `\rock\url\Url` or config as array/JSON
 
 ```
-[[Pagination
+[[pagination
     ?url=`{"class" : "\rock\url\Url", "query": "view=all&order=desc"}`
 ]]
 ```
@@ -46,7 +46,7 @@ or
 $config = [
     'url' => \rock\url\Url::set()->addArgs(['views' => 'all', 'order' => 'desc']);
 ];
-$template->getSnippet('Pagination', $config);
+$template->getSnippet('pagination', $config);
 ```
 
 ###pageLimit
@@ -125,7 +125,7 @@ class FooController
 Contents layout.html:
 
 ```html
-[[Pagination
+[[pagination
     ?call = `context.getPagination`
 ]]
 ```

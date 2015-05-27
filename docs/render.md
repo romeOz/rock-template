@@ -52,7 +52,7 @@ class FooController
 Contents layout.html:
 
 ```html
-[[ListView
+[[listView
     ?call=`context.getAll`
     ?tpl=`@views/chunks/item`
 ]]

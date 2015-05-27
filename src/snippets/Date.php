@@ -8,7 +8,7 @@ use rock\date\DateTime;
  *
  * Get formatted now date:
  * ```
- * [[Date
+ * [[date
  *  ?format=`j n`
  * ]]
  * ```
@@ -16,7 +16,7 @@ use rock\date\DateTime;
  * With default format:
  *
  * ```
- * [[Date
+ * [[date
  *  ?date=`2014-02-12 15:01`
  *  ?format=`dmyhm`
  * ]]

@@ -18,7 +18,7 @@ class UrlTest extends TemplateCommon
     {
         $this->assertSame(
             'http://site.com/parts/categories/news/?view=all&page=1#name',
-            $this->template->replace('[[Url
+            $this->template->replace('[[url
                         ?url=`http://site.com/categories/?view=all`
                         ?addArgs=`{"page" : 1}`
                         ?beginPath=`/parts`
@@ -32,7 +32,7 @@ class UrlTest extends TemplateCommon
         // replacing URL
         $this->assertSame(
             'http://site.com/?view=all',
-            $this->template->replace('[[Url
+            $this->template->replace('[[url
                         ?url=`http://site.com/news/?view=all`
                         ?replace=`["news/", ""]`
                         ?scheme=`abs`
@@ -43,8 +43,7 @@ class UrlTest extends TemplateCommon
         // modify url + remove args + add args
         $this->assertSame(
             'http://site.com/categories/?page=1',
-            $this->template->getSnippet(
-                'Url',
+            $this->template->getSnippet('url',
                 [
                     'url' => 'http://site.com/categories/?view=all',
                     'removeArgs' => ['view'],
@@ -58,8 +57,7 @@ class UrlTest extends TemplateCommon
         $template = new Template();
         $this->assertSame(
             'http://site.com/categories/',
-            $template->getSnippet(
-                'Url',
+            $template->getSnippet('url',
                 [
                     'url' => 'http://site.com/categories/?view=all#name',
                     'removeAllArgs' => true,
@@ -72,8 +70,7 @@ class UrlTest extends TemplateCommon
         // modify self url + input null
         $this->assertSame(
             'http://site.com/',
-            $this->template->getSnippet(
-                'Url',
+            $this->template->getSnippet('url',
                 [
                     'removeAllArgs' => true,
                     'scheme' => Url::ABS

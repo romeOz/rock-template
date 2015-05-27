@@ -1,4 +1,4 @@
-ListView
+listView
 ====================
 **Autoescape: disabled**
 
@@ -16,17 +16,17 @@ The data as an array.
 The data as an call. May be a callable, snippet, and instance.
 
 ```html
-[[ListView?call=`\foo\FooController.getAll`]]
-[[ListView?call=`context.getAll`]]
-[[ListView?call=`FooSnippet`]]
+[[listView?call=`\foo\FooController.getAll`]]
+[[listView?call=`context.getAll`]]
+[[listView?call=`FooSnippet`]]
 ```
 or
 
 ```php
-$template->getSnippet('ListView', ['call' => ['\foo\FooController', 'getAll']]);
-$template->getSnippet('ListView', ['call' => [new \foo\FooController(), 'getAll']]);
-$template->getSnippet('ListView', ['call' => function(){}]);
-$template->getSnippet('ListView', ['call' => 'FooSnippet']);
+$template->getSnippet('listView', ['call' => ['\foo\FooController', 'getAll']]);
+$template->getSnippet('listView', ['call' => [new \foo\FooController(), 'getAll']]);
+$template->getSnippet('listView', ['call' => function(){}]);
+$template->getSnippet('listView', ['call' => 'FooSnippet']);
 ```
 
 ###addPlaceholders
@@ -58,7 +58,7 @@ $params =  [
         }
     ]
 ];
-$template->getSnippet('ListView', $params);
+$template->getSnippet('listView', $params);
 ```
 > Note: must return prepared placeholders.
 
@@ -136,7 +136,7 @@ class FooController
 Contents layout.html:
 
 ```html
-[[ListView
+[[listView
     ?call = `context.getAll`
     ?tpl = `@views/chunks/item`
     ?pagination=`{
@@ -160,5 +160,5 @@ $params = [
     ]
 ];
 
-echo $this->getSnippet('ListView', $params);
+echo $this->getSnippet('listView', $params);
 ```

@@ -11,7 +11,7 @@ use rock\url\UrlInterface;
  * Example:
  *
  * ```
- * [[Url
+ * [[url
  *  ?url=`http://site.com/categories/?view=all`
  *  ?args=`{"page" : 1}`
  *  ?beginPath=`/parts`

@@ -30,7 +30,7 @@ Example
 --------------------
 
 ```html
-[[If
+[[if
     ?subject=`:foo > 1 && :foo < 3`
     ?operands=`{"foo" : "[[+foo]]"}`
     ?then=`success`

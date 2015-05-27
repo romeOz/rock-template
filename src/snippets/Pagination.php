@@ -15,7 +15,7 @@ use rock\url\Url;
  * $params = [
  *      'array' => \rock\helpers\Pagination::get($countItems, (int)$_GET['page'], SORT_DESC)
  * ];
- * $template->getSnippet('Pagination', $params);
+ * $template->getSnippet('pagination', $params);
  * ```
  *
  * With ActiveDataProvider:
@@ -45,15 +45,15 @@ class Pagination extends Snippet
      * May be a callable, snippet, and instance.
      *
      * ```
-     * [[Pagination?call=`\foo\FooController.getPagination`]]
-     * [[Pagination?call=`context.getPagination`]] - self context
+     * [[pagination?call=`\foo\FooController.getPagination`]]
+     * [[pagination?call=`context.getPagination`]] - self context
      * ```
      *
      * ```php
      * $params = [
      *  'call' => ['\foo\FooController', 'getPagination']
      * ];
-     * (new \rock\Template)->getSnippet('Pagination', $params);
+     * (new \rock\Template)->getSnippet('pagination', $params);
      * ```
      *
      * @var string|array
