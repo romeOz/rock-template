@@ -1203,7 +1203,6 @@ class Template implements EventsInterface
             $matches
         );
         $i = 0;
-        $j = 0;
         $result = [];
         if (!isset($matches['name'])) {
             return $result;
@@ -1217,7 +1216,9 @@ class Template implements EventsInterface
             $valueParams = $this->_searchPrefix($nameParams, $valueParams);
             // to type
             if (is_string($valueParams)) {
-                $valueParams = Helper::toType(str_replace('&#61;', '=', $valueParams));
+                $valueParams = $this->_prepareValueOfParam(str_replace('&#61;', '=', $valueParams));
+                $valueParams = Helper::toType($valueParams);
+
             }
             // If multiple placeholders with the same name, then create to array
             if (isset($result[$nameParams])) {
@@ -1226,7 +1227,6 @@ class Template implements EventsInterface
                 } else {
                     $result[$nameParams] = [$result[$nameParams], $valueParams];
                 }
-                ++$j;
             } else {
                 $result[$nameParams] = $valueParams;
             }
@@ -1234,6 +1234,31 @@ class Template implements EventsInterface
         }
 
         return $result;
+    }
+
+    private function _prepareValueOfParam($value)
+    {
+        if (empty($value) || !array_key_exists($value[0], ['!' => true, '+' => true, '#' => true])) {
+            return $value;
+        }
+
+        $str = $value;
+        $autoEscape = true;
+        if ($value[0] === '!') {
+            $str = ltrim($str, '!');
+            $autoEscape = false;
+        }
+
+        if (isset($str[0])) {
+            if ($str[0] === '+') {
+                return $this->getPlaceholder(ltrim($str, '+'), $autoEscape);
+            }
+            if ($str[0] === '#') {
+                return $this->getExtension(ltrim($str, '#'), [], $autoEscape);
+            }
+        }
+
+        return $value;
     }
 
     /**

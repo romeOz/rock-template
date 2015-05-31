@@ -620,6 +620,24 @@ class TemplateTest extends TemplateCommon
         $this->assertSame('<b>test extension</b>', $this->template->replace('[[!#extension.get?param=`<b>test extension</b>`]]'));
     }
 
+    public function testNotSerializePlaceholder()
+    {
+        $this->template->extensions = [
+            'extension' => function (array $keys, array $params = []) {
+
+                if (current($keys) === 'get' && isset($params['param'])) {
+                    return $params['param']['bar'];
+                }
+                return 'fail';
+            },
+            'foo' => function(){
+                return ['bar' => '<b>bar text</b>'];
+            },
+        ];
+        $this->assertSame('<b>text</b>', $this->template->replace('[[!#extension.get?param=`!+foo`]]', ['foo' => ['bar' =>'<b>text</b>']]));
+        $this->assertSame(StringHelper::encode('<b>bar text</b>'), $this->template->replace('[[!#extension.get?param=`#foo.get`]]'));
+    }
+
     public function testCacheSnippet()
     {
         if (!interface_exists('\rock\cache\CacheInterface') || !class_exists('\League\Flysystem\Filesystem')) {
