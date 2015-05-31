@@ -1140,7 +1140,7 @@ class Template implements EventsInterface
         }
         if ($this->autoSerialize) {
             if (is_array($result) || (is_object($result) && !$result instanceof \Closure)) {
-                $result = serialize($result);
+                $result = @serialize($result);
             }
         }
         if (!is_scalar($result) && !empty($result)) {
