@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "romeoz/rock-components" : "0.10.*",
+        "romeoz/rock-components" : "0.11.*",
         "romeoz/rock-url" : "0.10.*",
         "romeoz/rock-execute" : "0.10.*"
     },
@@ -35,8 +35,7 @@
         "romeoz/rock-widgets": "required by Rock Widgets",
         "romeoz/rock-validate": "required by Rock Valiadte",
         "romeoz/rock-sanitize": "required by Rock Sanitize",
-        "romeoz/rock-image": "required by Rock Image",
-        "romeoz/rock-di": "required by module Rock Dependency Injection"
+        "romeoz/rock-image": "required by Rock Image"
     },
     "autoload": {
         "psr-4": {
