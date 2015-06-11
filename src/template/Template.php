@@ -330,7 +330,7 @@ class Template implements EventsInterface
         }
         if ($template === false) {
             if ($this->throwException) {
-                if (is_string($parent)) {
+                if (is_array($parent)) {
                     $parent = implode('.', $parent);
                 }
                 throw new TemplateException("Unknown scope: {$parent}");
@@ -351,7 +351,6 @@ class Template implements EventsInterface
     public function addPlaceholder($name, $value = null, $recursive = false)
     {
         list($name,,$template) = $this->getParentPlaceholder($name);
-        $name = implode('.', $name);
         if (!isset($template)) {
             $template = $this;
         }
@@ -428,7 +427,6 @@ class Template implements EventsInterface
         }
         $_name = $name;
         list($name,,$template) = $this->getParentPlaceholder($name);
-        $name = implode('.', $name);
         if (!isset($template)) {
             $template = $this;
         }
@@ -487,7 +485,7 @@ class Template implements EventsInterface
         }
         if ($template === false) {
             if ($this->throwException) {
-                if (is_string($parent)) {
+                if (is_array($parent)) {
                     $parent = implode('.', $parent);
                 }
                 throw new TemplateException("Unknown scope: {$parent}");
@@ -1534,7 +1532,7 @@ class Template implements EventsInterface
             /** @var Template $template */
             $template = current($this->scopes);
             array_shift($name);
-            return [$name, $template->placeholders, $template];
+            return [implode('.', $name), $template->placeholders, $template];
         }
         end($this->scopes);
         while(current($name) === '$parent') {
@@ -1548,7 +1546,7 @@ class Template implements EventsInterface
             $placeholders = $template->placeholders;
         }
 
-        return [$name, $placeholders, $template];
+        return [implode('.', $name), $placeholders, $template];
     }
 
     private function _prepareNamePlaceholder($name)
