@@ -1633,13 +1633,13 @@ class Template implements EventsInterface
         if (!$this->cache instanceof CacheInterface) {
             return false;
         }
-        if (isset($key) && ($returnCache = $this->cache->get($key)) !== false) {
-            if (is_array($returnCache) && isset($returnCache['placeholders'], $returnCache['result'])) {
-                $this->addMultiPlaceholders($returnCache['placeholders']);
-                $returnCache = $returnCache['result'];
+        if (isset($key) && ($result = $this->cache->get($key)) !== false) {
+            if (is_array($result) && isset($result['placeholders'], $result['result'])) {
+                $this->addMultiPlaceholders($result['placeholders']);
+                $result = $result['result'];
             }
 
-            return $returnCache;
+            return $result;
         }
 
         return false;
