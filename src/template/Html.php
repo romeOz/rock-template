@@ -416,10 +416,6 @@ class Html
     public static function img($src, $options = [])
     {
         $options['src'] = $src;
-        if (!static::isBase64($src)) {
-            $urlBuilder = Url::set($src);
-            $options['src'] = $urlBuilder->getAbsoluteUrl();
-        }
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
