@@ -71,10 +71,9 @@ class Thumb extends Snippet
 
         $options = [
             'class' => $this->_class,
-            'alt' => $this->alt,
+            'alt' => $this->template->replace($this->alt),
             'title' => $this->title,
         ];
-
         $src = $this->imageProvider->get($this->src, $this->w, $this->h);
 
         if (!((int)$this->const & ThumbInterface::WITHOUT_WIDTH_HEIGHT)) {

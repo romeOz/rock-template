@@ -110,9 +110,10 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
 
     public function testImg()
     {
-        $this->assertEquals('<img src="http://site.com/example" alt="">', Html::img('/example'));
-        $this->assertEquals('<img src="http://site.com" alt="">', Html::img(''));
-        $this->assertEquals('<img src="http://site.com/example" width="10" alt="something">', Html::img('/example', ['alt' => 'something', 'width' => 10]));
+        $this->assertEquals('<img src="/example" alt="">', Html::img('/example'));
+        $this->assertEquals('<img src="//example" alt="">', Html::img('//example'));
+        $this->assertEquals('<img src="" alt="">', Html::img(''));
+        $this->assertEquals('<img src="/example" width="10" alt="something">', Html::img('/example', ['alt' => 'something', 'width' => 10]));
     }
 
     public function testLabel()

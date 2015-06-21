@@ -191,9 +191,11 @@ class BaseFilter
      * - alt:      attr `alt`
      * - const
      * - dummy
+     * @param Template $template
      * @return string
+     * @throws \rock\helpers\InstanceException
      */
-    public static function thumb($path, array $params)
+    public static function thumb($path, array $params, Template $template)
     {
         if (empty($path)) {
             if (empty($params['dummy'])) {
@@ -202,7 +204,7 @@ class BaseFilter
             $path = $params['dummy'];
         }
         $const = Helper::getValue($params['const'], 1, true);
-            /** @var ImageProvider $imageProvider */
+        /** @var ImageProvider $imageProvider */
         $imageProvider = Instance::ensure(isset($params['imageProvider']) ? $params['imageProvider'] : 'imageProvider');
         $src = $imageProvider->get($path, Helper::getValue($params['w']), Helper::getValue($params['h']));
         if (!($const & ThumbInterface::WITHOUT_WIDTH_HEIGHT)) {
@@ -210,7 +212,9 @@ class BaseFilter
             $params['height'] = $imageProvider->height;
         }
         unset($params['h'], $params['w'], $params['type'], $params['const']);
-
+        if (!empty($params['alt'])) {
+            $params['alt'] = $template->replace($params['alt']);
+        }
         return $const & ThumbInterface::OUTPUT_IMG ? Html::img($src, $params) : $src;
     }
 }
