@@ -209,12 +209,14 @@ class Template implements EventsInterface
     /**
      * Rendering layout.
      *
-     * @param string      $path path to layout
-     * @param array       $placeholders
+     * @param string $path path to layout
+     * @param array $placeholders
      * @param object|null $context
+     * @param bool $isAjax
      * @return string
+     * @throws TemplateException
      */
-    public function render($path, array $placeholders = [], $context = null)
+    public function render($path, array $placeholders = [], $context = null, $isAjax = false)
     {
         if (isset($context)) {
             $this->context = $context;
@@ -227,7 +229,10 @@ class Template implements EventsInterface
             return $resultCache;
         }
         $result = $this->renderInternal($path, $placeholders);
-        $result = implode("\n", [$this->beginPage(), $this->beginBody(), $result, $this->endBody(), $this->endPage()]);
+        if (!$isAjax) {
+            $result = implode("\n", [$this->beginPage(), $this->beginBody(), $result, $this->endBody(), $this->endPage()]);
+        }
+
         // Set cache
         $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags ? : []);
 
