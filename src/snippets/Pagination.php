@@ -194,7 +194,7 @@ class Pagination extends Snippet
             'url' => $this->url
                 ->addArgs($this->_pageArgs)
                 ->get(),
-            'pageFirstName' => $this->pageFirstName
+            'pageFirstName' => $this->template->replace($this->pageFirstName)
         ];
         return $this->template->replaceByPrefix($this->pageFirstTpl, $placeholders);
     }
@@ -209,7 +209,7 @@ class Pagination extends Snippet
             'url' => $this->url
                 ->addArgs($this->_pageArgs)
                 ->get(),
-            'pageLastName' => $this->pageLastName
+            'pageLastName' => $this->template->replace($this->pageLastName)
         ];
         return $this->template->replaceByPrefix($this->pageLastTpl, $placeholders);
     }
