@@ -7,6 +7,7 @@ use rock\csrf\CSRF;
 use rock\helpers\ArrayHelper;
 use rock\helpers\Instance;
 use rock\helpers\Json;
+use rock\helpers\Serialize;
 use rock\helpers\StringHelper;
 use rock\request\Request;
 use rock\url\Url;
@@ -266,7 +267,7 @@ class Html
         $csrf = static::getCSRF();
         if ($csrf instanceof CSRF && $csrf->enableCsrfValidation) {
             return static::tag('meta', '', ['name' => 'csrf-param', 'content' => $csrf->csrfParam]) . "\n    "
-                   . static::tag('meta', '', ['name' => 'csrf-token', 'content' => $csrf->get()]) . "\n";
+            . static::tag('meta', '', ['name' => 'csrf-token', 'content' => $csrf->get()]) . "\n";
         } else {
             return '';
         }
@@ -1131,7 +1132,7 @@ class Html
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
                 $attrs['selected'] = $selection !== null &&
-                        (!is_array($selection) && !strcmp($key, $selection)
+                    (!is_array($selection) && !strcmp($key, $selection)
                         || is_array($selection) && in_array($key, $selection));
                 $lines[] = static::tag('option', ($encodeSpaces ? str_replace(' ', '&nbsp;', static::encode($value)) : static::encode($value)), $attrs);
             }
@@ -1304,6 +1305,30 @@ class Html
     }
 
     /**
+     * Converts a array into a string representation.
+     *
+     * For example,
+     *
+     * ```php
+     * print_r(Html::fromArray(['width' => '100px', 'height' => '200px']));
+     * // will display: 'width=100px; height=200px;'
+     * ```
+     *
+     * @param array $data list data
+     * @return string
+     */
+    public static function fromArray(array $data)
+    {
+        $result = '';
+        foreach ($data as $name => $value) {
+            $value = StringHelper::toString($value, "'", Serialize::SERIALIZE_JSON);
+            $result .= "$name=$value; ";
+        }
+
+        return $result === '' ? null : rtrim($result);
+    }
+
+    /**
      * Converts a CSS style array into a string representation.
      *
      * For example,
@@ -1404,9 +1429,9 @@ class Html
 
     /**
      * @return null|Request
-      */
+     */
     protected static function getRequest()
     {
         return Instance::ensure('request', '\rock\request\Request', false);
     }
-} 
+}

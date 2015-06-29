@@ -624,5 +624,12 @@ EOD;
             'value  2' => 'text  2',
         ];
     }
+
+    public function testFromArray()
+    {
+        $data = ['valid' => true, 'foo' => 'text', 'num' => 7, 'collections' => ['foo' => 'text foo...']];
+        $expected = 'valid=true; foo=\'text\'; num=7; collections={"foo":"text foo..."};';
+        $this->assertEquals($expected, Html::fromArray($data));
+    }
 }
  
