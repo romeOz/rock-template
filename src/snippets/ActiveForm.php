@@ -8,7 +8,6 @@ use rock\file\UploadedFile;
 use rock\helpers\ArrayHelper;
 use rock\helpers\Helper;
 use rock\helpers\Instance;
-use rock\snippets\Snippet;
 use rock\template\Html;
 
 class ActiveForm extends Snippet
@@ -22,7 +21,7 @@ class ActiveForm extends Snippet
     public $prepareAttributes = [];
     public $validate = false;
     /**
-     * Name/inline wrapper template
+     * Name/inline wrapper template.
      *
      * @var string
      */
@@ -124,7 +123,7 @@ class ActiveForm extends Snippet
         $submit = (array)$submit;
         $submit[1] = isset($submit[1]) ? $submit[1] : [];
         list($content, $options) = $submit;
-        if (!empty($this->config['clientUrl']) && !isset($options['data']['ng-disabled'])) {
+        if (!empty($this->config['clientAction']) && !isset($options['data']['ng-disabled'])) {
             $options['data']['ng-disabled'] = 'isSend()';
         }
         if (isset($options['wrapperTpl'])) {
