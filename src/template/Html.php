@@ -3,6 +3,7 @@
 namespace rock\template;
 
 
+use rock\base\Alias;
 use rock\csrf\CSRF;
 use rock\helpers\ArrayHelper;
 use rock\helpers\Instance;
@@ -292,6 +293,9 @@ class Html
      */
     public static function beginForm($action = null, $method = 'post', $name = null, $options = [])
     {
+        if (isset($action)) {
+            $action = Alias::getAlias($action);
+        }
         $action = Url::set($action)->getAbsoluteUrl();
         $hiddenInputs = [];
 
@@ -1185,6 +1189,7 @@ class Html
                 }
             } elseif (is_array($value) && $name === 'data') {
                 foreach ($value as $n => $v) {
+                    $v = static::normalizeClientOptions($n, $v);
                     if (is_array($v)) {
                         $html .= " $name-$n='" . Json::encode($v, JSON_HEX_APOS) . "'";
                     } else {
@@ -1417,6 +1422,17 @@ class Html
     protected static function isBase64($value)
     {
         return mb_substr($value, 0, 5, 'UTF-8') === 'data:';
+    }
+
+    /**
+     * To normalize.
+     * @param string $option
+     * @param mixed $value
+     * @return mixed
+     */
+    protected static function normalizeClientOptions($option, $value)
+    {
+        return $value;
     }
 
     /**
