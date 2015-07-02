@@ -25,12 +25,62 @@ class ConditionFilter
     ];
 
     /**
-     * If value is not empty
+     * `isset` condition.
      *
      * @param string   $value  value
      * @param array    $params params:
      *
-     * - is:               get, if value is not empty
+     * - then:               returns when isset value
+     * - addPlaceholders:  set names of the placeholders, which adding the result.
+     *
+     * @param Template $template
+     * @return string
+     */
+    public static function _isset($value, array $params, Template $template)
+    {
+        if (!isset($value)) {
+            return '';
+        }
+        //$template = clone $template;
+        $placeholders = array_merge(
+            !empty($params['addPlaceholders']) ? $template->findPlaceholders($params['addPlaceholders']) : [],
+            ['output' => $value]
+        );
+        return $template->replaceByPrefix($params['then'], $placeholders);
+    }
+
+    /**
+     * `!isset` condition.
+     *
+     * @param string   $value  value
+     * @param array    $params params
+     *
+     * - then: returns when `!isset` value.
+     *
+     * @param Template $template
+     * @return string
+     */
+    public static function notIsset($value = null, array $params, Template $template)
+    {
+        if (isset($value)) {
+            return $value;
+        }
+        //$template = clone $template;
+        $placeholders = array_merge(
+            !empty($params['addPlaceholders']) ? $template->findPlaceholders($params['addPlaceholders']) : [],
+            ['output' => $value]
+        );
+
+        return $template->replaceByPrefix($params['then'], $placeholders);
+    }
+
+    /**
+     * Condition is not empty.
+     *
+     * @param string   $value  value
+     * @param array    $params params:
+     *
+     * - then:               returns when value is not empty
      * - addPlaceholders:  set names of the placeholders, which adding the result.
      *
      * @param Template $template
@@ -41,31 +91,78 @@ class ConditionFilter
         if (empty($value)) {
             return '';
         }
-        $template = clone $template;
+        //$template = clone $template;
         $placeholders = array_merge(
             !empty($params['addPlaceholders']) ? $template->findPlaceholders($params['addPlaceholders']) : [],
             ['output' => $value]
         );
-        $result = '';
-        if (!empty($params['is'])) {
-            $result = $template->replaceByPrefix($params['is'], $placeholders);
-        }
-
-        return $result;
+        return $template->replaceByPrefix($params['then'], $placeholders);
     }
 
     /**
-     * If value is empty.
+     * Condition is empty.
      *
      * @param string   $value  value
      * @param array    $params params
      *
-     * - is: get, if value is empty.
+     * - then: returns when value is empty.
      *
      * @param Template $template
      * @return string
      */
     public static function _empty($value = null, array $params, Template $template)
+    {
+        if (!empty($value)) {
+            return $value;
+        }
+        //$template = clone $template;
+        $placeholders = array_merge(
+            !empty($params['addPlaceholders']) ? $template->findPlaceholders($params['addPlaceholders']) : [],
+            ['output' => $value]
+        );
+
+        return $template->replaceByPrefix($params['then'], $placeholders);
+    }
+
+
+    /**
+     * Inline condition is not empty.
+     *
+     * @param string   $value  value
+     * @param array    $params params:
+     *
+     * - then:               returns when value is not empty
+     * - addPlaceholders:  set names of the placeholders, which adding the result.
+     *
+     * @param Template $template
+     * @return string
+     */
+    public static function inotEmpty($value, array $params, Template $template)
+    {
+        if (empty($value)) {
+            return '';
+        }
+        $template = clone $template;
+        $placeholders = array_merge(
+            !empty($params['addPlaceholders']) ? $template->findPlaceholders($params['addPlaceholders']) : [],
+            ['output' => $value]
+        );
+
+        return $template->replace($params['then'], $placeholders);
+    }
+
+    /**
+     * Inline condition is empty.
+     *
+     * @param string   $value  value
+     * @param array    $params params
+     *
+     * - then: returns when value is empty.
+     *
+     * @param Template $template
+     * @return string
+     */
+    public static function iempty($value = null, array $params, Template $template)
     {
         if (!empty($value)) {
             return $value;
@@ -76,9 +173,7 @@ class ConditionFilter
             ['output' => $value]
         );
 
-        return !empty($params['is'])
-            ? $template->replaceByPrefix($params['is'], $placeholders)
-            : '';
+        return $template->replace($params['then'], $placeholders);
     }
 
     /**
@@ -106,32 +201,32 @@ class ConditionFilter
             $result = $value == $template->replace($params[$condition])
                 ? $template->replace($params['then'], $placeholders)
                 : $template->replace($params['else'], $placeholders);
-        // notequals
+            // notequals
         } elseif ($condition = self::_getCondition($params, static::$conditionNames['isnot'])) {
             $result = $value <> $template->replace($params[$condition])
                 ? $template->replace($params['then'], $placeholders)
                 : $result = $template->replace($params['else'], $placeholders);
-        // equals or greater
+            // equals or greater
         } elseif ($condition = self::_getCondition($params, static::$conditionNames['gte'])) {
             $result = $value >= $template->replace($params[$condition])
                 ? $template->replace($params['then'], $placeholders)
                 : $template->replace($params['else'], $placeholders);
-        // greater
+            // greater
         } elseif ($condition = self::_getCondition($params, static::$conditionNames['gt'])) {
             $result = $value > $template->replace($params[$condition])
                 ? $template->replace($params['then'], $placeholders)
                 : $template->replace($params['else'], $placeholders);
-        // less or equals
+            // less or equals
         } elseif ($condition = self::_getCondition($params, static::$conditionNames['lte'])) {
             $result = $value <= $template->replace($params[$condition])
                 ? $template->replace($params['then'], $placeholders)
                 : $template->replace($params['else'], $placeholders);
-        // less
+            // less
         } elseif ($condition = self::_getCondition($params, static::$conditionNames['lt'])) {
             $result = $value < $template->replace($params[$condition])
                 ? $template->replace($params['then'], $placeholders)
                 : $template->replace($params['else'], $placeholders);
-        // in array
+            // in array
         } elseif ($condition = self::_getCondition($params, static::$conditionNames['inarray'])) {
             $actual = trim($template->replace($params[$condition]));
             $actual = is_string($actual) ? explode(',', $actual) : $actual;

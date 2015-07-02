@@ -252,7 +252,7 @@ class TemplateTest extends TemplateCommon
 
     public function testConditionFilter()
     {
-        $this->assertSame($this->template->getChunk('@rockunit.tpl/condition_filter.html', ['title' => '<b>test</b>', 'number' => 3]), file_get_contents($this->path . '/_condition_filter.html'));
+        $this->assertSame($this->template->getChunk('@rockunit.tpl/condition_filter.html', ['title' => '<b>test</b>', 'number' => 3, 'num' => 0]), file_get_contents($this->path . '/_condition_filter.html'));
 
         // unknown param
         $this->setExpectedException(TemplateException::className());

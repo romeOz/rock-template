@@ -1484,9 +1484,9 @@ class Template implements EventsInterface
         $matches['sugar'] = trim($matches['sugar'], " `\n\t\r");
         switch ($matches['sugar']) {
             case '||':
-                return "\n:empty\n&is=`@INLINE";
+                return "\n:iempty\n&then=`";
             case '&&':
-                return "\n:notEmpty\n&is=`@INLINE";
+                return "\n:inotEmpty\n&then=`";
             case array_key_exists($matches['sugar'], $this->_getConditionNames()):
                 return "\n:if\n&{$matches['sugar']}=`";
             case '?':
@@ -1787,6 +1787,21 @@ class Template implements EventsInterface
             ],
             'empty' => [
                 'method' => '_empty',
+                'class' => \rock\template\filters\ConditionFilter::className(),
+
+            ],
+            'inotEmpty' => [
+                'class' => \rock\template\filters\ConditionFilter::className(),
+            ],
+            'iempty' => [
+                'class' => \rock\template\filters\ConditionFilter::className(),
+
+            ],
+            'notIsset' => [
+                'class' => \rock\template\filters\ConditionFilter::className(),
+            ],
+            'isset' => [
+                'method' => '_isset',
                 'class' => \rock\template\filters\ConditionFilter::className(),
 
             ],
