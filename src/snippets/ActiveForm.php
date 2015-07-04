@@ -92,7 +92,7 @@ class ActiveForm extends Snippet
         $form->submitted = $this->model->isLoad();
         foreach ($fields as $attributeName => $params) {
             if (is_int($attributeName)) {
-                $result[] = $this->template->replaceByPrefix($params);
+                $result[] = $this->template->replace($params);
                 continue;
             }
             if (isset($params['options']['enabled']) && $params['options']['enabled']=== false) {
