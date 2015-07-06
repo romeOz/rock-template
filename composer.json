@@ -17,18 +17,18 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "romeoz/rock-components" : "*@dev",
-        "romeoz/rock-url" : "*@dev",
-        "romeoz/rock-execute" : "*@dev"
+      "php": ">=5.4.0",
+      "romeoz/rock-components" : "0.11.*",
+      "romeoz/rock-url" : "0.10.*",
+      "romeoz/rock-execute" : "0.10.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.7.0",
-        "romeoz/rock-cache" : "*@dev",
-        "romeoz/rock-request" : "*@dev",
-        "romeoz/rock-date" : "*@dev",
-        "romeoz/rock-access" : "*@dev",
-        "romeoz/rock-image" : "*@dev"
+      "phpunit/phpunit": "~4.7.0",
+      "romeoz/rock-cache" : "0.11.*",
+      "romeoz/rock-request" : "0.10.*",
+      "romeoz/rock-date" : "0.10.*",
+      "romeoz/rock-access" : "0.10.*",
+      "romeoz/rock-image" : "0.10.*"
     },
     "suggest": {
         "romeoz/rock-cache": "required by Rock Cache",
