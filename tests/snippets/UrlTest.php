@@ -17,24 +17,9 @@ class UrlTest extends TemplateCommon
     public function testGet()
     {
         $this->assertSame(
-            'http://site.com/parts/categories/news/?view=all&page=1#name',
+            'http://site.com/categories/?view=all&page=1#name',
             $this->template->replace('[[url
-                        ?url=`http://site.com/categories/?view=all`
-                        ?addArgs=`{"page" : 1}`
-                        ?beginPath=`/parts`
-                        ?endPath=`/news/`
-                        ?anchor=`name`
-                        ?scheme=`abs`
-                    ]]'
-            )
-        );
-
-        // replacing URL
-        $this->assertSame(
-            'http://site.com/?view=all',
-            $this->template->replace('[[url
-                        ?url=`http://site.com/news/?view=all`
-                        ?replace=`["news/", ""]`
+                        ?modify=`{"0" : "http://site.com/categories/?view=all", "page" : 1, "#" : "name"}`
                         ?scheme=`abs`
                     ]]'
             )
@@ -45,9 +30,7 @@ class UrlTest extends TemplateCommon
             'http://site.com/categories/?page=1',
             $this->template->getSnippet('url',
                 [
-                    'url' => 'http://site.com/categories/?view=all',
-                    'removeArgs' => ['view'],
-                    'args' => ['page' => 1],
+                    'modify' => ['http://site.com/categories/?view=all', '!view', 'page' => 1],
                     'scheme' => Url::ABS
                 ]
             )
@@ -59,20 +42,27 @@ class UrlTest extends TemplateCommon
             'http://site.com/categories/',
             $template->getSnippet('url',
                 [
-                    'url' => 'http://site.com/categories/?view=all#name',
-                    'removeAllArgs' => true,
-                    'removeAnchor' => true,
+                    'modify' => ['http://site.com/categories/?view=all#name', '!', '!#'],
                     'scheme' => Url::ABS
                 ]
             )
         );
 
-        // modify self url + input null
+        $this->assertSame(
+            'http://site.com/items/save',
+            $template->getSnippet('url',
+                [
+                    'modify' => ['/items/save'],
+                    'scheme' => Url::ABS
+                ]
+            )
+        );
+
+        // modify current url
         $this->assertSame(
             'http://site.com/',
             $this->template->getSnippet('url',
                 [
-                    'removeAllArgs' => true,
                     'scheme' => Url::ABS
                 ]
             )

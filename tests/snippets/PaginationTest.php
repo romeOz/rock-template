@@ -43,7 +43,7 @@ class PaginationTest extends TemplateCommon
         // with args + anchor
         $params = [
             'array' => \rock\helpers\Pagination::get(7, null, 5, SORT_DESC),
-            'url' => Url::set()->addArgs(['view' => 'all', 'sort' => 'desc'])->addAnchor('name'),
+            'url' => ['view' =>  'all', 'sort' => 'desc', '#' => 'name'],
         ];
 
         $expected = static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_args.html'));
@@ -54,7 +54,7 @@ class PaginationTest extends TemplateCommon
         $actual = static::removeSpace($template->replace('
             [[pagination
                 ?array = `'.json_encode(\rock\helpers\Pagination::get(7, null, 5, SORT_DESC)).'`
-                ?url = `{"class" : "\\\rock\\\url\\\Url", "query": "view=all&sort=desc", "fragment" : "name"}`
+                ?url = `{"view" : "all", "sort": "desc", "#" : "name"}`
             ]]
         '));
         $this->assertSame($expected, $actual);

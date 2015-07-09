@@ -12,86 +12,29 @@ use rock\url\UrlInterface;
  *
  * ```
  * [[url
- *  ?url=`http://site.com/categories/?view=all`
- *  ?args=`{"page" : 1}`
- *  ?beginPath=`/parts`
- *  ?endPath=`/news/`
- *  ?anchor=`name`
- *  ?const=`abs`
+ *  ?modify=`{"0": "http://site.com/categories/?view=all", "page" : 1, "#" : "name"}`
+ *  ?scheme=`abs`
  * ]]
  * ```
  */
 class Url extends Snippet implements UrlInterface
 {
     /**
-     * URL for formatting.
-     * @var string|null
-     */
-    public $url;
-    /**
      * Adding CSRF-token.
      * @var bool
      */
     public $addCSRF = false;
     /**
-     * URL-arguments for set.
+     * Modify arguments.
      * @var array
      */
-    public $args = [];
-    /**
-     * URL-arguments for adding.
-     * @var array
-     */
-    public $addArgs = [];
-    /**
-     * Anchor for adding.
-     * @var string
-     */
-    public $anchor;
-    /**
-     * String to begin of URL-path.
-     * @var string
-     */
-    public $beginPath;
-    /**
-     * String to end of URL-path.
-     * @var string
-     */
-    public $endPath;
-    /**
-     * The replacement data.
-     * ```php
-     * $replacement = [$search, $replace];
-     * ```
-     * @var array
-     */
-    public $replace;
-    /**
-     * URL-arguments for removing.
-     * @var array
-     */
-    public $removeArgs;
-    /**
-     * Remove all URL-arguments.
-     * @var bool
-     */
-    public $removeAllArgs;
-    /**
-     * Remove anchor.
-     * @var bool
-     */
-    public $removeAnchor;
+    public $modify;
     /**
      * Adduce URL to: `\rock\url\UrlInterface::ABS`, `\rock\url\UrlInterface::HTTP`, `\rock\url\UrlInterface::HTTPS`.
      * @var string
      * @see UrlInterface
      */
-    public $scheme;
-    /**
-     * Use self host.
-     * @var bool
-     */
-    public $selfHost;
+    public $scheme = \rock\url\Url::REL;
     /**
      * @inheritdoc
      */
@@ -110,42 +53,10 @@ class Url extends Snippet implements UrlInterface
      */
     public function get()
     {
-        $urlBuilder = \rock\url\Url::set($this->url);
-        if (isset($this->removeArgs)) {
-            $urlBuilder->removeArgs($this->removeArgs);
-        }
-        if (isset($this->removeAllArgs)) {
-            $urlBuilder->removeAllArgs();
-        }
-        if (isset($this->removeAnchor)) {
-            $urlBuilder->removeAnchor();
-        }
-        if (isset($this->beginPath)) {
-            $urlBuilder->addBeginPath($this->beginPath);
-        }
-        if (isset($this->endPath)) {
-            $urlBuilder->addEndPath($this->endPath);
-        }
-        if (isset($this->replace)) {
-            if (!isset($this->replace[1])) {
-                $this->replace[1] = '';
-            }
-            list($search, $replace) = $this->replace;
-            $urlBuilder->replacePath($search, $replace);
-        }
         if ($this->addCSRF && $this->csrf instanceof \rock\csrf\CSRF) {
-            $this->addArgs[$this->csrf->csrfParam] = $this->csrf->get();
-        }
-        if (!empty($this->args)) {
-            $urlBuilder->setArgs($this->args);
-        }
-        if (!empty($this->addArgs)) {
-            $urlBuilder->addArgs($this->addArgs);
-        }
-        if (isset($this->anchor)) {
-            $urlBuilder->addAnchor($this->anchor);
+            $this->modify[$this->csrf->csrfParam] = $this->csrf->get();
         }
 
-        return $urlBuilder->get($this->scheme, (bool)$this->selfHost);
+        return \rock\url\Url::modify($this->modify, $this->scheme);
     }
 }

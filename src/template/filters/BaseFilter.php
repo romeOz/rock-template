@@ -97,16 +97,8 @@ class BaseFilter
      * @param string $url
      * @param array  $params params:
      *
-     * - args:        URL-arguments for set.
-     * - csrf:        adding CSRF-token.
-     * - addArgs:       URL-arguments for adding.
-     * - removeArgs:      URL-arguments for removing.
-     * - removeAllArgs:   remove all URL-arguments.
-     * - beginPath:     string to begin of URL-path.
-     * - endPath:       string to end of URL-path.
-     * - replace:       the replacement data.
-     * - anchor:       anchor for adding.
-     * - removeAnchor:       remove anchor.
+     * - modify:        modify arguments.
+     * - addCSRF:        adding CSRF-token.
      * - scheme: adduce URL to: {@see \rock\url\Url::ABS}, {@see \rock\url\Url::HTTP},
      *                  and {@see \rock\url\Url::HTTPS}.
      * @return string
@@ -116,50 +108,19 @@ class BaseFilter
         if (empty($url)) {
             return '#';
         }
-        $urlBuilder = Url::set($url);
-        if (isset($params['removeAllArgs'])) {
-            $urlBuilder->removeAllArgs();
+        if (!isset($params['modify'])) {
+            $params['modify'] = [];
         }
-        if (isset($params['removeArgs'])) {
-            $urlBuilder->removeArgs($params['removeArgs']);
-        }
-        if (isset($params['removeAnchor'])) {
-            $urlBuilder->removeAnchor();
-        }
-        if (isset($params['beginPath'])) {
-            $urlBuilder->addBeginPath($params['beginPath']);
-        }
-        if (isset($params['endPath'])) {
-            $urlBuilder->addEndPath($params['endPath']);
-        }
-        if (isset($params['replace'])) {
-            if (!isset($params['replace'][1])) {
-                $params['replace'][1] = '';
-            }
-            list($search, $replace) = $params['replace'];
-            $urlBuilder->replacePath($search, $replace);
-        }
-        if (isset($params['args'])) {
-            $urlBuilder->setArgs($params['args']);
-        }
+        array_unshift($params['modify'], $url);
         if (isset($params['addCSRF'])) {
             /** @var \rock\csrf\CSRF $csrf */
             $csrf = Instance::ensure(isset($params['csrf']) ? $params['csrf'] : 'csrf', '\rock\csrf\CSRF', false);
             if ($csrf instanceof \rock\csrf\CSRF) {
-                $params['addArgs'] = array_merge(
-                    [$csrf->csrfParam => $csrf->get()],
-                    Helper::getValue($params['csrf'], [])
-                );
+                $params['modify'][$csrf->csrfParam] = $csrf->get();
             }
         }
-        if (isset($params['addArgs'])) {
-            $urlBuilder->addArgs($params['addArgs']);
-        }
-        if (isset($params['anchor'])) {
-            $urlBuilder->addAnchor($params['anchor']);
-        }
 
-        return $urlBuilder->get(Helper::getValue($params['scheme'], Url::REL), (bool)Helper::getValue($params['selfHost']));
+        return Url::modify($params['modify'], Helper::getValue($params['scheme'], Url::REL));
     }
 
     /**

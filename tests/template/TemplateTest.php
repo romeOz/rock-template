@@ -361,27 +361,15 @@ class TemplateTest extends TemplateCommon
 
         // modify url
         $replace = '[[+url:modifyUrl
-                        &args=`{"page" : 1}`
-                        &beginPath=`/parts`
-                        &endPath=`/news/`
-                        &anchor=`name`
+                        &modify=`{"0" : "!", "page" : 1, "#" : "name"}`
                         &scheme=`abs`
                      ]]';
-        $this->assertSame('http://site.com/parts/categories/news/?page=1#name', $this->template->replace($replace, ['url'=> '/categories/?view=all']));
-        $this->template->removeAllPlaceholders();
-
-        // modify url + replacing URL
-        $replace = '[[+url:modifyUrl
-                        &replace=`["news/"]`
-                        &scheme=`abs`
-                     ]]';
-        $this->assertSame('http://site.com/?view=all', $this->template->replace($replace, ['url'=> '/news/?view=all']));
+        $this->assertSame('http://site.com/categories/?page=1#name', $this->template->replace($replace, ['url'=> '/categories/?view=all']));
         $this->template->removeAllPlaceholders();
 
         // modify url + remove args + add args
         $replace = '[[+url:modifyUrl
-                        &removeArgs=`["view"]`
-                        &addArgs=`{"page" : 1}`
+                        &modify=`{"0" : "!view","page" : 1}`
                         &scheme=`abs`
                      ]]';
         $this->assertSame('http://site.com/categories/?page=1', $this->template->replace($replace, ['url'=> '/categories/?view=all']));
@@ -389,8 +377,7 @@ class TemplateTest extends TemplateCommon
 
         // modify url + remove all args
         $replace = '[[+url:modifyUrl
-                        &removeAllArgs=`true`
-                        &removeAnchor=`true`
+                        &modify=`["!", "!#"]`
                         &scheme=`abs`
                      ]]';
         $this->assertSame('http://site.com/categories/', $this->template->replace($replace, ['url'=> '/categories/?view=all#name']));

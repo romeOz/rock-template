@@ -319,14 +319,11 @@ Build is performed `\rock\template\url\Url`.
 ```php
 $replace =
     '[[+url:modifyUrl
-         &args=`{"page" : 1}`
-         &beginPath=`/parts`
-         &endPath=`/news/`
-         &anchor=`name`
+         &modify=`{"page" : 1, "#" : "name"}`
          &scheme=`abs`
     ]]';
 
-echo (new Template)->replace($replace,['url'=> 'http://site.com/categories/?view=all']); // result: http://site.com/parts/categories/news/?page=1#name
+echo (new Template)->replace($replace,['url'=> 'http://site.com/categories/?view=all']); // result: http://site.com/categories/?page=1#name
 ```
 
 If url is empty, then get dummy ```#```.

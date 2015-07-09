@@ -100,8 +100,8 @@ class Pagination extends Snippet
      * @var string
      */
     public $wrapperTpl = '@template.views/pagination/wrapper';
-    /** @var  Url */
-    public $url = 'url';
+    /** @var  array */
+    public $url = [];
     public $autoEscape = false;
     /**
      * URL-arguments.
@@ -109,21 +109,6 @@ class Pagination extends Snippet
      * @var array
      */
     private $_pageArgs = [];
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-        if (!is_object($this->url)) {
-            if (class_exists('\rock\di\Container')) {
-                $this->url =  \rock\di\Container::load($this->url);
-            } else {
-                $this->url = new Url(null, is_array($this->url) ? $this->url : []);
-            }
-        }
-    }
 
     /**
      * @inheritdoc
@@ -171,7 +156,7 @@ class Pagination extends Snippet
         $result = '';
         foreach ($data['pageDisplay'] as $num) {
             $this->_pageArgs[$pageParam] = $num;
-            $url = $this->url->addArgs($this->_pageArgs)->get();
+            $url = Url::modify($this->url + $this->_pageArgs);
             // for active page
             if ((int)$data['pageCurrent'] === (int)$num) {
                 $result .= $this->template->replaceByPrefix($this->pageActiveTpl, ['num' => $num, 'url' => $url]);
@@ -191,9 +176,7 @@ class Pagination extends Snippet
         }
         $this->_pageArgs[$pageParam] = $pageFirst;
         $placeholders = [
-            'url' => $this->url
-                ->addArgs($this->_pageArgs)
-                ->get(),
+            'url' => $url = Url::modify($this->url + $this->_pageArgs),
             'pageFirstName' => $this->template->replace($this->pageFirstName)
         ];
         return $this->template->replaceByPrefix($this->pageFirstTpl, $placeholders);
@@ -206,9 +189,7 @@ class Pagination extends Snippet
         }
         $this->_pageArgs[$pageParam] = $pageLast;
         $placeholders = [
-            'url' => $this->url
-                ->addArgs($this->_pageArgs)
-                ->get(),
+            'url' => $url = Url::modify($this->url + $this->_pageArgs),
             'pageLastName' => $this->template->replace($this->pageLastName)
         ];
         return $this->template->replaceByPrefix($this->pageLastTpl, $placeholders);
