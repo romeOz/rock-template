@@ -52,15 +52,16 @@ class IfSnippet extends Snippet
     public function get()
     {
         if (!isset($this->subject, $this->operands, $this->then) ||
-            empty($this->operands)) {
+            empty($this->operands)
+        ) {
             return null;
         }
         $operands = $this->operands;
         $this->template->addMultiPlaceholders($this->template->findPlaceholders($this->addPlaceholders));
         $paramsTpl = [
-            'subject'   => $this->subject,
-            'params'    => $operands,
-            'then'      => $this->then,
+            'subject' => $this->subject,
+            'params' => $operands,
+            'then' => $this->then,
             'template' => $this->template
         ];
 

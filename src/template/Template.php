@@ -201,7 +201,7 @@ class Template implements EventsInterface
             Alias::setAlias('template.views', dirname(__DIR__) . '/views');
         }
         $this->locale = strtolower($this->locale);
-        $this->cache = Instance::ensure($this->cache, null, false);
+        $this->cache = Instance::ensure($this->cache, null, [], false);
         $this->snippets = array_merge($this->defaultSnippets(), $this->snippets);
         $this->filters = array_merge($this->defaultFilters(), $this->filters);
     }
@@ -234,7 +234,7 @@ class Template implements EventsInterface
         }
 
         // Set cache
-        $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags ? : []);
+        $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags ?: []);
 
         return $result;
     }
@@ -242,8 +242,8 @@ class Template implements EventsInterface
     /**
      * Replace variables template (chunk, snippet...).
      *
-     * @param string $code         current template with variables template.
-     * @param array  $placeholders array placeholders of variables template.
+     * @param string $code current template with variables template.
+     * @param array $placeholders array placeholders of variables template.
      * @return string
      */
     public function replace($code, array $placeholders = [])
@@ -327,7 +327,7 @@ class Template implements EventsInterface
     public function getAllPlaceholders($parent = null, $autoEscape = true, array $only = [], array $exclude = [])
     {
         if (isset($parent)) {
-            list(,,$template) = $this->getParentPlaceholder($parent);
+            list(, , $template) = $this->getParentPlaceholder($parent);
         }
 
         if (!isset($template)) {
@@ -355,7 +355,7 @@ class Template implements EventsInterface
      */
     public function addPlaceholder($name, $value = null, $recursive = false)
     {
-        list($name,,$template) = $this->getParentPlaceholder($name);
+        list($name, , $template) = $this->getParentPlaceholder($name);
         if (!isset($template)) {
             $template = $this;
         }
@@ -431,7 +431,7 @@ class Template implements EventsInterface
             return;
         }
         $_name = $name;
-        list($name,,$template) = $this->getParentPlaceholder($name);
+        list($name, , $template) = $this->getParentPlaceholder($name);
         if (!isset($template)) {
             $template = $this;
         }
@@ -482,7 +482,7 @@ class Template implements EventsInterface
     public function removeAllPlaceholders($parent = null)
     {
         if (isset($parent)) {
-            list(,,$template) = $this->getParentPlaceholder($parent);
+            list(, , $template) = $this->getParentPlaceholder($parent);
         }
 
         if (!isset($template)) {
@@ -526,7 +526,7 @@ class Template implements EventsInterface
                     $result[$this->_prepareNamePlaceholder($value)] = $this->getPlaceholder($value, false);
                 } elseif ($recursive) {
                     /** @var static $scope */
-                    foreach(array_reverse($this->scopes, true) as $scope) {
+                    foreach (array_reverse($this->scopes, true) as $scope) {
                         if ($scope->existsPlaceholder($value)) {
                             $result[$this->_prepareNamePlaceholder($value)] = $scope->getPlaceholder($value);
                             break;
@@ -589,7 +589,7 @@ class Template implements EventsInterface
     /**
      * Autoescape vars of template engine.
      *
-     * @param mixed    $value
+     * @param mixed $value
      * @param bool|int $const
      * @return mixed
      */
@@ -645,7 +645,7 @@ class Template implements EventsInterface
      * Rendering chunk.
      *
      * @param string $path path to chunk.
-     * @param array  $placeholders list placeholders
+     * @param array $placeholders list placeholders
      * @return string
      */
     public function getChunk($path, array $placeholders = [])
@@ -660,7 +660,7 @@ class Template implements EventsInterface
         }
         $result = $template->renderInternal($path, $placeholders);
         // Set cache
-        $template->setCache($cacheKey, $result, $cacheExpire, $cacheTags ? : []);
+        $template->setCache($cacheKey, $result, $cacheExpire, $cacheTags ?: []);
 
         return $result;
     }
@@ -686,8 +686,8 @@ class Template implements EventsInterface
      *
      * @param string|\rock\snippets\Snippet $snippet name of
      *                                           snippet/instance @see \rock\base\Snippet
-     * @param array                     $params  params
-     * @param bool                      $autoEscape
+     * @param array $params params
+     * @param bool $autoEscape
      * @return mixed
      */
     public function getSnippet($snippet, array $params = [], $autoEscape = true)
@@ -702,8 +702,8 @@ class Template implements EventsInterface
     }
 
     /**
-     * @param string   $name name of extension
-     * @param array    $params
+     * @param string $name name of extension
+     * @param array $params
      * @param bool|int $autoEscape
      * @return mixed
      */
@@ -720,8 +720,8 @@ class Template implements EventsInterface
     /**
      * Make filter (modifier).
      *
-     * @param string $value   value
-     * @param array  $filters array of filters with params
+     * @param string $value value
+     * @param array $filters array of filters with params
      * @throws TemplateException
      * @return string
      */
@@ -753,7 +753,7 @@ class Template implements EventsInterface
      * Replace inline tpl.
      *
      * @param string $value value
-     * @param array  $placeholders
+     * @param array $placeholders
      * @return string
      */
     public function replaceByPrefix($value, array $placeholders = [])
@@ -883,8 +883,8 @@ class Template implements EventsInterface
     /**
      * Registers a meta tag.
      *
-     * @param array  $options the HTML attributes for the meta tag.
-     * @param string $key     the key that identifies the meta tag. If two meta tags are registered
+     * @param array $options the HTML attributes for the meta tag.
+     * @param string $key the key that identifies the meta tag. If two meta tags are registered
      *                        with the same key, the latter will overwrite the former. If this is null, the new meta tag
      *                        will be appended to the existing ones.
      */
@@ -910,8 +910,8 @@ class Template implements EventsInterface
     /**
      * Registers a link tag.
      *
-     * @param array  $options the HTML attributes for the link tag.
-     * @param string $key     the key that identifies the link tag. If two link tags are registered
+     * @param array $options the HTML attributes for the link tag.
+     * @param string $key the key that identifies the link tag. If two link tags are registered
      *                        with the same key, the latter will overwrite the former. If this is null, the new link tag
      *                        will be appended to the existing ones.
      */
@@ -927,9 +927,9 @@ class Template implements EventsInterface
     /**
      * Registers a CSS code block.
      *
-     * @param string $css     the CSS code block to be registered
-     * @param array  $options the HTML attributes for the style tag.
-     * @param string $key     the key that identifies the CSS code block. If null, it will use
+     * @param string $css the CSS code block to be registered
+     * @param array $options the HTML attributes for the style tag.
+     * @param string $key the key that identifies the CSS code block. If null, it will use
      *                        $css as the key. If two CSS code blocks are registered with the same key, the latter
      *                        will overwrite the former.
      */
@@ -942,9 +942,9 @@ class Template implements EventsInterface
     /**
      * Registers a CSS file.
      *
-     * @param string $url     the CSS file to be registered.
-     * @param array  $options the HTML attributes for the link tag.
-     * @param string $key     the key that identifies the CSS script file. If null, it will use
+     * @param string $url the CSS file to be registered.
+     * @param array $options the HTML attributes for the link tag.
+     * @param string $key the key that identifies the CSS script file. If null, it will use
      *                        $url as the key. If two CSS files are registered with the same key, the latter
      *                        will overwrite the former.
      */
@@ -960,7 +960,7 @@ class Template implements EventsInterface
     /**
      * Registers a JS code block.
      *
-     * @param string  $js       the JS code block to be registered
+     * @param string $js the JS code block to be registered
      * @param integer $position the position at which the JS script tag should be inserted
      *                          in a page. The possible values are:
      *
@@ -968,7 +968,7 @@ class Template implements EventsInterface
      * - `POS_BEGIN`: at the beginning of the body section
      * - `POS_END`: at the end of the body section
      *
-     * @param string  $key      the key that identifies the JS code block. If null, it will use
+     * @param string $key the key that identifies the JS code block. If null, it will use
      *                          $js as the key. If two JS code blocks are registered with the same key, the latter
      *                          will overwrite the former.
      */
@@ -981,8 +981,8 @@ class Template implements EventsInterface
     /**
      * Registers a JS file.
      *
-     * @param string $url     the JS file to be registered.
-     * @param array  $options the HTML attributes for the script tag. A special option
+     * @param string $url the JS file to be registered.
+     * @param array $options the HTML attributes for the script tag. A special option
      *                        named "position" is supported which specifies where the JS script tag should be inserted
      *                        in a page. The possible values of "position" are:
      *
@@ -990,7 +990,7 @@ class Template implements EventsInterface
      * - `POS_BEGIN`: at the beginning of the body section
      * - `POS_END`: at the end of the body section. This is the default value.
      *
-     * @param string $key     the key that identifies the JS script file. If null, it will use
+     * @param string $key the key that identifies the JS script file. If null, it will use
      *                        $url as the key. If two JS files are registered with the same key, the latter
      *                        will overwrite the former.
      */
@@ -1005,7 +1005,7 @@ class Template implements EventsInterface
 
     /**
      * @param string $path path to layout/chunk.
-     * @param array  $placeholders
+     * @param array $placeholders
      * @throws TemplateException
      * @return string
      */
@@ -1017,7 +1017,7 @@ class Template implements EventsInterface
             $path .= '.' . $this->engines[$this->defaultEngine];
         }
         // relative path
-        if ((strpos($path, DIRECTORY_SEPARATOR) === false || strpos($path, '.'. DIRECTORY_SEPARATOR) !== false) && $this->path) {
+        if ((strpos($path, DIRECTORY_SEPARATOR) === false || strpos($path, '.' . DIRECTORY_SEPARATOR) !== false) && $this->path) {
             $path = dirname($this->path) . DIRECTORY_SEPARATOR . $path;
             $path = realpath($path);
         }
@@ -1154,7 +1154,7 @@ class Template implements EventsInterface
             $cacheKey,
             $result,
             $cacheExpire,
-            $cacheTags ? : []
+            $cacheTags ?: []
         );
 
         return $result;
@@ -1189,7 +1189,7 @@ class Template implements EventsInterface
      * ```
      *
      * @param string $value
-     * @param array  $dataRecursive
+     * @param array $dataRecursive
      * @return array
      */
     private function _searchParams($value, array $dataRecursive)
@@ -1267,7 +1267,7 @@ class Template implements EventsInterface
     /**
      * Check: not replace is `@INLINE` prefix exists or parameters then/else.
      *
-     * @param string $name  name of param
+     * @param string $name name of param
      * @param string $value value of param
      * @return string
      */
@@ -1289,7 +1289,7 @@ class Template implements EventsInterface
      * Search of filters (modifiers).
      *
      * @param string $value
-     * @param array  $dataRecursive
+     * @param array $dataRecursive
      * @return array
      */
     private function _searchFilters($value, array $dataRecursive)
@@ -1356,8 +1356,8 @@ class Template implements EventsInterface
     }
 
     /**
-     * @param string $name   name of extension
-     * @param array  $params params
+     * @param string $name name of extension
+     * @param array $params params
      * @throws TemplateException
      * @return mixed
      */
@@ -1432,7 +1432,7 @@ class Template implements EventsInterface
             )
             : $result;
         //  Set cache
-        $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags ? : []);
+        $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags ?: []);
         if (!$snippet->afterSnippet($result)) {
             return null;
         }
@@ -1540,7 +1540,7 @@ class Template implements EventsInterface
             return [implode('.', $name), $template->placeholders, $template];
         }
         end($this->scopes);
-        while(current($name) === '$parent') {
+        while (current($name) === '$parent') {
             $template = current($this->scopes);
             prev($this->scopes);
             next($name);
@@ -1559,7 +1559,7 @@ class Template implements EventsInterface
         if (is_string($name)) {
             $name = explode('.', $name);
         }
-        $name = array_filter($name, function($value){
+        $name = array_filter($name, function ($value) {
             return $value !== '$parent' && $value !== '$root';
         });
         return implode('.', $name);
@@ -1655,7 +1655,7 @@ class Template implements EventsInterface
      *
      * @param string $key
      * @param mixed $value
-     * @param int  $expire
+     * @param int $expire
      * @param array $tags
      */
     protected function setCache($key = null, $value = null, $expire = 0, array $tags = [])
@@ -1819,31 +1819,31 @@ class Template implements EventsInterface
     {
         return [
             'listView' => [
-                'class'        => \rock\snippets\ListView::className(),
+                'class' => \rock\snippets\ListView::className(),
             ],
             'list' => [
-                'class'        => \rock\snippets\ListView::className(),
+                'class' => \rock\snippets\ListView::className(),
             ],
             'date' => [
-                'class'        => \rock\snippets\Date::className(),
+                'class' => \rock\snippets\Date::className(),
             ],
             'for' => [
-                'class'        => \rock\snippets\ForSnippet::className(),
+                'class' => \rock\snippets\ForSnippet::className(),
             ],
             'formula' => [
-                'class'        => \rock\snippets\Formula::className(),
+                'class' => \rock\snippets\Formula::className(),
             ],
             'if' => [
-                'class'        => \rock\snippets\IfSnippet::className(),
+                'class' => \rock\snippets\IfSnippet::className(),
             ],
             'pagination' => [
-                'class'        => \rock\snippets\Pagination::className(),
+                'class' => \rock\snippets\Pagination::className(),
             ],
             'url' => [
-                'class'        => \rock\snippets\Url::className(),
+                'class' => \rock\snippets\Url::className(),
             ],
             'thumb' => [
-                'class'        => \rock\snippets\Thumb::className(),
+                'class' => \rock\snippets\Thumb::className(),
             ],
         ];
     }

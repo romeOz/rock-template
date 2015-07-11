@@ -8,7 +8,7 @@ use rock\image\ThumbInterface;
 use rock\template\Html;
 
 /**
- * Snippet "Thumb" 
+ * Snippet "Thumb"
  * @package rock\snippets\
  *
  * @see Thumb

@@ -54,11 +54,11 @@ class Formula extends Snippet
             $data[$keyParam] = $valueParam;
         }
 
-        return $this-> execute->get(
+        return $this->execute->get(
             StringHelper::removeSpaces('return ' . preg_replace('/:([\\w]+)/', '$data[\'$1\']', $this->subject) . ';'),
             [
-                'subject'   => $this->subject,
-                'operands'    => $this->operands
+                'subject' => $this->subject,
+                'operands' => $this->operands
             ],
             $data
         );

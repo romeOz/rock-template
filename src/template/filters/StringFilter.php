@@ -36,7 +36,7 @@ class StringFilter
      * Trim by pattern.
      *
      * @param string $value
-     * @param array $params:
+     * @param array $params :
      *
      * - pattern: regexp pattern
      * - limit
@@ -55,8 +55,8 @@ class StringFilter
     /**
      * Check contains word or char in string
      *
-     * @param string   $value
-     * @param array    $params:
+     * @param string $value
+     * @param array $params :
      *
      * - is
      * - then
@@ -85,7 +85,7 @@ class StringFilter
      * Truncates a string to the number of characters specified.
      *
      * @param string $value
-     * @param array  $params           params:
+     * @param array $params params:
      *
      * - length: count of output characters (minus 3, because point).
      *
@@ -104,7 +104,7 @@ class StringFilter
      * Truncates a string to the number of words specified.
      *
      * @param string $value
-     * @param array  $params params:
+     * @param array $params params:
      *
      * - length: count of output characters.
      *

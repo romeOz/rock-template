@@ -204,7 +204,7 @@ class ListView extends Snippet
             $this->array = $this->callFunction($this->call);
         }
         if (!empty($this->array) && is_scalar($this->array)) {
-            $this->array =[$this->array];
+            $this->array = [$this->array];
         }
         if (!empty($this->array) && !is_int(key($this->array))) {
             $this->array = [$this->array];
@@ -322,7 +322,7 @@ class ListView extends Snippet
      * Inserting content into wrapper template.
      *
      * @param string $value content
-     * @param array  $placeholders
+     * @param array $placeholders
      * @return string
      */
     protected function renderWrapperTpl($value, array $placeholders)

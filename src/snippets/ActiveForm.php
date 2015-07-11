@@ -95,11 +95,11 @@ class ActiveForm extends Snippet
                 $result[] = $this->template->replace($params);
                 continue;
             }
-            if (isset($params['options']['enabled']) && $params['options']['enabled']=== false) {
+            if (isset($params['options']['enabled']) && $params['options']['enabled'] === false) {
                 continue;
             }
             unset($params['options']['enabled']);
-            $field = $form->field($this->model, $attributeName, Helper::getValue($params['options'],[]));
+            $field = $form->field($this->model, $attributeName, Helper::getValue($params['options'], []));
             unset($params['options']);
 
             foreach ($params as $additionName => $additionParams) {
@@ -141,7 +141,7 @@ class ActiveForm extends Snippet
      * @param        $wrapperTpl
      * @return string
      */
-    protected  function parseWrapperTpl($value, $wrapperTpl)
+    protected function parseWrapperTpl($value, $wrapperTpl)
     {
         $value = $this->template->replaceByPrefix($wrapperTpl, ['output' => $value]);
         $this->template->removePlaceholder('output');

@@ -15,8 +15,8 @@ class NumericFilter
     /**
      * Check numeric is parity.
      *
-     * @param string   $value
-     * @param array    $params:
+     * @param string $value
+     * @param array $params :
      *
      * - then
      * - else
@@ -55,7 +55,7 @@ class NumericFilter
      * The value is calculated by the formula
      *
      * @param float|int|number $value
-     * @param array $params:
+     * @param array $params :
      *
      * - operator: arithmetic and bitwise operators: `*`, `**`, `+`, `-`, `/`, `%`, `|`, `&`, `^`, `<<`, `>>`
      * - operand

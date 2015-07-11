@@ -23,8 +23,8 @@ class BaseFilter
     /**
      * Unserialize.
      *
-     * @param string $value  serialized array
-     * @param array  $params params:
+     * @param string $value serialized array
+     * @param array $params params:
      *
      * - key
      * - separator
@@ -49,8 +49,8 @@ class BaseFilter
     /**
      * Replace variables template (`chunk`, `snippet`...).
      *
-     * @param string   $content content
-     * @param array    $placeholders
+     * @param string $content content
+     * @param array $placeholders
      * @param Template $template
      * @return string
      */
@@ -66,8 +66,8 @@ class BaseFilter
     /**
      * Modify date.
      *
-     * @param string $date   date
-     * @param array  $params params:
+     * @param string $date date
+     * @param array $params params:
      *
      * - format: date format
      * - locale: date locale.
@@ -95,7 +95,7 @@ class BaseFilter
      * Modify url.
      *
      * @param string $url
-     * @param array  $params params:
+     * @param array $params params:
      *
      * - modify:        modify arguments.
      * - addCSRF:        adding CSRF-token.
@@ -114,7 +114,7 @@ class BaseFilter
         array_unshift($params['modify'], $url);
         if (isset($params['addCSRF'])) {
             /** @var \rock\csrf\CSRF $csrf */
-            $csrf = Instance::ensure(isset($params['csrf']) ? $params['csrf'] : 'csrf', '\rock\csrf\CSRF', false);
+            $csrf = Instance::ensure(isset($params['csrf']) ? $params['csrf'] : 'csrf', '\rock\csrf\CSRF', [], false);
             if ($csrf instanceof \rock\csrf\CSRF) {
                 $params['modify'][$csrf->csrfParam] = $csrf->get();
             }

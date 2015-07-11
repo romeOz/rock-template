@@ -27,8 +27,8 @@ class ConditionFilter
     /**
      * `isset` condition.
      *
-     * @param string   $value  value
-     * @param array    $params params:
+     * @param string $value value
+     * @param array $params params:
      *
      * - then:               returns when isset value
      * - addPlaceholders:  set names of the placeholders, which adding the result.
@@ -52,8 +52,8 @@ class ConditionFilter
     /**
      * `!isset` condition.
      *
-     * @param string   $value  value
-     * @param array    $params params
+     * @param string $value value
+     * @param array $params params
      *
      * - then: returns when `!isset` value.
      *
@@ -77,8 +77,8 @@ class ConditionFilter
     /**
      * Condition is not empty.
      *
-     * @param string   $value  value
-     * @param array    $params params:
+     * @param string $value value
+     * @param array $params params:
      *
      * - then:               returns when value is not empty
      * - addPlaceholders:  set names of the placeholders, which adding the result.
@@ -102,8 +102,8 @@ class ConditionFilter
     /**
      * Condition is empty.
      *
-     * @param string   $value  value
-     * @param array    $params params
+     * @param string $value value
+     * @param array $params params
      *
      * - then: returns when value is empty.
      *
@@ -128,8 +128,8 @@ class ConditionFilter
     /**
      * Inline condition is not empty.
      *
-     * @param string   $value  value
-     * @param array    $params params:
+     * @param string $value value
+     * @param array $params params:
      *
      * - then:               returns when value is not empty
      * - addPlaceholders:  set names of the placeholders, which adding the result.
@@ -154,8 +154,8 @@ class ConditionFilter
     /**
      * Inline condition is empty.
      *
-     * @param string   $value  value
-     * @param array    $params params
+     * @param string $value value
+     * @param array $params params
      *
      * - then: returns when value is empty.
      *
@@ -179,8 +179,8 @@ class ConditionFilter
     /**
      * if ... then ... else
      *
-     * @param string   $value  value
-     * @param array    $params params
+     * @param string $value value
+     * @param array $params params
      * @param Template $template
      * @throws TemplateException
      * @return string
@@ -244,7 +244,7 @@ class ConditionFilter
     /**
      * Get name of condition.
      *
-     * @param array $value      value for equal
+     * @param array $value value for equal
      * @param array $conditions conditions
      * @return string|boolean
      */

@@ -45,7 +45,7 @@ class Url extends Snippet implements UrlInterface
     public function init()
     {
         parent::init();
-        $this->csrf = Instance::ensure($this->csrf, '\rock\csrf\CSRF', false);
+        $this->csrf = Instance::ensure($this->csrf, '\rock\csrf\CSRF', [], false);
     }
 
     /**
