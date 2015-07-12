@@ -18,10 +18,11 @@ class UrlTest extends TemplateCommon
     {
         $this->assertSame(
             'http://site.com/categories/?view=all&page=1#name',
-            $this->template->replace('[[url
-                        ?modify=`{"0" : "http://site.com/categories/?view=all", "page" : 1, "#" : "name"}`
-                        ?scheme=`abs`
-                    ]]'
+            $this->template->replace(
+                '[[url
+                    ?modify=`{"0" : "http://site.com/categories/?view=all", "page" : 1, "#" : "name"}`
+                    ?scheme=`abs`
+                ]]'
             )
         );
 

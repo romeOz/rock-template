@@ -6,16 +6,10 @@ namespace rockunit\snippets;
 use rock\snippets\Pagination;
 use rock\template\TemplateException;
 use rock\template\Template;
-use rock\url\Url;
 use rockunit\template\TemplateCommon;
 
 class PaginationTest extends TemplateCommon
 {
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-    }
-
     protected function calculatePath()
     {
         $this->path = __DIR__ . '/data';
@@ -34,16 +28,16 @@ class PaginationTest extends TemplateCommon
         $this->assertSame(null, $template->getSnippet('pagination'));
 
         $params = [
-          'call' => function(){
-                  return \rock\helpers\Pagination::get(0, null, 10, SORT_DESC);
-              }
+            'call' => function () {
+                return \rock\helpers\Pagination::get(0, null, 10, SORT_DESC);
+            }
         ];
         $this->assertEmpty($this->template->getSnippet('pagination', $params));
 
         // with args + anchor
         $params = [
             'array' => \rock\helpers\Pagination::get(7, null, 5, SORT_DESC),
-            'url' => ['view' =>  'all', 'sort' => 'desc', '#' => 'name'],
+            'url' => ['view' => 'all', 'sort' => 'desc', '#' => 'name'],
         ];
 
         $expected = static::removeSpace(file_get_contents(__DIR__ . '/data/_pagination_args.html'));
@@ -51,12 +45,12 @@ class PaginationTest extends TemplateCommon
         $this->assertSame($expected, $actual);
 
         // rock engine
-        $actual = static::removeSpace($template->replace('
-            [[pagination
-                ?array = `'.json_encode(\rock\helpers\Pagination::get(7, null, 5, SORT_DESC)).'`
+        $actual = static::removeSpace($template->replace(
+            '[[pagination
+                ?array = `' . json_encode(\rock\helpers\Pagination::get(7, null, 5, SORT_DESC)) . '`
                 ?url = `{"view" : "all", "sort": "desc", "#" : "name"}`
-            ]]
-        '));
+            ]]'
+        ));
         $this->assertSame($expected, $actual);
 
         // not args

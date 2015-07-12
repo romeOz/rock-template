@@ -3,14 +3,13 @@
 namespace rockunit\snippets;
 
 use rock\helpers\Pagination;
-use rock\template\Template;
 use rockunit\template\TemplateCommon;
 
 class ListViewTest extends TemplateCommon
 {
-    protected function setUp()
+    protected function calculatePath()
     {
-        parent::setUp();
+        $this->path = __DIR__ . '/data';
     }
 
     public function testGetAsArray()
@@ -51,50 +50,44 @@ class ListViewTest extends TemplateCommon
         // null tpl
         $this->assertSame(
             json_encode($this->getAll()),
-            trim($this->template->replace('
-                [['.$class.'?call=`'.__CLASS__.'.getAll`]]
-            '))
+            trim($this->template->replace('[[' . $class . '?call=`' . __CLASS__ . '.getAll`]]'))
         );
 
         // array is empty
         $this->assertSame(
             '',
-            trim($this->template->replace('
-                [[listView?array=`[]`]]
-            '))
+            trim($this->template->replace('[[listView?array=`[]`]]'))
         );
 
         // array is empty  + custom error message
         $this->assertSame(
             'empty',
-            trim($this->template->replace('
-                [[listView?array=`[]`?errorText=`empty`]]
-            '))
+            trim($this->template->replace('[[listView?array=`[]`?errorText=`empty`]]'))
         );
 
         // tpl + wrapper tpl
         $this->assertSame(
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')),
-            $this->removeSpace($this->template->replace('
-                [[listView
-                    ?call=`'.__CLASS__.'.getAll`
-                    ?tpl=`'. $this->path . '/item`
-                    ?wrapperTpl=`'. $this->path . '/wrapper`
-                ]]
-            '))
+            $this->removeSpace($this->template->replace(
+                '[[listView
+                    ?call=`' . __CLASS__ . '.getAll`
+                    ?tpl=`' . $this->path . '/item`
+                    ?wrapperTpl=`' . $this->path . '/wrapper`
+                ]]'
+            ))
         );
 
         // pagination
         $this->assertSame(
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')),
-            $this->removeSpace($this->template->replace('
-                [[listView
-                    ?call=`'.__CLASS__.'.getAll`
-                    ?tpl=`'. $this->path . '/item`
-                    ?wrapperTpl=`'. $this->path . '/wrapper`
-                    ?pagination=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "$parent.pagination"}`
-                ]]
-            '))
+            $this->removeSpace($this->template->replace(
+                '[[listView
+                    ?call=`' . __CLASS__ . '.getAll`
+                    ?tpl=`' . $this->path . '/item`
+                    ?wrapperTpl=`' . $this->path . '/wrapper`
+                    ?pagination=`{"call" : "' . addslashes(__CLASS__) . '.getPagination", "toPlaceholder" : "$parent.pagination"}`
+                ]]'
+            ))
         );
 
         $this->assertNotEmpty($this->template->getPlaceholder('pagination'));
@@ -106,14 +99,9 @@ class ListViewTest extends TemplateCommon
 
     public function testRender()
     {
-        $config = [
-            'snippets' => [
-                'prepareSnippet' => [
-                    'class' => \rockunit\snippets\data\PrepareSnippet::className()
-                ]
-            ]
+        $this->template->snippets['prepareSnippet'] = [
+            'class' => \rockunit\snippets\data\PrepareSnippet::className()
         ];
-        $this->template = new Template($config);
         $this->assertSame(
             $this->removeSpace($this->template->render('@rockunit.tpl/layout', [], new \rockunit\snippets\data\FooController)),
             $this->removeSpace(file_get_contents($this->path . '/_layout.html'))
@@ -127,20 +115,19 @@ class ListViewTest extends TemplateCommon
             return;
         }
         $cache = static::getCache();
-        $this->template = new Template();
         $this->template->cache = $cache;
 
         $this->assertSame(
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')),
-            $this->removeSpace($this->template->replace('
-                [[listView
-                    ?call=`'.__CLASS__.'.getAll`
-                    ?tpl=`'. $this->path . '/item`
-                    ?wrapperTpl=`'. $this->path . '/wrapper`
-                    ?pagination=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "$parent.pagination"}`
+            $this->removeSpace($this->template->replace(
+                '[[listView
+                    ?call=`' . __CLASS__ . '.getAll`
+                    ?tpl=`' . $this->path . '/item`
+                    ?wrapperTpl=`' . $this->path . '/wrapper`
+                    ?pagination=`{"call" : "' . addslashes(__CLASS__) . '.getPagination", "toPlaceholder" : "$parent.pagination"}`
                     ?cacheKey=`list`
-                ]]
-            '))
+                ]]'
+            ))
         );
         $this->assertTrue($cache->exists('list'));
 
@@ -148,15 +135,15 @@ class ListViewTest extends TemplateCommon
         $this->template->removeAllPlaceholders();
         $this->assertSame(
             $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html')),
-            $this->removeSpace($this->template->replace('
-                [[listView
-                    ?call=`'.__CLASS__.'.getAll`
-                    ?tpl=`'. $this->path . '/item`
-                    ?wrapperTpl=`'. $this->path . '/wrapper`
-                    ?pagination=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "$parent.pagination"}`
+            $this->removeSpace($this->template->replace(
+                '[[listView
+                    ?call=`' . __CLASS__ . '.getAll`
+                    ?tpl=`' . $this->path . '/item`
+                    ?wrapperTpl=`' . $this->path . '/wrapper`
+                    ?pagination=`{"call" : "' . addslashes(__CLASS__) . '.getPagination", "toPlaceholder" : "$parent.pagination"}`
                     ?cacheKey=`list`
-                ]]
-            '))
+                ]]'
+            ))
         );
         $this->assertTrue($cache->exists('list'));
         $this->assertNotEmpty($this->template->getPlaceholder('pagination'));
@@ -175,17 +162,17 @@ class ListViewTest extends TemplateCommon
         static::clearRuntime();
         $cache = static::getCache();
         $this->template->cache = $cache;
-        $expected =$this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'));
-        $actual =$this->removeSpace($this->template->replace('
-                [[listView
-                    ?call=`'.__CLASS__.'.getAll`
-                    ?tpl=`'. $this->path . '/item`
-                    ?wrapperTpl=`'. $this->path . '/wrapper`
-                    ?pagination=`{"call" : "'.addslashes(__CLASS__).'.getPagination", "toPlaceholder" : "$parent.pagination"}`
-                    ?cacheKey=`list`
-                    ?cacheExpire=`1`
-                ]]
-            '));
+        $expected = $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'));
+        $actual = $this->removeSpace($this->template->replace(
+            '[[listView
+                ?call=`' . __CLASS__ . '.getAll`
+                ?tpl=`' . $this->path . '/item`
+                ?wrapperTpl=`' . $this->path . '/wrapper`
+                ?pagination=`{"call" : "' . addslashes(__CLASS__) . '.getPagination", "toPlaceholder" : "$parent.pagination"}`
+                ?cacheKey=`list`
+                ?cacheExpire=`1`
+            ]]'
+        ));
         $this->assertSame($expected, $actual);
         $this->assertTrue($cache->exists('list'));
         sleep(4);
@@ -210,24 +197,6 @@ class ListViewTest extends TemplateCommon
     public static function getPagination()
     {
         return Pagination::get(count(static::getAll()), 1, 1, SORT_DESC);
-    }
-
-    protected function calculatePath()
-    {
-        $this->path = __DIR__ . '/data';
-    }
-
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        static::clearRuntime();
-    }
-
-
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-        static::clearRuntime();
     }
 }
  

@@ -6,7 +6,6 @@ namespace rockunit\snippets;
 use League\Flysystem\Adapter\Local;
 use rock\base\Alias;
 use rock\file\FileManager;
-use rock\helpers\FileHelper;
 use rock\image\ImageProvider;
 use rock\snippets\Thumb;
 use rock\template\Template;
@@ -14,6 +13,11 @@ use rockunit\template\TemplateCommon;
 
 class ThumbTest extends TemplateCommon
 {
+    protected function calculatePath()
+    {
+        $this->path = __DIR__ . '/data';
+    }
+
     public function test()
     {
         $config = [
@@ -45,25 +49,14 @@ class ThumbTest extends TemplateCommon
         $this->assertTrue(file_exists(Alias::getAlias('@rockunit/runtime/cache/50x50/large.jpg')));
 
         // rock engine
-        $actual = static::removeSpace($template->replace('
-            [[thumb
+        $actual = static::removeSpace($template->replace(
+            '[[thumb
                 ?src = `large.jpg`
                 ?w = `50`
                 ?h = `100`
-            ]]
-        '));
+            ]]'
+        ));
         $this->assertSame('/assets/cache/50x100/large.jpg', $actual);
 
-    }
-
-    protected function calculatePath()
-    {
-        $this->path = __DIR__ . '/data';
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-        FileHelper::deleteDirectory(Alias::getAlias('@rockunit/runtime'));
     }
 }

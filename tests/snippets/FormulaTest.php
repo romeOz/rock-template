@@ -12,25 +12,13 @@ class FormulaTest extends TemplateCommon
         $this->path = __DIR__ . '/data';
     }
 
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        static::clearRuntime();
-    }
-
-
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-        static::clearRuntime();
-    }
-
     public function testGet()
     {
-        $actual = $this->template->replace('[[formula
-                        ?subject=`:num - 1`
-                        ?operands=`{"num" : "[[+num]]"}`
-                    ]]',
+        $actual = $this->template->replace(
+            '[[formula
+                ?subject=`:num - 1`
+                ?operands=`{"num" : "[[+num]]"}`
+            ]]',
             ['num'=> 8]
         );
         $this->assertSame(7, $actual);

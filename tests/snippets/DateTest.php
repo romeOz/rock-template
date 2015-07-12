@@ -15,17 +15,19 @@ class DateTest extends TemplateCommon
 
     public function testGet()
     {
-        $actual = $this->template->replace('[[date
-                        ?date=`2012-02-12 15:01`
-                        ?format=`j F Y H:i`
-                    ]]'
+        $actual = $this->template->replace(
+            '[[date
+                ?date=`2012-02-12 15:01`
+                ?format=`j F Y H:i`
+            ]]'
         );
         $this->assertSame('12 February 2012 15:01', $actual);
 
-        $actual = $this->template->replace('[[date
-                        ?date=`2012-02-12 15:01`
-                        ?format=`j n`
-                    ]]'
+        $actual = $this->template->replace(
+            '[[date
+                ?date=`2012-02-12 15:01`
+                ?format=`j n`
+            ]]'
         );
         $this->assertSame('12 2', $actual);
 
