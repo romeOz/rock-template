@@ -171,6 +171,11 @@ class Template implements EventsInterface
      */
     public $throwException = false;
     /**
+     * List chroots.
+     * @var array
+     */
+    public $chroots = ['@template.views'];
+    /**
      * List placeholders.
      * @var array
      */
@@ -197,9 +202,11 @@ class Template implements EventsInterface
 
     public function init()
     {
+        // default path to view
         if (!Alias::existsAlias('template.views')) {
             Alias::setAlias('template.views', dirname(__DIR__) . '/views');
         }
+
         $this->locale = strtolower($this->locale);
         $this->cache = Instance::ensure($this->cache, null, [], false);
         $this->snippets = array_merge($this->defaultSnippets(), $this->snippets);
@@ -1011,18 +1018,9 @@ class Template implements EventsInterface
      */
     protected function renderInternal($path, array $placeholders = [])
     {
-        $path = Alias::getAlias($path, ['lang' => $this->locale]);
-        $path = FileHelper::normalizePath($path, DIRECTORY_SEPARATOR, false);
-        if (!pathinfo($path, PATHINFO_EXTENSION)) {
-            $path .= '.' . $this->engines[$this->defaultEngine];
-        }
-        // relative path
-        if ((strpos($path, DIRECTORY_SEPARATOR) === false || strpos($path, '.' . DIRECTORY_SEPARATOR) !== false) && $this->path) {
-            $path = dirname($this->path) . DIRECTORY_SEPARATOR . $path;
-            $path = realpath($path);
-        }
-        if (!file_exists($path)) {
-            throw new TemplateException(TemplateException::UNKNOWN_FILE, ['path' => $path]);
+        $path = $this->normalizePath($path);
+        if (!$this->checkPath($path)) {
+            throw new TemplateException("The requested view '{$path}' is beyond the scope of chroot");
         }
         $this->path = $path;
         if (current(array_keys($this->engines, pathinfo($path, PATHINFO_EXTENSION))) === self::ENGINE_PHP) {
@@ -1690,6 +1688,50 @@ class Template implements EventsInterface
         unset($params['cacheKey'], $params['cacheExpire'], $params['cacheTags']);
 
         return [$cacheKey, $cacheExpire, $cacheTags];
+    }
+
+    /**
+     * Normalize path.
+     * @param string $path
+     * @return string
+     * @throws TemplateException
+     * @throws \Exception
+     */
+    protected function normalizePath($path)
+    {
+        $path = Alias::getAlias($path, ['lang' => $this->locale]);
+        $path = FileHelper::normalizePath($path, DIRECTORY_SEPARATOR, false);
+
+        if (!pathinfo($path, PATHINFO_EXTENSION)) {
+            $path .= '.' . $this->engines[$this->defaultEngine];
+        }
+        $normalizePath = $path;
+        // relative path
+        if ((strpos($normalizePath, DIRECTORY_SEPARATOR) === false || strpos($normalizePath, '.' . DIRECTORY_SEPARATOR) !== false) && $this->path) {
+            $normalizePath = dirname($this->path) . DIRECTORY_SEPARATOR . $normalizePath;
+            $normalizePath = realpath($normalizePath);
+        }
+
+        if (!file_exists($normalizePath)) {
+            throw new TemplateException(TemplateException::UNKNOWN_FILE, ['path' => $path]);
+        }
+
+        return $normalizePath;
+    }
+
+    /**
+     * Check path to view.
+     * @param string $path path to view.
+     * @return bool
+     */
+    protected function checkPath($path)
+    {
+        foreach ($this->chroots as $chroot) {
+            if (StringHelper::contains($path, Alias::getAlias($chroot))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function _merge(array $array1, array $array2, $recursive = false)
