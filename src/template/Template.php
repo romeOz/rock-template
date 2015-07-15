@@ -95,7 +95,7 @@ class Template implements EventsInterface
      */
     public $extensions = [];
     /**
-     * Handler for replace link: `[[~context]]`
+     * Handler for replace link: `[[~link]]`
      * @var callable
      */
     public $handlerLink;
