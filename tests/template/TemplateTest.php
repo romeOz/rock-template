@@ -133,21 +133,21 @@ class TemplateTest extends TemplateCommon
             'css' => ['<style>.title {color: #354a57;}</style>'],
             'cssFiles' => [
                 Template::POS_HEAD => [
-                    '<link href="http://site.com/assets/css/main.css" rel="stylesheet" media="screen, projection">'
+                    '<link href="/assets/css/main.css" rel="stylesheet" media="screen, projection">'
                 ],
                 Template::POS_END => [
-                    '<!--[if !(IE) | (gt IE 8)]><link href="http://site.com/assets/css/footer.css" rel="stylesheet" media="screen, projection"><![endif]-->'
+                    '<!--[if !(IE) | (gt IE 8)]><link href="/assets/css/footer.css" rel="stylesheet" media="screen, projection"><![endif]-->'
                 ]
             ],
             'jsFiles' => [
                 Template::POS_HEAD => [
-                    '<!--[if lt IE 9]><script src="http://site.com/assets/head.js"></script><![endif]-->'
+                    '<!--[if lt IE 9]><script src="/assets/head.js"></script><![endif]-->'
                 ],
                 Template::POS_BEGIN => [
-                    '<!--[if lt IE 9]><script src="http://site.com/assets/begin.js"></script><![endif]-->'
+                    '<!--[if lt IE 9]><script src="/assets/begin.js"></script><![endif]-->'
                 ],
                 Template::POS_END => [
-                    '<script src="http://site.com/assets/end.js"></script>'
+                    '<script src="/assets/end.js"></script>'
                 ]
             ],
             'js' => [

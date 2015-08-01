@@ -67,27 +67,27 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
 
     public function testCssFile()
     {
-        $this->assertEquals('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
-        $this->assertEquals('<link href="http://site.com" rel="stylesheet">', Html::cssFile(''));
-        $this->assertEquals("<!--[if IE 9]>\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('http://example.com', ['condition' => 'IE 9']));
+        $this->assertEquals('<link href="/foo.css" rel="stylesheet">', Html::cssFile('/foo.css'));
+        $this->assertEquals('<link href="/" rel="stylesheet">', Html::cssFile(''));
+        $this->assertEquals("<!--[if IE 9]>\n" . '<link href="/foo.css" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('/foo.css', ['condition' => 'IE 9']));
     }
 
     public function testJsFile()
     {
-        $this->assertEquals('<script src="http://example.com"></script>', Html::jsFile('http://example.com'));
-        $this->assertEquals('<script src="http://site.com"></script>', Html::jsFile(''));
-        $this->assertEquals("<!--[if IE 9]>\n" . '<script src="http://example.com"></script>' . "\n<![endif]-->", Html::jsFile('http://example.com', ['condition' => 'IE 9']));
+        $this->assertEquals('<script src="/foo.js"></script>', Html::jsFile('/foo.js'));
+        $this->assertEquals('<script src="/"></script>', Html::jsFile(''));
+        $this->assertEquals("<!--[if IE 9]>\n" . '<script src="/foo.js"></script>' . "\n<![endif]-->", Html::jsFile('/foo.js', ['condition' => 'IE 9']));
     }
 
     public function testBeginForm()
     {
-        $this->assertEquals('<form action="http://site.com/" method="post">', Html::beginForm());
-        $this->assertEquals('<form action="http://site.com/example" method="get">', Html::beginForm('/example', 'get'));
+        $this->assertEquals('<form action="/" method="post">', Html::beginForm());
+        $this->assertEquals('<form action="/example" method="get">', Html::beginForm('/example', 'get'));
         $hiddens = [
             '<input type="hidden" name="id" value="1">',
             '<input type="hidden" name="title" value="&lt;">',
         ];
-        $this->assertEquals('<form action="http://site.com/example" method="get">' . "\n" . implode("\n", $hiddens), Html::beginForm('/example?id=1&title=%3C', 'get'));
+        $this->assertEquals('<form action="/example" method="get">' . "\n" . implode("\n", $hiddens), Html::beginForm('/example?id=1&title=%3C', 'get'));
     }
 
     public function testEndForm()

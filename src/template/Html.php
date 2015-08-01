@@ -212,7 +212,7 @@ class Html
         if (!isset($options['rel'])) {
             $options['rel'] = 'stylesheet';
         }
-        $options['href'] = Url::set($url)->getAbsolute();
+        $options['href'] = Url::modify($url);
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
@@ -244,7 +244,7 @@ class Html
      */
     public static function jsFile($url, $options = [])
     {
-        $options['src'] = Url::set($url)->getAbsolute();
+        $options['src'] = Url::modify($url);
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
@@ -294,7 +294,7 @@ class Html
         if (isset($action)) {
             $action = Alias::getAlias($action);
         }
-        $action = Url::set($action)->getAbsolute();
+        $action =  Url::modify($action);
         $hiddenInputs = [];
 
         $request = static::getRequest();
