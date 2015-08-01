@@ -377,7 +377,7 @@ class Html
     public static function a($text, $url = null, $options = [])
     {
         if ($url !== null) {
-            $options['href'] = Url::set($url)->getAbsolute();
+            $options['href'] = Url::modify($url);
         }
 
         return static::tag('a', $text, $options);

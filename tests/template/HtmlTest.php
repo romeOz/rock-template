@@ -98,8 +98,8 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
     public function testA()
     {
         $this->assertEquals('<a>something<></a>', Html::a('something<>'));
-        $this->assertEquals('<a href="http://site.com/example">something</a>', Html::a('something', '/example'));
-        $this->assertEquals('<a href="http://site.com">something</a>', Html::a('something', ''));
+        $this->assertEquals('<a href="/example">something</a>', Html::a('something', '/example'));
+        $this->assertEquals('<a href="/">something</a>', Html::a('something', ''));
     }
 
     public function testMailto()
