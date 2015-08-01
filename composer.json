@@ -25,7 +25,6 @@
     "require-dev": {
         "phpunit/phpunit": "~4.7.0",
         "romeoz/rock-cache" : "0.11.*",
-        "romeoz/rock-request" : "0.11.*",
         "romeoz/rock-date" : "0.10.*",
         "romeoz/rock-access" : "0.10.*",
         "romeoz/rock-image" : "0.10.*"
