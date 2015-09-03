@@ -1,50 +1,52 @@
 {
-    "name": "romeoz/rock-template",
-    "description": "Flexible template engine for PHP with MODx-like syntax",
-    "keywords": ["template", "template engine"],
-    "type": "library",
-    "license": "MIT",
-    "support": {
-        "email": "serggalka@gmail.com",
-        "issues": "https://github.com/romeOz/rock-template/issues",
-        "source": "https://github.com/romeOz/rock-template"
-    },
-
-    "authors": [
-        {
-            "name": "Ruslan",
-            "email": "serggalka@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.4.0",
-        "romeoz/rock-components" : "*@dev",
-        "romeoz/rock-url" : "*@dev",
-        "romeoz/rock-execute" : "*@dev"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~4.7.0",
-        "romeoz/rock-cache" : "*@dev",
-        "romeoz/rock-date" : "*@dev",
-        "romeoz/rock-access" : "*@dev",
-        "romeoz/rock-image" : "*@dev"
-    },
-    "suggest": {
-        "romeoz/rock-cache": "required by Rock Cache",
-        "romeoz/rock-widgets": "required by Rock Widgets",
-        "romeoz/rock-validate": "required by Rock Valiadte",
-        "romeoz/rock-sanitize": "required by Rock Sanitize",
-        "romeoz/rock-image": "required by Rock Image"
-    },
-    "autoload": {
-        "psr-4": {
-            "rock\\template\\": "src/template/",
-            "rock\\snippets\\": "src/snippets/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.12-dev"
-        }
+  "name": "romeoz/rock-template",
+  "description": "Flexible template engine for PHP with MODx-like syntax",
+  "keywords": [
+    "template",
+    "template engine"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "support": {
+    "email": "serggalka@gmail.com",
+    "issues": "https://github.com/romeOz/rock-template/issues",
+    "source": "https://github.com/romeOz/rock-template"
+  },
+  "authors": [
+    {
+      "name": "Ruslan",
+      "email": "serggalka@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "romeoz/rock-components": "*@dev",
+    "romeoz/rock-url": "*@dev",
+    "romeoz/rock-execute": "*@dev"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.7.0",
+    "romeoz/rock-cache": "*@dev",
+    "romeoz/rock-date": "*@dev",
+    "romeoz/rock-access": "*@dev",
+    "romeoz/rock-image": "*@dev"
+  },
+  "suggest": {
+    "romeoz/rock-cache": "required by Rock Cache",
+    "romeoz/rock-widgets": "required by Rock Widgets",
+    "romeoz/rock-validate": "required by Rock Valiadte",
+    "romeoz/rock-sanitize": "required by Rock Sanitize",
+    "romeoz/rock-image": "required by Rock Image"
+  },
+  "autoload": {
+    "psr-4": {
+      "rock\\template\\": "src/template/",
+      "rock\\snippets\\": "src/snippets/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.12-dev"
+    }
+  }
 }
