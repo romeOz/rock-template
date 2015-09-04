@@ -38,7 +38,8 @@
     "romeoz/rock-widgets": "required by Rock Widgets",
     "romeoz/rock-validate": "required by Rock Valiadte",
     "romeoz/rock-sanitize": "required by Rock Sanitize",
-    "romeoz/rock-image": "required by Rock Image"
+    "romeoz/rock-image": "required by Rock Image",
+    "romeoz/rock-filters": "required by Rock Filters for snippets"
   },
   "autoload": {
     "psr-4": {
