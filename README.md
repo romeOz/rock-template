@@ -22,7 +22,7 @@ Features
  * There is a possibility of adding custom extensions
  * Widgets **(option)**
  * Caching all entities template engine **(option)**
- * Module for [Rock Framework](https://github.com/romeOz/rock)
+ * Standalone module/component for [Rock Framework](https://github.com/romeOz/rock)
 
 Installation
 -------------------
