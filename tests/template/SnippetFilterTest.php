@@ -11,7 +11,7 @@ use rock\template\Template;
 /**
  * @group template
  */
-class SnippetFiltersTest extends \PHPUnit_Framework_TestCase {
+class SnippetFilterTest extends \PHPUnit_Framework_TestCase {
 
     /** @var  Template */
     protected $template;
@@ -85,16 +85,15 @@ class SnippetAccessFalse extends Snippet
                         'allow' => true,
                         'ips'   => ['127.0.0.1'],
                     ],
-                'success' => [
+                'success' =>
                     function (AccessFilter $access) {
-                        echo $access->owner instanceof self, $access->data['var'];
-                    }, ['var' => 'success_1']
-                ],
-                'fail' => [
+                        echo $access->owner instanceof self, 'success_1';
+                    },
+                'fail' =>
                     function (AccessFilter $access) {
-                        echo $access->owner instanceof self, $access->data['var'];
-                    }, ['var' => 'fail_1']
-                ],
+                        echo $access->owner instanceof self, 'fail_1';
+                    }
+                ,
             ],
             'access_2' => [
                 'class' => AccessFilter::className(),
@@ -103,16 +102,16 @@ class SnippetAccessFalse extends Snippet
                         'allow' => true,
                         'ips' => ['127.0.0.5'],
                     ],
-                'success' => [
+                'success' =>
                     function (AccessFilter $access) {
-                        echo $access->owner instanceof self, $access->data['var'];
-                    }, ['var' => 'success_2']
-                ],
-                'fail' => [
+                        echo $access->owner instanceof self, 'success_2';
+                    }
+                ,
+                'fail' =>
                     function (AccessFilter $access) {
-                        echo $access->owner instanceof self, $access->data['var'];
-                    }, ['var' => 'fail_2']
-                ],
+                        echo $access->owner instanceof self, 'fail_2';
+                    }
+                ,
             ],
         ];
     }
@@ -139,12 +138,12 @@ class SnippetAccessTrue extends Snippet
                     ],
 
 
-                'success' => [function(AccessFilter $access){
-                    echo $access->owner instanceof self, $access->data['var'];
-                }, ['var' => 'success_1']],
-                'fail' => [function(AccessFilter $access){
-                    echo $access->owner instanceof self, $access->data['var'];
-                }, ['var' => 'fail']],
+                'success' => function(AccessFilter $access){
+                    echo $access->owner instanceof self, 'success_1';
+                },
+                'fail' => function(AccessFilter $access){
+                    echo $access->owner instanceof self, 'fail';
+                },
             ],
             'access_2' => [
                 'class' => AccessFilter::className(),
@@ -155,12 +154,12 @@ class SnippetAccessTrue extends Snippet
                     ],
 
 
-                'success' => [function(AccessFilter $access){
-                    echo $access->owner instanceof self, $access->data['var'];
-                }, ['var' => 'success_2']],
-                'fail' => [function(AccessFilter $access){
-                    echo $access->owner instanceof self, $access->data['var'];
-                }, ['var' => 'fail']],
+                'success' => function(AccessFilter $access){
+                    echo $access->owner instanceof self, 'success_2';
+                },
+                'fail' => function(AccessFilter $access){
+                    echo $access->owner instanceof self, 'fail';
+                },
             ],
 
         ];

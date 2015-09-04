@@ -4,10 +4,11 @@ namespace rock\snippets\filters;
 
 
 use rock\components\Behavior;
+use rock\events\Event;
 use rock\filters\FilterInterface;
-use rock\helpers\Helper;
 use rock\response\Response;
 use rock\snippets\Snippet;
+use rock\snippets\SnippetEvent;
 
 class SnippetFilter extends Behavior implements FilterInterface
 {
@@ -60,9 +61,9 @@ class SnippetFilter extends Behavior implements FilterInterface
     }
 
     /**
-     * @param \rock\snippets\SnippetEvent $event
+     * @param Event|SnippetEvent $event
      */
-    public function beforeFilter($event)
+    public function beforeFilter(Event $event)
     {
         $this->event = $event;
         $this->event->isValid = $this->before();
@@ -78,9 +79,9 @@ class SnippetFilter extends Behavior implements FilterInterface
     }
 
     /**
-     * @param \rock\snippets\SnippetEvent $event
+     * @param Event|SnippetEvent $event
      */
-    public function afterFilter($event)
+    public function afterFilter(Event $event)
     {
         $this->event = $event;
         $event->result = $this->after($this->event->result);
@@ -107,18 +108,11 @@ class SnippetFilter extends Behavior implements FilterInterface
         return $result;
     }
 
-    protected function callback($handler)
+    protected function callback(callable $handler = null)
     {
         if (!isset($handler)) {
             return;
         }
-
-        if ($handler instanceof \Closure) {
-            $handler = [$handler];
-        }
-        $handler[1] = Helper::getValue($handler[1], [], true);
-        list($function, $data) = $handler;
-        $this->data = $data;
-        call_user_func($function, $this);
+        call_user_func($handler, $this);
     }
 }
