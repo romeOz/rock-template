@@ -4,20 +4,25 @@ namespace rock\snippets\filters;
 
 
 use rock\components\Behavior;
+use rock\filters\FilterInterface;
 use rock\helpers\Helper;
+use rock\response\Response;
 use rock\snippets\Snippet;
 
-class SnippetFilter extends Behavior
+class SnippetFilter extends Behavior implements FilterInterface
 {
+    /**
+     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     */
+    public $response;
     /**
      * Success as callable, when using filter.
      *
      * ```php
-     * [[new Object, 'method'], $args]
-     * [['Object', 'staticMethod'], $args]
-     * [callback, $args]
+     * [new Object, 'method']
+     * ['Object', 'staticMethod']
+     * closure
      * ```
-     *
      * @var array
      */
     public $success;
@@ -25,11 +30,10 @@ class SnippetFilter extends Behavior
      * Fail as callable, when using filter.
      *
      * ```php
-     * [[new Object, 'method'], $args]
-     * [['Object', 'staticMethod'], $args]
-     * [callback, $args]
+     * [new Object, 'method']
+     * ['Object', 'staticMethod']
+     * closure
      * ```
-     *
      * @var array
      */
     public $fail;

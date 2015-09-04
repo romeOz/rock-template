@@ -2,7 +2,7 @@
 
 namespace rock\snippets\filters;
 
-use rock\helpers\Instance;
+use rock\filters\RateLimiterTrait;
 
 /**
  * RateLimiter implements a rate limiting.
@@ -39,17 +39,11 @@ class RateLimiter extends SnippetFilter
      */
     public $period = 180;
 
-    public function init()
-    {
-        $this->response = Instance::ensure($this->response, '\rock\response\Response', [], false);
-        $this->session = Instance::ensure($this->session, '\rock\session\Session');
-    }
-
     /**
      * @inheritdoc
      */
     public function before()
     {
-        return $this->check($this->limit, $this->period, get_class($this->owner));
+        return $this->check($this->limit, $this->period, isset($this->name) ? $this->name : get_class($this->owner));
     }
 }

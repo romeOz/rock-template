@@ -29,7 +29,9 @@
     "romeoz/rock-cache": "*@dev",
     "romeoz/rock-date": "*@dev",
     "romeoz/rock-access": "*@dev",
-    "romeoz/rock-image": "*@dev"
+    "romeoz/rock-image": "*@dev",
+    "romeoz/rock-filters": "*@dev",
+    "romeoz/rock-session": "*@dev"
   },
   "suggest": {
     "romeoz/rock-cache": "required by Rock Cache",
