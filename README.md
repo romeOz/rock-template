@@ -81,8 +81,8 @@ Hello <b>[[+foo]]</b>
 Documentation
 -------------------
 
- * [Guide by Rock engine](https://github.com/romeOz/rock-template/blob/master/docs/rock.md)
- * [Guide by PHP engine](https://github.com/romeOz/rock-template/blob/master/docs/php.md)
+ * [Guide to Rock engine](https://github.com/romeOz/rock-template/blob/master/docs/rock.md)
+ * [Guide to PHP engine](https://github.com/romeOz/rock-template/blob/master/docs/php.md)
 
 Demo & Tests (one of three ways)
 -------------------
