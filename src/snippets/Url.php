@@ -20,10 +20,10 @@ use rock\url\UrlInterface;
 class Url extends Snippet implements UrlInterface
 {
     /**
-     * Adding CSRF-token.
+     * Adding a CSRF-token.
      * @var bool
      */
-    public $addCSRF = false;
+    public $csrf = false;
     /**
      * Modify arguments.
      * @var array
@@ -40,12 +40,12 @@ class Url extends Snippet implements UrlInterface
      */
     public $autoEscape = Template::STRIP_TAGS;
     /** @var  \rock\csrf\CSRF|string|array */
-    public $csrf = 'csrf';
+    public $csrfInstance = 'csrf';
 
     public function init()
     {
         parent::init();
-        $this->csrf = Instance::ensure($this->csrf, '\rock\csrf\CSRF', [], false);
+        $this->csrfInstance = Instance::ensure($this->csrfInstance, '\rock\csrf\CSRF', [], false);
     }
 
     /**
@@ -53,8 +53,8 @@ class Url extends Snippet implements UrlInterface
      */
     public function get()
     {
-        if ($this->addCSRF && $this->csrf instanceof \rock\csrf\CSRF) {
-            $this->modify[$this->csrf->csrfParam] = $this->csrf->get();
+        if ($this->csrf && $this->csrfInstance instanceof \rock\csrf\CSRF) {
+            $this->modify[$this->csrfInstance->csrfParam] = $this->csrfInstance->get();
         }
 
         return \rock\url\Url::modify($this->modify, $this->scheme);

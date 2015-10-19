@@ -3,7 +3,6 @@ namespace rock\template\filters;
 
 use rock\base\ClassName;
 use rock\date\DateTime;
-use rock\di\Container;
 use rock\helpers\ArrayHelper;
 use rock\helpers\Helper;
 use rock\helpers\Instance;
@@ -11,7 +10,6 @@ use rock\helpers\Json;
 use rock\helpers\Serialize;
 use rock\image\ImageProvider;
 use rock\image\ThumbInterface;
-use rock\Rock;
 use rock\template\Html;
 use rock\template\Template;
 use rock\url\Url;
@@ -97,8 +95,8 @@ class BaseFilter
      * @param string $url
      * @param array $params params:
      *
-     * - modify:        modify arguments.
-     * - addCSRF:        adding CSRF-token.
+     * - modify:      modify arguments.
+     * - csrf:        adding a CSRF-token.
      * - scheme: adduce URL to: {@see \rock\url\Url::ABS}, {@see \rock\url\Url::HTTP},
      *                  and {@see \rock\url\Url::HTTPS}.
      * @return string
@@ -112,9 +110,9 @@ class BaseFilter
             $params['modify'] = [];
         }
         array_unshift($params['modify'], $url);
-        if (isset($params['addCSRF'])) {
+        if (isset($params['csrf'])) {
             /** @var \rock\csrf\CSRF $csrf */
-            $csrf = Instance::ensure(isset($params['csrf']) ? $params['csrf'] : 'csrf', '\rock\csrf\CSRF', [], false);
+            $csrf = Instance::ensure(isset($params['csrfInstance']) ? $params['csrfInstance'] : 'csrf', '\rock\csrf\CSRF', [], false);
             if ($csrf instanceof \rock\csrf\CSRF) {
                 $params['modify'][$csrf->csrfParam] = $csrf->get();
             }
