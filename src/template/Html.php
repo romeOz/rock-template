@@ -291,9 +291,6 @@ class Html
      */
     public static function beginForm($action = null, $method = 'post', $name = null, $options = [])
     {
-        if (isset($action)) {
-            $action = Alias::getAlias($action);
-        }
         $action =  Url::modify($action);
         $hiddenInputs = [];
 
