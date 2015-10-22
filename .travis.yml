@@ -23,10 +23,14 @@ matrix:
     - php: hhvm
     - php: hhvm-nightly
 
+services:
+  - memcached
+
 install:
   - composer self-update && composer --version
   - composer install --prefer-dist
   - composer require satooshi/php-coveralls:*@dev
+  - tests/data/travis/memcache-setup.sh
 
 script:
   - mkdir -p build/logs
