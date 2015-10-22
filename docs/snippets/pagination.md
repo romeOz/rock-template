@@ -1,8 +1,8 @@
-Pagination
+PaginationSnippet
 ====================
 **Autoescape: disabled**
 
-Build URL is performed `\rock\template\url\Url`.
+Based on [Rock Url](https://github.com/romeOz/rock-url).
 
 > Note: templates for pagination built on [Twitter Bootstrap  3.2.0 "Pagination"](http://getbootstrap.com/components/#pagination).
 
@@ -11,7 +11,7 @@ Params
 
 ###array
 
-The data returned `\rock\template\helpers\Pagination::get()`.
+The data returned `\rock\helpers\Pagination::get()`.
 
 ###call
 
@@ -30,24 +30,6 @@ $template->getSnippet('pagination', ['call' => [new \foo\FooController(), 'getPa
 $template->getSnippet('pagination', ['call' => function(){}]);
 $template->getSnippet('pagination', ['call' => 'FooSnippet']);
 ```
-###url
-Set instance `\rock\url\Url` or config as array/JSON
-
-```
-[[pagination
-    ?url=`{"class" : "\rock\url\Url", "query": "view=all&order=desc"}`
-]]
-```
-
-or
-
-
-```php
-$config = [
-    'url' => \rock\url\Url::set()->addArgs(['views' => 'all', 'order' => 'desc']);
-];
-$template->getSnippet('pagination', $config);
-```
 
 ###pageLimit
 
@@ -59,22 +41,22 @@ Name url-argument of pagination ("page" by default).
 
 ###pageNumTpl
 
-Template for buttons. You can specify the path to chunk ```?pageNumTpl=`/path/to/chunk```/```?pageNumTpl=`@views/chunk``` or on the spot to specify a template ``` ?pageNumTpl=`@INLINE<b>[[+title]]</b>` ```.
+Template to buttons. You can specify the path to chunk ```?pageNumTpl=`/path/to/chunk```/```?pageNumTpl=`@views/chunk``` or on the spot to specify a template ``` ?pageNumTpl=`@INLINE<b>[[+title]]</b>` ```.
 Default: ```@rock.views/pagination/num```
 
 ###pageActiveTpl
 
-Template for active button. [See syntax](#pagenumtpl).
+Template to active button. [See syntax](#pagenumtpl).
 Default: ```@rock.views/pagination/numActive```
 
 ###pageFirstTpl
 
-Template for button "first". [See syntax](#pagenumtpl).
+Template to button "first". [See syntax](#pagenumtpl).
 Default: ```@rock.views/pagination/first```
 
 ###pageLastTpl
 
-Template for button "last". [See syntax](#pagenumtpl).
+Template to button "last". [See syntax](#pagenumtpl).
 Default: ```@rock.views/pagination/last```
 
 ###wrapperTpl

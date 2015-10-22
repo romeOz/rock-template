@@ -13,7 +13,7 @@ use rock\template\Html;
  *
  * @see Thumb
  */
-class Thumb extends Snippet
+class ThumbSnippet extends Snippet
 {
     /**
      * Src to image.

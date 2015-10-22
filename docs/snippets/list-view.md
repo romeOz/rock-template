@@ -1,4 +1,4 @@
-listView
+ListViewSnippet
 ====================
 **Autoescape: disabled**
 
@@ -31,7 +31,7 @@ $template->getSnippet('listView', ['call' => 'FooSnippet']);
 
 ###addPlaceholders
 
-Adding external placeholders in `tpl` and `wrapperTpl`. Example: ``` ?addPlaceholders=`{"foo" : "[[+foo]]"}` ``` or in the short form ``` ?addPlaceholders=`["foo"]` ```.
+Adding a external placeholders in `tpl` and `wrapperTpl`. Example: ``` ?addPlaceholders=`{"foo" : "[[+foo]]"}` ``` or in the short form ``` ?addPlaceholders=`["foo"]` ```.
 
 ###prepare
 
@@ -65,15 +65,15 @@ $template->getSnippet('listView', $params);
 
 ###tpl
 
-Wrapper for item. You can specify the path to chunk ```?tpl=`/path/to/chunk```/```?tpl=`@views/chunk``` or on the spot to specify a template ``` ?tpl=`@INLINE<b>[[+title]]</b>` ```.
+Wrapper to item. You can specify the path to chunk ```?tpl=`/path/to/chunk```/```?tpl=`@views/chunk``` or on the spot to specify a template ``` ?tpl=`@INLINE<b>[[+title]]</b>` ```.
 
 ###wrapperTpl
 
-Wrapper for all items. You can specify the path to chunk ```?wrapperTpl=`/path/to/chunk```/```?wrapperTpl=`@views/chunk``` or on the spot to specify a template ``` ?wrapperTpl=`@INLINE<b>[[+title]]</b>` ```.
+Wrapper to all items. You can specify the path to chunk ```?wrapperTpl=`/path/to/chunk```/```?wrapperTpl=`@views/chunk``` or on the spot to specify a template ``` ?wrapperTpl=`@INLINE<b>[[+title]]</b>` ```.
 
 ###toPlaceholder
 
-The name of global placeholder to adding the list. Becomes available anywhere in the template.
+The name a global placeholder to adding the list. Becomes available anywhere in the template.
 
 ###errorText
 

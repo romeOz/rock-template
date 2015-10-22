@@ -1,7 +1,7 @@
-date
+DateTimeSnippet
 ====================
 
-Build is performed `\rock\template\date\DateTime`.
+Required installed [Rock DateTime](https://github.com/romeOz/rock-date): `composer require romeOz/rock-date`.
 
 Params
 --------------------
@@ -11,15 +11,18 @@ Params
 Datetime. `now` by default.
 
 ###format
-Format of datetime. `\rock\template\date\DateTime::DateTime::DEFAULT_FORMAT` by default.
+
+Support [`date()` formats](http://php.net/manual/en/function.date.php).
+You can using presets for formats: `date`, `time`, `datetime`, `js`, `w3c` and [other](https://github.com/romeOz/rock-date).
 
 ###timezone
+
 E.g. `America/Chicago`.
 
 Example
 --------------------
 
-Get formatted now date:
+Returns formatted now date:
 
 ```html
 [[date

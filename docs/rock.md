@@ -1,7 +1,7 @@
 Rock engine
 =================
 
- * [Aliases for path/url/namespace](https://github.com/romeOz/rock-template/blob/master/docs/aliases.md)
+ * [Aliases to path/URL/namespace](https://github.com/romeOz/rock-template/blob/master/docs/aliases.md)
  * [Render] (https://github.com/romeOz/rock-template/blob/master/docs/render.md)
  * [Placeholder `[[+placeholder]]`](#placeholder)
  * [Resource `[[*resource]]`](#resource)

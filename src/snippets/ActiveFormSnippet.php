@@ -10,7 +10,7 @@ use rock\helpers\Helper;
 use rock\helpers\Instance;
 use rock\template\Html;
 
-class ActiveForm extends Snippet
+class ActiveFormSnippet extends Snippet
 {
     public $config = [];
     /** @var  \rock\components\Model|string|array */

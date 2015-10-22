@@ -110,15 +110,12 @@ class BaseFilter
             $params['modify'] = [];
         }
         array_unshift($params['modify'], $url);
+        $config = isset($params['config']) ? $params['config'] : [];
         if (isset($params['csrf'])) {
-            /** @var \rock\csrf\CSRF $csrf */
-            $csrf = Instance::ensure(isset($params['csrfInstance']) ? $params['csrfInstance'] : 'csrf', '\rock\csrf\CSRF', [], false);
-            if ($csrf instanceof \rock\csrf\CSRF) {
-                $params['modify'][$csrf->csrfParam] = $csrf->get();
-            }
+            $config['csrf'] = (bool)$params['csrf'];
         }
 
-        return Url::modify($params['modify'], Helper::getValue($params['scheme'], Url::REL));
+        return Url::modify($params['modify'], isset($params['scheme']) ? $params['scheme'] : Url::REL, $config);
     }
 
     /**

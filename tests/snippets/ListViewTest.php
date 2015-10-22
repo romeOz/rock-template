@@ -110,7 +110,7 @@ class ListViewTest extends TemplateCommon
 
     public function testCache()
     {
-        if (!interface_exists('\rock\cache\CacheInterface') || !class_exists('\League\Flysystem\Filesystem')) {
+        if (!interface_exists('\rock\cache\CacheInterface')) {
             $this->markTestSkipped('Rock cache not installed.');
             return;
         }
@@ -154,12 +154,12 @@ class ListViewTest extends TemplateCommon
 
     public function testCacheExpire()
     {
-        if (!interface_exists('\rock\cache\CacheInterface') || !class_exists('\League\Flysystem\Filesystem')) {
+        if (!interface_exists('\rock\cache\CacheInterface')) {
             $this->markTestSkipped('Rock cache not installed.');
             return;
         }
 
-        static::clearRuntime();
+        static::clearCache();
         $cache = static::getCache();
         $this->template->cache = $cache;
         $expected = $this->removeSpace(file_get_contents($this->path . '/snippet_as_array.html'));
@@ -170,12 +170,12 @@ class ListViewTest extends TemplateCommon
                 ?wrapperTpl=`' . $this->path . '/wrapper`
                 ?pagination=`{"call" : "' . addslashes(__CLASS__) . '.getPagination", "toPlaceholder" : "$parent.pagination"}`
                 ?cacheKey=`list`
-                ?cacheExpire=`1`
+                ?cacheExpire=`2`
             ]]'
         ));
         $this->assertSame($expected, $actual);
         $this->assertTrue($cache->exists('list'));
-        sleep(4);
+        sleep(5);
         $this->assertFalse($cache->exists('list'));
     }
 

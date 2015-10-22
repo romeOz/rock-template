@@ -9,31 +9,31 @@ You can define an alias for a file path or URL:
 
 ```php
 // an alias of a file path
-Template::setAlias('views', '/path/to/views');
+Alias::setAlias('views', '/path/to/views');
 
 // an alias of a URL
-Template::setAlias('site', 'http://www.site.com');
+Alias::setAlias('site', 'http://www.site.com');
 
 // an alias of a namespace
-Template::setAlias('ns.backend', 'apps\\backend');
+Alias::setAlias('ns.backend', 'apps\\backend');
 ```
 
 You can define an alias using another alias (either root or derived):
 
 ```php
-Template::setAlias('@views.article', '@views/article');
+Alias::setAlias('@views.article', '@views/article');
 ```
 
 Using Aliases
 ---------------------
 
-Aliases are recognized in many places in Template engine without needing to call `\rock\template\Template::getAlias()` to convert them into paths or URLs.
+Aliases are recognized in many places in Template engine without needing to call `\rock\base\Alias::getAlias()` to convert them into paths or URLs.
 For example, `\rock\template\Template::render()` can accept both a file path and an alias representing a file path, thanks to the ```@``` prefix which allows it to differentiate a file path from an alias.
 
 For PHP engine:
 
 ```php
-Template::setAlias('views', '/path/to/views');
+Alias::setAlias('views', '/path/to/views');
 
 echo (new Template)->render('@views/layout');
 ```
@@ -48,5 +48,5 @@ For Rock engine:
 [[@ns.backend\snippets\FooSnippet]]
 
 {* Display alias *}
-[[$$ns.backend\snippets\FooSnippet]]
+[[@@ns.backend\snippets\FooSnippet]]
 ```

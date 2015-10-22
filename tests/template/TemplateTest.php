@@ -633,7 +633,7 @@ class TemplateTest extends TemplateCommon
 
     public function testCacheSnippet()
     {
-        if (!interface_exists('\rock\cache\CacheInterface') || !class_exists('\League\Flysystem\Filesystem')) {
+        if (!interface_exists('\rock\cache\CacheInterface')) {
             $this->markTestSkipped('Rock cache not installed.');
             return;
         }
@@ -657,10 +657,10 @@ class TemplateTest extends TemplateCommon
 
     public function testCacheLayout()
     {
-        if (!interface_exists('\rock\cache\CacheInterface') || !class_exists('\League\Flysystem\Filesystem')) {
+        if (!interface_exists('\rock\cache\CacheInterface')) {
             $this->markTestSkipped('Rock cache not installed.');
         }
-        static::clearRuntime();
+        static::clearCache();
 
         $cache = static::getCache();
         $this->template->cache = $cache;
@@ -672,7 +672,7 @@ class TemplateTest extends TemplateCommon
         $this->assertSame(file_get_contents($this->path . '/_layout.html'), $this->template->render($this->path . '/layout', $placeholders));
         $this->assertTrue($cache->exists('key_layout'));
         $this->assertSame(file_get_contents($this->path . '/_layout.html'), $this->template->render($this->path . '/layout', $placeholders));
-        static::clearRuntime();
+        static::clearCache();
     }
 
     public function testRenderAsPHP()

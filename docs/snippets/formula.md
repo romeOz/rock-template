@@ -1,4 +1,4 @@
-formula
+FormulaSnippet
 ====================
 
 Params

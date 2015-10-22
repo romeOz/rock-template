@@ -34,12 +34,14 @@
     "romeoz/rock-session": "*@dev"
   },
   "suggest": {
-    "romeoz/rock-cache": "required by Rock Cache",
-    "romeoz/rock-widgets": "required by Rock Widgets",
-    "romeoz/rock-validate": "required by Rock Valiadte",
-    "romeoz/rock-sanitize": "required by Rock Sanitize",
-    "romeoz/rock-image": "required by Rock Image",
-    "romeoz/rock-filters": "required by Rock Filters for snippets"
+    "romeoz/rock-cache": "required for caching layouts, chunks, placeholders and others variables",
+    "romeoz/rock-validate": "required for validation rules a model",
+    "romeoz/rock-sanitize": "required for sanitization rules a model",
+    "romeoz/rock-widgets": "required for using a widgets",
+    "romeoz/rock-image": "required for editing a image (cropping, watermarks and etc)",
+    "romeoz/rock-filters": "required for using filters for snippets",
+    "romeoz/rock-csrf": "required for generating CSRF-token (security)",
+    "romeoz/rock-date": "required for building a datetime (DateTimeSnippet and filter date)"
   },
   "autoload": {
     "psr-4": {

@@ -1,8 +1,8 @@
-Url
+UrlSnipet
 ====================
 **Autoescape: `\rock\template\Template::STRIP_TAGS`**
 
-Build is performed `\rock\template\url\Url`.
+Based on [Rock Url](https://github.com/romeOz/rock-url).
 
 Params
 --------------------
@@ -11,7 +11,18 @@ Params
 Modify arguments.
 
 ###scheme
-All constants are see in `\rock\template\url\UrlInterface`.
+
+`abs`, `http`, `https` and `rel` (default).
+ 
+>All constants are [see](https://github.com/romeOz/rock-url) (`\rock\url\UrlInterface`).
+
+###csrf
+
+`true/false`
+
+Adding a CSRF-token.
+
+>Required installed [Rock CSRF](https://github.com/romeOz/rock-csrf): `composer require romeOz/rock-csrf`.
 
 Example
 --------------------

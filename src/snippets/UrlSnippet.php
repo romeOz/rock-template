@@ -1,7 +1,6 @@
 <?php
 namespace rock\snippets;
 
-use rock\helpers\Instance;
 use rock\template\Template;
 use rock\url\UrlInterface;
 
@@ -17,7 +16,7 @@ use rock\url\UrlInterface;
  * ]]
  * ```
  */
-class Url extends Snippet implements UrlInterface
+class UrlSnippet extends Snippet implements UrlInterface
 {
     /**
      * Adding a CSRF-token.
@@ -36,16 +35,19 @@ class Url extends Snippet implements UrlInterface
      */
     public $scheme = \rock\url\Url::REL;
     /**
+     * Config to {@see \rock\url\Url} instance.
+     * @var array
+     */
+    public $config = [];
+    /**
      * @inheritdoc
      */
     public $autoEscape = Template::STRIP_TAGS;
-    /** @var  \rock\csrf\CSRF|string|array */
-    public $csrfInstance = 'csrf';
 
     public function init()
     {
         parent::init();
-        $this->csrfInstance = Instance::ensure($this->csrfInstance, '\rock\csrf\CSRF', [], false);
+        $this->config['csrf'] = $this->csrf;
     }
 
     /**
@@ -53,10 +55,6 @@ class Url extends Snippet implements UrlInterface
      */
     public function get()
     {
-        if ($this->csrf && $this->csrfInstance instanceof \rock\csrf\CSRF) {
-            $this->modify[$this->csrfInstance->csrfParam] = $this->csrfInstance->get();
-        }
-
-        return \rock\url\Url::modify($this->modify, $this->scheme);
+        return \rock\url\Url::modify($this->modify, $this->scheme, $this->config);
     }
 }

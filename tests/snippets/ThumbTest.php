@@ -7,7 +7,7 @@ use League\Flysystem\Adapter\Local;
 use rock\base\Alias;
 use rock\file\FileManager;
 use rock\image\ImageProvider;
-use rock\snippets\Thumb;
+use rock\snippets\ThumbSnippet;
 use rock\template\Template;
 use rockunit\template\TemplateCommon;
 
@@ -34,7 +34,7 @@ class ThumbTest extends TemplateCommon
         $template = new Template();
         $template->snippets = [
             'thumb' => [
-                'class' => Thumb::className(),
+                'class' => ThumbSnippet::className(),
                 'imageProvider' => new ImageProvider($config)
             ]
         ];

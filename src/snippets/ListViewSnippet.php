@@ -76,7 +76,7 @@ use rock\helpers\Json;
  * ```
  *
  */
-class ListView extends Snippet
+class ListViewSnippet extends Snippet
 {
     /**
      * The data as an array.

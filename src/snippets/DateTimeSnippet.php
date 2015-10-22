@@ -22,7 +22,7 @@ use rock\date\DateTime;
  * ]]
  * ```
  */
-class Date extends Snippet
+class DateTimeSnippet extends Snippet
 {
     /**
      * Datetime. `now` by default.

@@ -8,8 +8,6 @@ Template engine for PHP
 [![Coverage Status](https://coveralls.io/repos/romeOz/rock-template/badge.svg?branch=master)](https://coveralls.io/r/romeOz/rock-template?branch=master)
 [![License](https://poser.pugx.org/romeOz/rock-template/license.svg)](https://packagist.org/packages/romeOz/rock-template)
 
-[Rock template on Packagist](https://packagist.org/packages/romeOz/rock-template)
-
 Features
 -------------------
 
@@ -20,8 +18,8 @@ Features
  * Custom auto-escaping
  * Support adding/customization filters and snippets
  * There is a possibility of adding custom extensions
- * Widgets **(option)**
- * Caching all entities template engine **(option)**
+ * Widgets
+ * Caching all entities template engine
  * Standalone module/component for [Rock Framework](https://github.com/romeOz/rock)
 
 Installation
@@ -29,7 +27,7 @@ Installation
 
 From the Command Line:
 
-`composer require romeoz/rock-template:*`
+`composer require romeoz/rock-template`
 
 In your composer.json:
 
@@ -81,8 +79,8 @@ Hello <b>[[+foo]]</b>
 Documentation
 -------------------
 
- * [Guide to Rock engine](https://github.com/romeOz/rock-template/blob/master/docs/rock.md)
- * [Guide to PHP engine](https://github.com/romeOz/rock-template/blob/master/docs/php.md)
+ * [Guide on Rock engine](https://github.com/romeOz/rock-template/blob/master/docs/rock.md)
+ * [Guide on PHP engine](https://github.com/romeOz/rock-template/blob/master/docs/php.md)
 
 [Demo](https://github.com/romeOz/docker-rock-template)
 -------------------
@@ -95,8 +93,16 @@ Requirements
 -------------------
 
  * **PHP 5.4+**
- * [Rock Cache](https://github.com/romeOz/rock-cache) **(optional)**. Should be installed: `composer require romeoz/rock-cache:*`
- * [Rock Widgets](https://github.com/romeOz/rock-widgets) **(optional)**. Should be installed: `composer require romeoz/rock-widgets:*`
+ * For caching layouts, chunks, placeholders and others variables required [Rock Cache](https://github.com/romeOz/rock-cache): `composer require romeoz/rock-cache`
+ * For using a widgets required [Rock Widgets](https://github.com/romeOz/rock-widgets): `composer require romeoz/rock-widgets`
+ * For validation rules a model required [Rock Validate](https://github.com/romeOz/rock-validate): `composer require romeoz/rock-validate`
+ * For sanitization rules a model required [Rock Sanitize](https://github.com/romeOz/rock-sanitize): `composer require romeoz/rock-sanitize`
+ * For using filters to snippets required [Rock Filters](https://github.com/romeOz/rock-filters): `composer require romeoz/rock-filters`
+ * For editing a image (cropping, watermarks and etc) required [Rock Image](https://github.com/romeOz/rock-image): `composer require romeoz/rock-image`
+ * For generating CSRF-token (security) required [Rock CSRF](https://github.com/romeOz/rock-csrf): `composer require romeoz/rock-csrf`
+ * For building a datetime (DateTimeSnippet and filter date) required [Rock DateTime](https://github.com/romeOz/rock-date): `composer require romeoz/rock-date`
+
+>All unbolded dependencies is optional
 
 License
 -------------------

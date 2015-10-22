@@ -16,7 +16,7 @@ use rock\helpers\StringHelper;
  * ]]
  * ```
  */
-class Formula extends Snippet
+class FormulaSnippet extends Snippet
 {
     /**
      * Subject (strip html/php-tags). E.g `:pageCurrent - 1`

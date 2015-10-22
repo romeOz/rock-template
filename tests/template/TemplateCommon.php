@@ -31,13 +31,13 @@ abstract class TemplateCommon extends \PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        static::clearRuntime();
+        static::clearCache();
     }
 
     public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();
-        static::clearRuntime();
+        static::clearCache();
     }
 
     protected function getTemplate(array $config = [])

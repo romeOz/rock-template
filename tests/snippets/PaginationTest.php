@@ -3,7 +3,7 @@
 namespace rockunit\snippets;
 
 
-use rock\snippets\Pagination;
+use rock\snippets\PaginationSnippet;
 use rock\template\TemplateException;
 use rock\template\Template;
 use rockunit\template\TemplateCommon;
@@ -21,7 +21,7 @@ class PaginationTest extends TemplateCommon
         $template = new Template();
         $template->snippets = [
             'pagination' => [
-                'class' => Pagination::className(),
+                'class' => PaginationSnippet::className(),
             ]
         ];
 

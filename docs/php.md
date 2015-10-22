@@ -32,7 +32,7 @@ echo $template->getPlaceholder('foo'); // result: Hello
 echo $template->foo; // result: Hello
 ```
 
-Adding/getting global placeholder:
+Adding/getting a global placeholder:
 
 ```php
 $template = new Template;
@@ -207,4 +207,4 @@ $cache->set('list', $result, 3600);
 return $result;
 ```
 
-More detailed information see [Rock cache](https://github.com/romeOz/rock-cache/).
+More detailed information [see Rock Cache](https://github.com/romeOz/rock-cache/).

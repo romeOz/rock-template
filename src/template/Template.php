@@ -1861,31 +1861,31 @@ class Template implements EventsInterface
     {
         return [
             'listView' => [
-                'class' => \rock\snippets\ListView::className(),
+                'class' => \rock\snippets\ListViewSnippet::className(),
             ],
             'list' => [
-                'class' => \rock\snippets\ListView::className(),
+                'class' => \rock\snippets\ListViewSnippet::className(),
             ],
             'date' => [
-                'class' => \rock\snippets\Date::className(),
+                'class' => \rock\snippets\DateTimeSnippet::className(),
             ],
             'for' => [
                 'class' => \rock\snippets\ForSnippet::className(),
             ],
             'formula' => [
-                'class' => \rock\snippets\Formula::className(),
+                'class' => \rock\snippets\FormulaSnippet::className(),
             ],
             'if' => [
                 'class' => \rock\snippets\IfSnippet::className(),
             ],
             'pagination' => [
-                'class' => \rock\snippets\Pagination::className(),
+                'class' => \rock\snippets\PaginationSnippet::className(),
             ],
             'url' => [
-                'class' => \rock\snippets\Url::className(),
+                'class' => \rock\snippets\UrlSnippet::className(),
             ],
             'thumb' => [
-                'class' => \rock\snippets\Thumb::className(),
+                'class' => \rock\snippets\ThumbSnippet::className(),
             ],
         ];
     }

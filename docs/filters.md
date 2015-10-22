@@ -302,7 +302,7 @@ Bitwise operations
 -----------------------
 
 ```html
-[[+num |  `8`]]
+[[+num | `8`]]
 ```
 
 Supported operations: `|`, `&`, `^`, `<<`, `>>`

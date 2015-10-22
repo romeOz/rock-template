@@ -3,7 +3,7 @@
 namespace rockunit\snippets;
 
 
-use rock\snippets\Url;
+use rock\snippets\UrlSnippet;
 use rock\template\Template;
 use rockunit\template\TemplateCommon;
 
@@ -32,7 +32,7 @@ class UrlTest extends TemplateCommon
             $this->template->getSnippet('url',
                 [
                     'modify' => ['http://site.com/categories/?view=all', '!view', 'page' => 1],
-                    'scheme' => Url::ABS
+                    'scheme' => UrlSnippet::ABS
                 ]
             )
         );
@@ -44,7 +44,7 @@ class UrlTest extends TemplateCommon
             $template->getSnippet('url',
                 [
                     'modify' => ['http://site.com/categories/?view=all#name', '!', '!#'],
-                    'scheme' => Url::ABS
+                    'scheme' => UrlSnippet::ABS
                 ]
             )
         );
@@ -54,7 +54,7 @@ class UrlTest extends TemplateCommon
             $template->getSnippet('url',
                 [
                     'modify' => ['/items/save'],
-                    'scheme' => Url::ABS
+                    'scheme' => UrlSnippet::ABS
                 ]
             )
         );
@@ -64,7 +64,7 @@ class UrlTest extends TemplateCommon
             'http://site.com/',
             $this->template->getSnippet('url',
                 [
-                    'scheme' => Url::ABS
+                    'scheme' => UrlSnippet::ABS
                 ]
             )
         );

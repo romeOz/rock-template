@@ -35,7 +35,7 @@ use rock\url\Url;
  * $template->getSnippet('\rock\snippet\Pagination', $params);
  * ```
  */
-class Pagination extends Snippet
+class PaginationSnippet extends Snippet
 {
     /**
      * @var array
