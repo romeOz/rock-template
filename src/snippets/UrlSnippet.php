@@ -33,7 +33,7 @@ class UrlSnippet extends Snippet implements UrlInterface
      * @var string
      * @see UrlInterface
      */
-    public $scheme = \rock\url\Url::REL;
+    public $scheme;
     /**
      * Config to {@see \rock\url\Url} instance.
      * @var array
@@ -48,6 +48,11 @@ class UrlSnippet extends Snippet implements UrlInterface
     {
         parent::init();
         $this->config['csrf'] = $this->csrf;
+        $this->config['request'] = $this->template->request;
+        $this->modify = (array)$this->modify;
+        if (isset($this->scheme)) {
+            $this->modify['@scheme'] = $this->scheme;
+        }
     }
 
     /**
@@ -55,6 +60,6 @@ class UrlSnippet extends Snippet implements UrlInterface
      */
     public function get()
     {
-        return \rock\url\Url::modify($this->modify, $this->scheme, $this->config);
+        return \rock\url\Url::modify($this->modify, $this->config);
     }
 }

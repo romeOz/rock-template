@@ -60,7 +60,6 @@ class BaseFilter
         return $template->replace($content, $placeholders);
     }
 
-
     /**
      * Modify date.
      *
@@ -88,7 +87,6 @@ class BaseFilter
         return $dateTime->format(Helper::getValue($params['format']));
     }
 
-
     /**
      * Modify url.
      *
@@ -99,9 +97,11 @@ class BaseFilter
      * - csrf:        adding a CSRF-token.
      * - scheme: adduce URL to: {@see \rock\url\Url::ABS}, {@see \rock\url\Url::HTTP},
      *                  and {@see \rock\url\Url::HTTPS}.
+     * @param Template $template
      * @return string
+     * @throws \rock\url\UrlException
      */
-    public static function modifyUrl($url, array $params = [])
+    public static function modifyUrl($url, array $params = [], Template $template)
     {
         if (empty($url)) {
             return '#';
@@ -114,8 +114,12 @@ class BaseFilter
         if (isset($params['csrf'])) {
             $config['csrf'] = (bool)$params['csrf'];
         }
+        if (isset($params['scheme'])) {
+            $params['modify']['@scheme'] = $params['scheme'];
+        }
+        $config['request'] = $template->request;
 
-        return Url::modify($params['modify'], isset($params['scheme']) ? $params['scheme'] : Url::REL, $config);
+        return Url::modify($params['modify'], $config);
     }
 
     /**
