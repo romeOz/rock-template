@@ -956,7 +956,7 @@ class Template implements EventsInterface
     /**
      * Registers a CSS file.
      *
-     * @param string|array $url the CSS file to be registered or url modify params.
+     * @param string $url the CSS file to be registered.
      * @param array $options the HTML attributes for the link tag.
      * @param string $key the key that identifies the CSS script file. If null, it will use
      *                        $url as the key. If two CSS files are registered with the same key, the latter
@@ -996,7 +996,8 @@ class Template implements EventsInterface
 
     /**
      * Registers a JS file.
-     * @param string|array $url the JS file to be registered or url modify params.
+     *
+     * @param string $url the JS file to be registered.
      * @param array $options the HTML attributes for the script tag. A special option
      *                        named "position" is supported which specifies where the JS script tag should be inserted
      *                        in a page. The possible values of "position" are:
@@ -1459,7 +1460,7 @@ class Template implements EventsInterface
     {
         if ($snippet instanceof Snippet) {
             if (!empty($params)) {
-                $snippet->setProperties($params);
+                Instance::configure($snippet, $params);
             }
             return $snippet;
         }
