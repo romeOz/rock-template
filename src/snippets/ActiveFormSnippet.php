@@ -69,6 +69,7 @@ class ActiveFormSnippet extends Snippet
 
         $fields[] = $this->prepareSubmitButton($this->submitButton);
         ob_start();
+        ob_implicit_flush(false);
         \rock\widgets\ActiveForm::end();
         $output = ob_get_clean();
         $fields[] = $output;

@@ -235,9 +235,8 @@ class ListViewSnippet extends Snippet
         $this->template->addPlaceholder('pagination', $pagination);
     }
 
-
     /**
-     * Parsing template.
+     * Render template.
      *
      * @return string|null
      */
@@ -249,7 +248,6 @@ class ListViewSnippet extends Snippet
         $i = 1;
         $result = '';
         $countItems = count($this->array);
-        //Adding placeholders
         $addPlaceholders = $this->template->findPlaceholders($this->addPlaceholders);
         $addPlaceholders['countItems'] = $countItems;
         $placeholders = [];
