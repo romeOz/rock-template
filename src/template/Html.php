@@ -3,7 +3,6 @@
 namespace rock\template;
 
 
-use rock\base\Alias;
 use rock\csrf\CSRF;
 use rock\helpers\ArrayHelper;
 use rock\helpers\Instance;
@@ -209,10 +208,17 @@ class Html
      */
     public static function cssFile($url, $options = [])
     {
+        if (!empty($url)) {
+            $url = (array)$url;
+            if (!isset($url['@scheme'])) {
+                $url['@scheme'] = Url::ABS;
+            }
+            $url = Url::modify($url);
+        }
+        $options['href'] = $url;
         if (!isset($options['rel'])) {
             $options['rel'] = 'stylesheet';
         }
-        $options['href'] = Url::modify($url);
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
@@ -244,7 +250,14 @@ class Html
      */
     public static function jsFile($url, $options = [])
     {
-        $options['src'] = Url::modify($url);
+        if (!empty($url)) {
+            $url = (array)$url;
+            if (!isset($url['@scheme'])) {
+                $url['@scheme'] = Url::ABS;
+            }
+            $url = Url::modify($url);
+        }
+        $options['src'] = $url;
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
@@ -291,16 +304,20 @@ class Html
      */
     public static function beginForm($action = null, $method = 'post', $name = null, $options = [])
     {
-        $action =  Url::modify($action);
         $hiddenInputs = [];
-
-        $request = static::getRequest();
+        if (!empty($action)) {
+            $action = (array)$action;
+            if (!isset($url['@scheme'])) {
+                $action['@scheme'] = Url::ABS;
+            }
+            $action = Url::modify($action);
+        }
+        $request = Instance::ensure('request', '\rock\request\Request', [], false);
         if ($request instanceof Request) {
-
             if (strcasecmp($method, 'get') && strcasecmp($method, 'post')) {
                 // simulate PUT, DELETE, etc. via POST
                 $hiddenInputs[] = static::hiddenInput(
-                    isset($name) ? $name . "[{$request->methodVar}]" : $request->methodVar,
+                    isset($name) ? $name . "[{$request->methodParam}]" : $request->methodParam,
                     $method,
                     ArrayHelper::getValue($options, 'hiddenMethod', [])
                 );
@@ -373,7 +390,11 @@ class Html
      */
     public static function a($text, $url = null, $options = [])
     {
-        if ($url !== null) {
+        if (!empty($url) && strpos($url, 'mailto:') !== 0) {
+            $url = (array)$url;
+            if (!isset($url['@scheme'])) {
+                $url['@scheme'] = Url::ABS;
+            }
             $options['href'] = Url::modify($url);
         }
 
@@ -414,6 +435,14 @@ class Html
      */
     public static function img($src, $options = [])
     {
+        if (!empty($src) && strpos($src, 'data:') !== 0) {
+            $src = (array)$src;
+            if (!isset($src['@scheme'])) {
+                $src['@scheme'] = Url::ABS;
+            }
+            $src = Url::modify($src);
+        }
+
         $options['src'] = $src;
         if (!isset($options['alt'])) {
             $options['alt'] = '';
@@ -1435,13 +1464,5 @@ class Html
     protected static function getCSRF()
     {
         return Instance::ensure('csrf', '\rock\csrf\CSRF', [], false);
-    }
-
-    /**
-     * @return null|Request
-     */
-    protected static function getRequest()
-    {
-        return Instance::ensure('request', '\rock\request\Request', [], false);
     }
 }
