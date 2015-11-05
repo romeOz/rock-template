@@ -19,7 +19,7 @@ use rock\request\Request;
 use rock\snippets\Snippet;
 use rock\template\filters\ConditionFilter;
 
-class Template implements EventsInterface
+class Template implements EventsInterface, \ArrayAccess
 {
     use EventsTrait;
 
@@ -112,15 +112,6 @@ class Template implements EventsInterface
      * @var bool
      */
     public $autoSerialize = true;
-    /** @var string */
-    public $head = "<!DOCTYPE html>\n<html>";
-    /** @var string */
-    public $body = '<body>';
-    /**
-     * @var array the registered link tags.
-     * @see registerLinkTag()
-     */
-    public $linkTags = [];
     /**
      * @var array the registered CSS code blocks.
      * @see registerCss()
@@ -142,15 +133,6 @@ class Template implements EventsInterface
      */
     public $jsFiles = [];
     /**
-     * @var string the page title
-     */
-    public $title = '';
-    /**
-     * @var array the registered meta tags.
-     * @see registerMetaTag()
-     */
-    public $metaTags = [];
-    /**
      * Instance Controller where render template.
      *
      * @var object
@@ -167,11 +149,6 @@ class Template implements EventsInterface
      */
     public $request = 'request';
     /**
-     * Current locale.
-     * @var string
-     */
-    public $locale = 'en';
-    /**
      * Throw exception. When {@see \rock\template\Template::addMultiPlaceholders()} and {@see \rock\template\Template::removeMultiPlaceholders()}.
      * @var bool
      */
@@ -181,6 +158,36 @@ class Template implements EventsInterface
      * @var array
      */
     public $chroots = ['@template.views'];
+    /**
+     * Current locale.
+     * @var string
+     */
+    protected $locale = 'en';
+    /**
+     * Head layout.
+     * @var string
+     */
+    protected $head = "<!DOCTYPE html>\n<html>";
+    /**
+     * The page title.
+     * @var string
+     */
+    protected $title = '';
+    /**
+     * @var array the registered meta tags.
+     * @see registerMetaTag()
+     */
+    protected $metaTags = [];
+    /**
+     * @var array the registered link tags.
+     * @see registerLinkTag()
+     */
+    protected $linkTags = [];
+    /**
+     * Body layout.
+     * @var string
+     */
+    protected $body = '<body>';
     /**
      * List placeholders.
      * @var array
@@ -212,12 +219,97 @@ class Template implements EventsInterface
         if (!Alias::existsAlias('template.views')) {
             Alias::setAlias('template.views', dirname(__DIR__) . '/views');
         }
-
-        $this->locale = strtolower($this->locale);
         $this->request = Instance::ensure($this->request, '\rock\request\Request');
         $this->cache = Instance::ensure($this->cache, null, [], false);
         $this->snippets = array_merge($this->defaultSnippets(), $this->snippets);
         $this->filters = array_merge($this->defaultFilters(), $this->filters);
+    }
+
+    /**
+     * Sets a locale.
+     * @param callable|string $locale
+     */
+    public function setLocale($locale)
+    {
+        if (is_callable($locale)) {
+            $locale = call_user_func($locale, $this);
+        }
+        $this->locale = strtolower($locale);
+    }
+
+    /**
+     * Sets a head.
+     * @param callable|string $head
+     * @return $this
+     */
+    public function setHead($head)
+    {
+        if (is_callable($head)) {
+            $head = call_user_func($head, $this);
+        }
+
+        $this->head = $head;
+        return $this;
+    }
+
+    /**
+     * Sets a title page.
+     * @param callable|string $title
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        if (is_callable($title)) {
+            $title = call_user_func($title, $this);
+        }
+
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * Sets a list meta tags.
+     * @param callable|array $meta
+     * @return $this
+     */
+    public function setMetaTags($meta)
+    {
+        if (is_callable($meta)) {
+            $meta = call_user_func($meta, $this);
+        }
+
+        $this->metaTags = $meta;
+        return $this;
+    }
+
+    /**
+     * Sets a list link tags.
+     * @param callable|array $links
+     * @return $this
+     */
+    public function setLinkTags($links)
+    {
+        if (is_callable($links)) {
+            $links = call_user_func($links, $this);
+        }
+
+        $this->linkTags = $links;
+        return $this;
+    }
+
+    /**
+     * Sets a body.
+     * @param callable|string $body
+     * @return $this
+     */
+    public function setBody($body)
+    {
+        if (is_callable($body)) {
+            $body = call_user_func($body, $this);
+        }
+
+        $this->body = $body;
+        return $this;
     }
 
     /**
@@ -315,12 +407,12 @@ class Template implements EventsInterface
     }
 
     /**
-     * Returns placeholder.
+     * Returns a placeholder by name.
      *
      * @param string|array $name name of placeholder.
      * @return mixed
      */
-    public function __get($name)
+    public function offsetGet($name)
     {
         if ($this->existsPlaceholder($name)) {
             return $this->getPlaceholder($name);
@@ -406,10 +498,11 @@ class Template implements EventsInterface
      * @param string $name name of placeholder.
      * @param        $value
      */
-    public function __set($name, $value)
+    public function offsetSet($name, $value)
     {
         $this->addPlaceholder($name, $value);
     }
+
 
     /**
      * Exists placeholder.
@@ -423,12 +516,12 @@ class Template implements EventsInterface
     }
 
     /**
-     * Exists local placeholder.
+     * Exists placeholder.
      *
      * @param string $name name of placeholder.
      * @return bool
      */
-    public function __isset($name)
+    public function offsetExists($name)
     {
         return $this->existsPlaceholder($name);
     }
@@ -469,7 +562,7 @@ class Template implements EventsInterface
      *
      * @param string $name name of placeholder.
      */
-    public function __unset($name)
+    public function offsetUnset($name)
     {
         $this->removePlaceholder($name);
     }
