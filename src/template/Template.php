@@ -15,6 +15,7 @@ use rock\helpers\NumericHelper;
 use rock\helpers\Serialize;
 use rock\helpers\StringHelper;
 use rock\i18n\i18n;
+use rock\request\Request;
 use rock\snippets\Snippet;
 use rock\template\filters\ConditionFilter;
 
@@ -156,10 +157,15 @@ class Template implements EventsInterface
      */
     public $context;
     /**
-     * Instance Rock Cache
+     * Instance Rock Cache.
      * @var \rock\cache\CacheInterface|string|array
      */
     public $cache = 'cache';
+    /**
+     * Instance Rock Request.
+     * @var Request
+     */
+    public $request = 'request';
     /**
      * Current locale.
      * @var string
@@ -208,6 +214,7 @@ class Template implements EventsInterface
         }
 
         $this->locale = strtolower($this->locale);
+        $this->request = Instance::ensure($this->request, '\rock\request\Request');
         $this->cache = Instance::ensure($this->cache, null, [], false);
         $this->snippets = array_merge($this->defaultSnippets(), $this->snippets);
         $this->filters = array_merge($this->defaultFilters(), $this->filters);
@@ -511,7 +518,7 @@ class Template implements EventsInterface
      * Find placeholders.
      *
      * ```php
-     * (new \rock\Template)->calculateAddPlaceholders(['foo', 'bar' => 'text']); // ['foo' => 'text', 'bar' => 'text']
+     * (new \rock\Template)->findPlaceholders(['foo', 'bar' => 'text']); // ['foo' => 'text', 'bar' => 'text']
      * ```
      *
      * @param array $placeholders
@@ -949,7 +956,7 @@ class Template implements EventsInterface
     /**
      * Registers a CSS file.
      *
-     * @param string $url the CSS file to be registered.
+     * @param string|array $url the CSS file to be registered or url modify params.
      * @param array $options the HTML attributes for the link tag.
      * @param string $key the key that identifies the CSS script file. If null, it will use
      *                        $url as the key. If two CSS files are registered with the same key, the latter
@@ -957,8 +964,10 @@ class Template implements EventsInterface
      */
     public function registerCssFile($url, $options = [], $key = null)
     {
-        $url = Alias::getAlias($url);
         $key = $key ?: $url;
+        if (is_array($key)) {
+            $key = current($key);
+        }
         $position = isset($options['position']) ? $options['position'] : self::POS_HEAD;
         unset($options['position']);
         $this->cssFiles[$position][$key] = $this->renderWrapperTag(Html::cssFile($url, $options), $options);
@@ -987,8 +996,7 @@ class Template implements EventsInterface
 
     /**
      * Registers a JS file.
-     *
-     * @param string $url the JS file to be registered.
+     * @param string|array $url the JS file to be registered or url modify params.
      * @param array $options the HTML attributes for the script tag. A special option
      *                        named "position" is supported which specifies where the JS script tag should be inserted
      *                        in a page. The possible values of "position" are:
@@ -1003,8 +1011,10 @@ class Template implements EventsInterface
      */
     public function registerJsFile($url, $options = [], $key = null)
     {
-        $url = Alias::getAlias($url);
         $key = $key ?: $url;
+        if (is_array($key)) {
+            $key = current($key);
+        }
         $position = isset($options['position']) ? $options['position'] : self::POS_END;
         unset($options['position']);
         $this->jsFiles[$position][$key] = $this->renderWrapperTag(Html::jsFile($url, $options), $options);
@@ -1402,11 +1412,11 @@ class Template implements EventsInterface
     protected function getSnippetInternal($snippet, array $params = [], $autoEscape = true)
     {
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($params);
-        $snippet = $this->getInstanceSnippet($snippet, $params);
+        $params['template'] = $this;
         if ($autoEscape === false) {
-            $snippet->autoEscape = false;
+            $params['autoEscape'] = false;
         }
-        $snippet->template = $this;
+        $snippet = $this->getInstanceSnippet($snippet, $params);
         if (!$snippet->beforeSnippet()) {
             return null;
         }

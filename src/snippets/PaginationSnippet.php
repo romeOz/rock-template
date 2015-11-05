@@ -156,7 +156,7 @@ class PaginationSnippet extends Snippet
         $result = '';
         foreach ($data['pageDisplay'] as $num) {
             $this->_pageArgs[$pageParam] = $num;
-            $url = Url::modify($this->url + $this->_pageArgs);
+            $url = Url::modify($this->url + $this->_pageArgs, ['request' => $this->template->request]);
             // for active page
             if ((int)$data['pageCurrent'] === (int)$num) {
                 $result .= $this->template->replaceByPrefix($this->pageActiveTpl, ['num' => $num, 'url' => $url]);
@@ -176,7 +176,7 @@ class PaginationSnippet extends Snippet
         }
         $this->_pageArgs[$pageParam] = $pageFirst;
         $placeholders = [
-            'url' => $url = Url::modify($this->url + $this->_pageArgs),
+            'url' => $url = Url::modify($this->url + $this->_pageArgs, ['request' => $this->template->request]),
             'pageFirstName' => $this->template->replace($this->pageFirstName)
         ];
         return $this->template->replaceByPrefix($this->pageFirstTpl, $placeholders);
@@ -189,7 +189,7 @@ class PaginationSnippet extends Snippet
         }
         $this->_pageArgs[$pageParam] = $pageLast;
         $placeholders = [
-            'url' => $url = Url::modify($this->url + $this->_pageArgs),
+            'url' => $url = Url::modify($this->url + $this->_pageArgs, ['request' => $this->template->request]),
             'pageLastName' => $this->template->replace($this->pageLastName)
         ];
         return $this->template->replaceByPrefix($this->pageLastTpl, $placeholders);

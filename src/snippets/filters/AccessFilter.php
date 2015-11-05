@@ -8,18 +8,19 @@ use rock\helpers\Instance;
 
 class AccessFilter extends SnippetFilter
 {
+    /** @var  Access */
+    public $access;
     public $rules = [];
 
     public function before()
     {
-        /** @var Access $access */
-        $access = Instance::ensure([
+        $this->access = Instance::ensure([
             'class' => Access::className(),
             'owner' => $this->owner,
             'rules' => $this->rules,
+            'request' => $this->request
         ]);
-
-        if (!$access->checkAccess()) {
+        if (!$this->access->checkAccess()) {
             return false;
         }
 

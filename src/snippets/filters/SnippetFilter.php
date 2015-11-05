@@ -6,12 +6,18 @@ namespace rock\snippets\filters;
 use rock\components\Behavior;
 use rock\events\Event;
 use rock\filters\FilterInterface;
+use rock\helpers\Instance;
+use rock\request\Request;
 use rock\response\Response;
 use rock\snippets\Snippet;
 use rock\snippets\SnippetEvent;
 
 class SnippetFilter extends Behavior implements FilterInterface
 {
+    /**
+     * @var Request the current request. If not set, the `request` application component will be used.
+     */
+    public $request = 'request';
     /**
      * @var Response the response to be sent. If not set, the `response` application component will be used.
      */
@@ -40,6 +46,12 @@ class SnippetFilter extends Behavior implements FilterInterface
     public $fail;
     public $data;
     protected $event;
+
+    public function init()
+    {
+        parent::init();
+        $this->request = Instance::ensure($this->request, '\rock\request\Request');
+    }
 
     public function events()
     {
