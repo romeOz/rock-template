@@ -42,9 +42,11 @@ class ForSnippet extends Snippet
     /**
      * @inheritdoc
      */
-    public $autoEscape = Template::SANITIZE_DISABLE;
+    public $sanitize = Template::SANITIZE_DISABLE;
 
-
+    /**
+     * @inheritdoc
+     */
     public function get()
     {
         if (!isset($this->count, $this->tpl)) {
