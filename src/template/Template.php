@@ -19,15 +19,21 @@ use rock\request\Request;
 use rock\snippets\Snippet;
 use rock\template\filters\ConditionFilter;
 
+/**
+ * Template engine
+ * @package rock\template
+ */
 class Template implements EventsInterface, \ArrayAccess
 {
     use EventsTrait;
 
-    const ESCAPE = 1;
-    const STRIP_TAGS = 2;
-    const TO_TYPE = 4;
     const ENGINE_ROCK = 1;
     const ENGINE_PHP = 2;
+
+    const SANITIZE_DISABLE = 0;
+    const SANITIZE_ESCAPE = 1;
+    const SANITIZE_STRIP_TAGS = 2;
+    const SANITIZE_TO_TYPE = 4;
 
     /**
      * @event Event an event that is triggered by {@see \rock\template\Template::beginPage()}.
@@ -67,7 +73,7 @@ class Template implements EventsInterface, \ArrayAccess
      *
      * @var array
      */
-    public $engines = [
+    protected $engines = [
         self::ENGINE_ROCK => 'html',
         self::ENGINE_PHP => 'php',
     ];
@@ -76,68 +82,65 @@ class Template implements EventsInterface, \ArrayAccess
      *
      * @var int
      */
-    public $defaultEngine = self::ENGINE_ROCK;
+    protected $defaultEngine = self::ENGINE_ROCK;
     /**
      * List filters.
      *
      * @var array
      */
-    public $filters = [];
+    protected $filters = [];
     /**
      * List snippets.
-     *
      * @var array
      */
-    public $snippets = [];
+    protected $snippets = [];
     /**
      * Collection extensions.
      *
      * @var array
      */
-    public $extensions = [];
+    protected $extensions = [];
     /**
      * Handler for replace link: `[[~link]]`
      * @var callable
      */
-    public $handlerLink;
+    protected $handlerLink;
     /**
-     * Is mode auto-escaping.
+     * Mode sanitize.
      *
-     * @var int|bool
+     * @var int
      */
-    public $autoEscape = self::ESCAPE;
+    protected $sanitize = self::SANITIZE_ESCAPE;
     /**
-     * Automatic serialization value.
+     * Enable automatic serialization value.
      *
      * @var bool
      */
-    public $autoSerialize = true;
+    protected $autoSerialize = true;
     /**
+     * List CSS code blocks.
      * @var array the registered CSS code blocks.
      * @see registerCss()
      */
     public $css = [];
     /**
+     * List CSS files.
      * @var array the registered CSS files.
      * @see registerCssFile()
      */
     public $cssFiles = [];
     /**
+     * List JavaScript code blocks.
      * @var array the registered JS code blocks
      * @see registerJs()
      */
     public $js = [];
     /**
+     * List JavaScript files.
      * @var array the registered JS files.
      * @see registerJsFile()
      */
     public $jsFiles = [];
-    /**
-     * Instance Controller where render template.
-     *
-     * @var object
-     */
-    public $context;
     /**
      * Instance Rock Cache.
      * @var \rock\cache\CacheInterface|string|array
@@ -149,15 +152,20 @@ class Template implements EventsInterface, \ArrayAccess
      */
     public $request = 'request';
     /**
-     * Throw exception. When {@see \rock\template\Template::addMultiPlaceholders()} and {@see \rock\template\Template::removeMultiPlaceholders()}.
+     * Instance Controller where render template.
+     * @var object
+     */
+    protected $context;
+    /**
+     * Enable throw exception. When {@see \rock\template\Template::addMultiPlaceholders()} and {@see \rock\template\Template::removeMultiPlaceholders()}.
      * @var bool
      */
-    public $throwException = false;
+    protected $throwException = false;
     /**
-     * List chroots.
+     * List root-paths to view directories.
      * @var array
      */
-    public $chroots = ['@template.views'];
+    protected $chroots = ['@template.views'];
     /**
      * Current locale.
      * @var string
@@ -209,7 +217,7 @@ class Template implements EventsInterface, \ArrayAccess
      */
     protected $scopes = [];
     public $cachePlaceholders = [];
-    private static $_escapeCache = [];
+    private static $_sanitizeCache = [];
     private static $_conditionNames = [];
     private static $_inlineConditionNames;
 
@@ -227,94 +235,209 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Sets a locale.
-     * @param callable|string $locale
+     * @param string $locale
      */
     public function setLocale($locale)
     {
-        if (is_callable($locale)) {
-            $locale = call_user_func($locale, $this);
-        }
         $this->locale = strtolower($locale);
     }
 
     /**
      * Sets a head.
-     * @param callable|string $head
+     * @param string $head
      * @return $this
      */
     public function setHead($head)
     {
-        if (is_callable($head)) {
-            $head = call_user_func($head, $this);
-        }
-
         $this->head = $head;
         return $this;
     }
 
     /**
      * Sets a title page.
-     * @param callable|string $title
+     * @param string $title
      * @return $this
      */
     public function setTitle($title)
     {
-        if (is_callable($title)) {
-            $title = call_user_func($title, $this);
-        }
-
         $this->title = $title;
         return $this;
     }
 
     /**
      * Sets a list meta tags.
-     * @param callable|array $meta
+     * @param array $meta
      * @return $this
      */
     public function setMetaTags($meta)
     {
-        if (is_callable($meta)) {
-            $meta = call_user_func($meta, $this);
-        }
-
         $this->metaTags = $meta;
         return $this;
     }
 
     /**
      * Sets a list link tags.
-     * @param callable|array $links
+     * @param array $links
      * @return $this
      */
     public function setLinkTags($links)
     {
-        if (is_callable($links)) {
-            $links = call_user_func($links, $this);
-        }
-
         $this->linkTags = $links;
         return $this;
     }
 
     /**
      * Sets a body.
-     * @param callable|string $body
+     * @param string $body
      * @return $this
      */
     public function setBody($body)
     {
-        if (is_callable($body)) {
-            $body = call_user_func($body, $this);
-        }
-
         $this->body = $body;
         return $this;
     }
 
     /**
+     * Registers a constants.
+     * @param array $constants list constants.
+     * @return $this
+     */
+    public function setConstants(array $constants)
+    {
+        static::$constants = $constants;
+        return $this;
+    }
+
+    /**
+     * Registers a snippets.
+     * @param array $snippets list snippets.
+     * @return $this
+     */
+    public function setSnippets(array $snippets)
+    {
+        $this->snippets = array_merge($this->snippets, $snippets);
+        return $this;
+    }
+
+    /**
+     * Registers a filters.
+     * @param array $filters list filters.
+     * @return $this
+     */
+    public function setFilters(array $filters)
+    {
+        $this->filters = array_merge($this->filters, $filters);
+        return $this;
+    }
+
+    /**
+     * Registers a extensions.
+     * @param array $extensions list extensions.
+     * @return $this
+     */
+    public function setExtensions(array $extensions)
+    {
+        $this->extensions = array_merge($this->extensions, $extensions);
+        return $this;
+    }
+
+    /**
+     * Registers a handler link.
+     * @param callable $handler
+     * @return $this
+     */
+    public function setHandlerLink(callable $handler)
+    {
+        $this->handlerLink = $handler;
+        return $this;
+    }
+
+    /**
+     * Sets a default engine.
+     * @param int $engine
+     * @return $this
+     */
+    public function setDefaultEngine($engine)
+    {
+        $this->defaultEngine = $engine;
+        return $this;
+    }
+
+    /**
+     * Sets a sanitize mode.
+     * @param bool $mode
+     * @return $this
+     */
+    public function setSanitize($mode)
+    {
+        $this->sanitize = $mode;
+        return $this;
+    }
+
+    /**
+     * Returns sanitize mode.
+     * @return int
+     */
+    public function getSanitize()
+    {
+        return $this->sanitize;
+    }
+
+    /**
+     * Enable auto-serialize.
+     * @param bool $enable
+     * @return $this
+     */
+    public function setAutoSerialize($enable)
+    {
+        $this->autoSerialize = $enable;
+        return $this;
+    }
+
+    /**
+     * Enable throw exception. When {@see \rock\template\Template::addMultiPlaceholders()} and {@see \rock\template\Template::removeMultiPlaceholders()}.
+     * @param bool $enable
+     * @return $this
+     */
+    public function setThrowException($enable)
+    {
+        $this->throwException = $enable;
+        return $this;
+    }
+
+    /**
+     * Sets a list root-paths to view directories.
+     * @param array $paths list absolute paths.
+     * @return $this
+     */
+    public function setChroots(array $paths)
+    {
+        $this->chroots = $paths;
+        return $this;
+    }
+
+    /**
+     * Sets a instance Controller where render template.
+     * @param object $controller
+     * @return $this
+     */
+    public function setContext($controller)
+    {
+        $this->context = $controller;
+        return $this;
+    }
+
+    /**
+     * Returns a instance Controller where render template.
+     * @return object
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
      * Rendering layout.
-     *
      * @param string $path path to layout
      * @param array $placeholders
      * @param object|null $context
@@ -325,12 +448,12 @@ class Template implements EventsInterface, \ArrayAccess
     public function render($path, array $placeholders = [], $context = null, $isAjax = false)
     {
         if (isset($context)) {
-            $this->context = $context;
+            $this->setContext($context);
         }
         $this->scopes[spl_object_hash($this)] = $this;
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($placeholders);
         // Get cache
-        if (($resultCache = $this->getCache($cacheKey)) !== false) {
+        if (($resultCache = $this->getCacheContent($cacheKey)) !== false) {
 
             return $resultCache;
         }
@@ -340,14 +463,13 @@ class Template implements EventsInterface, \ArrayAccess
         }
 
         // Set cache
-        $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags ?: []);
+        $this->setCacheContent($cacheKey, $result, $cacheExpire, $cacheTags ?: []);
 
         return $result;
     }
 
     /**
      * Replace variables template (chunk, snippet...).
-     *
      * @param string $code current template with variables template.
      * @param array $placeholders array placeholders of variables template.
      * @return string
@@ -371,7 +493,7 @@ class Template implements EventsInterface, \ArrayAccess
         $code = preg_replace_callback(
             '/
                 (?P<beforeSkip>\{\!\\s*)?\[\[
-                (?P<escape>\!)?
+                (?P<sanitizeDisable>\!)?
                 (?P<type>[\#\%\~\$]?|\+{1,2}|@{1,2})					# search type of variable template
                 (?P<name>@?[\\w\-\/\\\.\$]+)							# name of variable template [\w, -, \, .]
                 (?:[^\[\]]++ | \[(?!\[) | \](?!\]) | (?R))*		# possible recursion
@@ -384,14 +506,13 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Returns placeholder.
-     *
+     * Returns placeholder by name.
      * @param string|array $name name of placeholder.
-     * @param int|bool|null $autoEscape
+     * @param int $sanitize
      * @return mixed
      * @throws TemplateException
      */
-    public function getPlaceholder($name, $autoEscape = true)
+    public function getPlaceholder($name, $sanitize = null)
     {
         list($name, $placeholders, $template) = $this->getParentPlaceholder($name);
         if ($template === false) {
@@ -403,12 +524,11 @@ class Template implements EventsInterface, \ArrayAccess
             }
             return null;
         }
-        return $this->autoEscape(ArrayHelper::getValue($placeholders, $name), $autoEscape);
+        return $this->sanitize(ArrayHelper::getValue($placeholders, $name), $sanitize);
     }
 
     /**
      * Returns a placeholder by name.
-     *
      * @param string|array $name name of placeholder.
      * @return mixed
      */
@@ -422,15 +542,14 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Returns all placeholders.
-     *
      * @param string|array|null $parent $root or $parent.
-     * @param int|bool $autoEscape
+     * @param int $sanitize
      * @param array $only
      * @param array $exclude
      * @return array
      * @throws TemplateException
      */
-    public function getAllPlaceholders($parent = null, $autoEscape = true, array $only = [], array $exclude = [])
+    public function getAllPlaceholders($parent = null, $sanitize = null, array $only = [], array $exclude = [])
     {
         if (isset($parent)) {
             list(, , $template) = $this->getParentPlaceholder($parent);
@@ -448,12 +567,11 @@ class Template implements EventsInterface, \ArrayAccess
             }
             return [];
         }
-        return $this->autoEscape(ArrayHelper::only($template->placeholders, $only, $exclude), $autoEscape);
+        return $this->sanitize(ArrayHelper::only($template->placeholders, $only, $exclude), $sanitize);
     }
 
     /**
      * Adding placeholder.
-     *
      * @param string $name name of placeholder
      * @param mixed $value value
      * @param bool $recursive
@@ -479,7 +597,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Adding placeholders.
-     *
      * @param array $placeholders placeholders
      * @param bool $recursive
      * @return mixed
@@ -493,8 +610,7 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Adding local placeholder.
-     *
+     * Adding placeholder.
      * @param string $name name of placeholder.
      * @param        $value
      */
@@ -503,10 +619,8 @@ class Template implements EventsInterface, \ArrayAccess
         $this->addPlaceholder($name, $value);
     }
 
-
     /**
      * Exists placeholder.
-     *
      * @param string $name name of placeholder.
      * @return bool
      */
@@ -517,7 +631,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Exists placeholder.
-     *
      * @param string $name name of placeholder.
      * @return bool
      */
@@ -527,8 +640,7 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Deleting placeholder.
-     *
+     * Removing placeholder.
      * @param string $name name of placeholder.
      * @throws TemplateException
      */
@@ -558,8 +670,7 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Removing local placeholder.
-     *
+     * Removing placeholder.
      * @param string $name name of placeholder.
      */
     public function offsetUnset($name)
@@ -568,8 +679,7 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Deleting multi-placeholders.
-     *
+     * Removing multi-placeholders.
      * @param array $names
      * @throws TemplateException
      */
@@ -581,8 +691,7 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Deleting all placeholders
-     *
+     * Removing all placeholders
      * @param string|array|null $parent $root or $parent
      * @throws TemplateException
      */
@@ -608,7 +717,7 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Find placeholders.
+     * Finds a placeholders.
      *
      * ```php
      * (new \rock\Template)->findPlaceholders(['foo', 'bar' => 'text']); // ['foo' => 'text', 'bar' => 'text']
@@ -649,19 +758,18 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Returns constant.
+     * Returns a constant.
      * @param string|array $name name of constant
-     * @param bool $autoEscape
+     * @param int $sanitize
      * @return mixed
      */
-    public function getConst($name, $autoEscape = true)
+    public function getConst($name, $sanitize = null)
     {
-        return $this->autoEscape(ArrayHelper::getValue(static::$constants, $name), $autoEscape);
+        return $this->sanitize(ArrayHelper::getValue(static::$constants, $name), $sanitize);
     }
 
     /**
-     * Adding constant.
-     *
+     * Adds a constant.
      * @param string $name name of constant
      * @param mixed $value value
      * @param bool $recursive
@@ -684,7 +792,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Exists constant.
-     *
      * @param string|array $name name of constant.
      * @return bool
      */
@@ -694,54 +801,54 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Autoescape vars of template engine.
-     *
+     * Sanitizing value.
      * @param mixed $value
-     * @param bool|int $const
+     * @param int $mode
      * @return mixed
      */
-    public function autoEscape($value, $const = true)
+    public function sanitize($value, $mode = null)
     {
+        if ($mode === null) {
+            $mode = $this->sanitize;
+        }
         if (is_array($value)) {
             $hash = md5(json_encode($value));
-            if (isset(static::$_escapeCache[$hash])) {
-                return static::$_escapeCache[$hash];
+            /* Optimize lazy loading */
+            if (isset(static::$_sanitizeCache[$hash])) {
+                return static::$_sanitizeCache[$hash];
             }
 
-            return static::$_escapeCache[$hash] =
+            return static::$_sanitizeCache[$hash] =
                 ArrayHelper::map(
                     $value,
-                    function ($value) use ($const) {
-                        return $this->escape($value, $const);
+                    function ($value) use ($mode) {
+                        return $this->sanitizeValue($value, $mode);
                     },
                     true
                 );
         }
 
-        return $this->escape($value, $const);
+        return $this->sanitizeValue($value, $mode);
     }
 
-    protected function escape($value, $const = true)
+    protected function sanitizeValue($value, $mode)
     {
         if (!isset($value)) {
             return null;
         }
-        if ($const === true) {
-            $const = $this->autoEscape;
-        }
-        if ($const === false) {
+        if ($mode === self::SANITIZE_DISABLE) {
             return $value;
         }
-        if ($const & self::TO_TYPE) {
+        if ($mode & self::SANITIZE_TO_TYPE) {
             $value = Helper::toType($value);
         }
         if (!is_string($value)) {
             return $value;
         }
-        if ($const & self::STRIP_TAGS) {
+        if ($mode & self::SANITIZE_STRIP_TAGS) {
             $value = strip_tags($value);
         }
-        if ($const & self::ESCAPE) {
+        if ($mode & self::SANITIZE_ESCAPE) {
             $value = StringHelper::encode($value);
         }
 
@@ -750,7 +857,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Rendering chunk.
-     *
      * @param string $path path to chunk.
      * @param array $placeholders list placeholders
      * @return string
@@ -762,19 +868,18 @@ class Template implements EventsInterface, \ArrayAccess
         $template->removeAllPlaceholders();
         list($cacheKey, $cacheExpire, $cacheTags) = $template->calculateCacheParams($placeholders);
         // Get cache
-        if (($resultCache = $template->getCache($cacheKey)) !== false) {
+        if (($resultCache = $template->getCacheContent($cacheKey)) !== false) {
             return $resultCache;
         }
         $result = $template->renderInternal($path, $placeholders);
         // Set cache
-        $template->setCache($cacheKey, $result, $cacheExpire, $cacheTags ?: []);
+        $template->setCacheContent($cacheKey, $result, $cacheExpire, $cacheTags ?: []);
 
         return $result;
     }
 
     /**
      * Exists chunk.
-     *
      * @param string $path path to chunk.
      * @return bool
      */
@@ -789,44 +894,43 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Returns data from snippet.
-     *
+     * Returns a snippet by name.
      * @param string|\rock\snippets\Snippet $snippet name of
      *                                           snippet/instance @see \rock\base\Snippet
      * @param array $params params
-     * @param bool $autoEscape
+     * @param int $sanitize
      * @return mixed
      */
-    public function getSnippet($snippet, array $params = [], $autoEscape = true)
+    public function getSnippet($snippet, array $params = [], $sanitize = null)
     {
         $template = clone $this;
         $template->scopes[spl_object_hash($this)] = $this;
         $template->removeAllPlaceholders();
-        $result = $template->getSnippetInternal($snippet, $params, $autoEscape);
+        $result = $template->getSnippetInternal($snippet, $params, $sanitize);
         $this->cachePlaceholders = $template->cachePlaceholders;
 
         return $result;
     }
 
     /**
+     * Returns a extansion by name.
      * @param string $name name of extension
      * @param array $params
-     * @param bool|int $autoEscape
+     * @param int $sanitize
      * @return mixed
      */
-    public function getExtension($name, array $params = [], $autoEscape = true)
+    public function getExtension($name, array $params = [], $sanitize = null)
     {
         $result = $this->_getExtensionInternal($name, $params);
         if (!empty($params)) {
             $this->removePlaceholder('params');
         }
 
-        return $this->autoEscape($result, $autoEscape);
+        return $this->sanitize($result, $sanitize);
     }
 
     /**
      * Make filter (modifier).
-     *
      * @param string $value value
      * @param array $filters array of filters with params
      * @throws TemplateException
@@ -857,8 +961,7 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Replace inline tpl.
-     *
+     * Replaces a inline tpl.
      * @param string $value value
      * @param array $placeholders
      * @return string
@@ -878,9 +981,9 @@ class Template implements EventsInterface, \ArrayAccess
     }
 
     /**
-     * Get name prefix by param.
+     * Returns name of prefix.
      *
-     * @param string $value value of param
+     * @param string $value
      * @return array|null
      */
     public function getNamePrefix($value)
@@ -898,7 +1001,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Removing prefix by param.
-     *
      * @param string $value value of param
      * @return string|null
      */
@@ -989,7 +1091,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Registers a meta tag.
-     *
      * @param array $options the HTML attributes for the meta tag.
      * @param string $key the key that identifies the meta tag. If two meta tags are registered
      *                        with the same key, the latter will overwrite the former. If this is null, the new meta tag
@@ -1016,7 +1117,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Registers a link tag.
-     *
      * @param array $options the HTML attributes for the link tag.
      * @param string $key the key that identifies the link tag. If two link tags are registered
      *                        with the same key, the latter will overwrite the former. If this is null, the new link tag
@@ -1033,7 +1133,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Registers a CSS code block.
-     *
      * @param string $css the CSS code block to be registered
      * @param array $options the HTML attributes for the style tag.
      * @param string $key the key that identifies the CSS code block. If null, it will use
@@ -1048,7 +1147,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Registers a CSS file.
-     *
      * @param string $url the CSS file to be registered.
      * @param array $options the HTML attributes for the link tag.
      * @param string $key the key that identifies the CSS script file. If null, it will use
@@ -1089,7 +1187,6 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Registers a JS file.
-     *
      * @param string $url the JS file to be registered.
      * @param array $options the HTML attributes for the script tag. A special option
      *                        named "position" is supported which specifies where the JS script tag should be inserted
@@ -1157,7 +1254,7 @@ class Template implements EventsInterface, \ArrayAccess
         if (!empty($matches['beforeSkip']) && !empty($matches['afterSkip'])) {
             return trim($matches[0], '{!} ');
         }
-        // Check: if count quotes does not parity
+        // check: count quotes does not parity
         if (!NumericHelper::isParity(mb_substr_count($matches[0], '`', 'UTF-8'))) {
             return $matches[0];
         }
@@ -1170,11 +1267,11 @@ class Template implements EventsInterface, \ArrayAccess
             /x',
             [$this, 'replaceSugar'],
             $matches[0]);
-        // Replace `=` tpl mnemonics
+        // replace `=` tpl mnemonics
         $matches[0] = preg_replace('/`([\!\<\>]?)[\=]+`/', '`$1&#61;`', $matches[0]);
-        // Replace `text` to ““text””
+        // replace `text` to ““text””
         $matches[0] = preg_replace(['/=\\s*\`/', '/\`/'], ['=““', '””'], $matches[0]);
-        // Replacement of internal recursion on {{{...}}}
+        // replacement of internal recursion on {{{...}}}
         $i = 0;
         $dataRecursive = [];
         $matches[0] = preg_replace_callback(
@@ -1195,33 +1292,35 @@ class Template implements EventsInterface, \ArrayAccess
         $filters = $this->_searchFilters($matches[0], $dataRecursive);
         $matches['name'] = trim($matches['name']);
         $params = Serialize::unserializeRecursive($params);
-        // Get cache
+        // returns cache
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($params);
-        if (($resultCache = $this->getCache($cacheKey)) !== false) {
+        if (($resultCache = $this->getCacheContent($cacheKey)) !== false) {
             return $resultCache;
         }
         $filters = Serialize::unserializeRecursive($filters);
-        $escape = !$matches['escape'];
+        $sanitize = $this->sanitize;
+        if (isset($params['sanitize'])) {
+            $sanitize = $params['sanitize'];
+        } elseif(isset($matches['sanitizeDisable'])) {
+            $sanitize = self::SANITIZE_DISABLE;
+        }
 
         // chunk
         if ($matches['type'] === '$') {
             $result = $this->getChunk($matches['name'], $params);
-            // get alias
+            // alias
         } elseif ($matches['type'] === '@@') {
             $result = Alias::getAlias("@{$matches['name']}");
-            // local placeholder
+            // placeholder
         } elseif ($matches['type'] === '+') {
-            $result = $this->getPlaceholder(
-                $matches['name'],
-                Helper::getValue($params['autoEscape'], $escape, true)
-            );
-            // const
+            $result = $this->getPlaceholder($matches['name'], $sanitize);
+            // constant
         } elseif ($matches['type'] === '++') {
-            $result = $this->getConst($matches['name'], Helper::getValue($params['autoEscape'], $escape, true));
-            // extensions
+            $result = $this->getConst($matches['name'], $sanitize);
+            // extension
         } elseif ($matches['type'] === '#') {
             $result =
-                $this->getExtension($matches['name'], $params, Helper::getValue($params['autoEscape'], $escape, true));
+                $this->getExtension($matches['name'], $params, $sanitize);
             //  i18n
         } elseif ($matches['type'] === '%') {
             $result = $this->_calculateI18N(
@@ -1230,16 +1329,16 @@ class Template implements EventsInterface, \ArrayAccess
                 Helper::getValue($params['locale']),
                 Helper::getValue($params['category'])
             );
-            // link to resource
+            // link
         } elseif ($matches['type'] === '~') {
             $result = $this->_calculateLink($matches['name'], $params);
             // snippet
         } elseif (empty($matches['type'])) {
-            $result = $this->getSnippet($matches['name'], $params, $escape);
+            $result = $this->getSnippet($matches['name'], $params, $sanitize);
         } else {
             return $matches[0];
         }
-        // Make a filter
+        // make a filter
         if (!empty($filters)) {
             $result = $this->makeFilter($result, $filters);
         }
@@ -1251,8 +1350,8 @@ class Template implements EventsInterface, \ArrayAccess
         if (!is_scalar($result) && !empty($result)) {
             throw new TemplateException('Wrong type is var: ' . Json::encode($result));
         }
-        // Set cache
-        $this->setCache(
+        // sets a content to cache
+        $this->setCacheContent(
             $cacheKey,
             $result,
             $cacheExpire,
@@ -1348,18 +1447,18 @@ class Template implements EventsInterface, \ArrayAccess
         }
 
         $str = $value;
-        $autoEscape = true;
+        $sanitize = $this->sanitize;
         if ($value[0] === '!') {
             $str = ltrim($str, '!');
-            $autoEscape = false;
+            $sanitize = self::SANITIZE_DISABLE;
         }
 
         if (isset($str[0])) {
             if ($str[0] === '+') {
-                return $this->getPlaceholder(ltrim($str, '+'), $autoEscape);
+                return $this->getPlaceholder(ltrim($str, '+'), $sanitize);
             }
             if ($str[0] === '#') {
-                return $this->getExtension(ltrim($str, '#'), [], $autoEscape);
+                return $this->getExtension(ltrim($str, '#'), [], $sanitize);
             }
         }
 
@@ -1503,19 +1602,19 @@ class Template implements EventsInterface, \ArrayAccess
         return call_user_func($this->handlerLink, $link, $this, $params);
     }
 
-    protected function getSnippetInternal($snippet, array $params = [], $autoEscape = true)
+    protected function getSnippetInternal($snippet, array $params = [], $sanitize = null)
     {
         list($cacheKey, $cacheExpire, $cacheTags) = $this->calculateCacheParams($params);
         $params['template'] = $this;
-        if ($autoEscape === false) {
-            $params['autoEscape'] = false;
+        if ($sanitize === self::SANITIZE_DISABLE) {
+            $params['sanitize'] = self::SANITIZE_DISABLE;
         }
         $snippet = $this->getInstanceSnippet($snippet, $params);
         if (!$snippet->beforeSnippet()) {
             return null;
         }
         // Get cache
-        if (($resultCache = $this->getCache($cacheKey)) !== false) {
+        if (($resultCache = $this->getCacheContent($cacheKey)) !== false) {
             if (!$snippet->afterSnippet($resultCache)) {
                 return null;
             }
@@ -1523,9 +1622,10 @@ class Template implements EventsInterface, \ArrayAccess
             return $resultCache;
         }
         $result = $snippet->get();
-        $result = $this->autoEscape(
+        $result = $this->sanitize(
             $result,
-            isset($params['autoEscape']) && $params['autoEscape'] === false ? false : $snippet->autoEscape);
+            isset($params['sanitize']) && $params['sanitize'] === self::SANITIZE_DISABLE ? self::SANITIZE_DISABLE : $snippet->sanitize
+        );
         $result = is_string($result)
             ? str_replace(
                 ['[[', ']]', '{{{', '}}}', '`', '“', '”'],
@@ -1534,7 +1634,7 @@ class Template implements EventsInterface, \ArrayAccess
             )
             : $result;
         //  Set cache
-        $this->setCache($cacheKey, $result, $cacheExpire, $cacheTags ?: []);
+        $this->setCacheContent($cacheKey, $result, $cacheExpire, $cacheTags ?: []);
         if (!$snippet->afterSnippet($result)) {
             return null;
         }
@@ -1735,7 +1835,7 @@ class Template implements EventsInterface, \ArrayAccess
      * @param string|null $key
      * @return bool
      */
-    protected function getCache($key = null)
+    protected function getCacheContent($key = null)
     {
         if (!$this->cache instanceof CacheInterface) {
             return false;
@@ -1760,7 +1860,7 @@ class Template implements EventsInterface, \ArrayAccess
      * @param int $expire
      * @param array $tags
      */
-    protected function setCache($key = null, $value = null, $expire = 0, array $tags = [])
+    protected function setCacheContent($key = null, $value = null, $expire = 0, array $tags = [])
     {
         if ($this->cache instanceof CacheInterface && isset($key)) {
             if (!empty($this->cachePlaceholders)) {
