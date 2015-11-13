@@ -27,15 +27,15 @@ class ForSnippet extends Snippet
      */
     public $addPlaceholders = [];
     /**
-     * Wrapper for item. You can specify the path to chunk ```?tpl=`/path/to/chunk```/```?tpl=`@views/chunk``` or
-     * on the spot to specify a template ``` ?tpl=`@INLINE<b>[[+title]]</b>` ```.
+     * Wrapper for item. You can specify the path to chunk `?tpl=/path/to/chunk`, `?tpl=@views/chunk` or
+     * on the spot to specify a template `?tpl=@INLINE<b>[[+title]]</b>`.
      *
      * @var string
      */
     public $tpl;
     /**
-     * Wrapper for all items. You can specify the path to chunk ```?wrapperTpl=`/path/to/chunk```/```?tpl=`@views/chunk``` or
-     * on the spot to specify a template ``` ?wrapperTpl=`@INLINE<p>[[+output]]</p>` ```.
+     * Wrapper for all items. You can specify the path to chunk `?wrapperTpl=/path/to/chunk`, `?tpl=@views/chunk` or
+     * on the spot to specify a template `?wrapperTpl=@INLINE<p>[[+output]]</p>`.
      * @var string
      */
     public $wrapperTpl;
