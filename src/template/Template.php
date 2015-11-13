@@ -365,7 +365,7 @@ class Template implements EventsInterface, \ArrayAccess
 
     /**
      * Sets a sanitize mode.
-     * @param bool $mode
+     * @param int $mode
      * @return $this
      */
     public function setSanitize($mode)
@@ -1301,7 +1301,7 @@ class Template implements EventsInterface, \ArrayAccess
         $sanitize = $this->sanitize;
         if (isset($params['sanitize'])) {
             $sanitize = $params['sanitize'];
-        } elseif(isset($matches['sanitizeDisable'])) {
+        } elseif(!empty($matches['sanitizeDisable'])) {
             $sanitize = self::SANITIZE_DISABLE;
         }
 

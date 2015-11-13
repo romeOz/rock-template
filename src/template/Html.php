@@ -214,6 +214,8 @@ class Html
                 $url['@scheme'] = Url::ABS;
             }
             $url = Url::modify($url);
+        } else {
+            $url = '#';
         }
         $options['href'] = $url;
         if (!isset($options['rel'])) {
@@ -256,6 +258,8 @@ class Html
                 $url['@scheme'] = Url::ABS;
             }
             $url = Url::modify($url);
+        } else {
+            $url = '#';
         }
         $options['src'] = $url;
         if (isset($options['condition'])) {
@@ -305,13 +309,11 @@ class Html
     public static function beginForm($action = null, $method = 'post', $name = null, $options = [])
     {
         $hiddenInputs = [];
-        if (!empty($action)) {
-            $action = (array)$action;
-            if (!isset($url['@scheme'])) {
-                $action['@scheme'] = Url::ABS;
-            }
-            $action = Url::modify($action);
+        $action = (array)$action;
+        if (!isset($url['@scheme'])) {
+            $action['@scheme'] = Url::ABS;
         }
+        $action = Url::modify($action);
         $request = Instance::ensure('request', '\rock\request\Request', [], false);
         if ($request instanceof Request) {
             if (strcasecmp($method, 'get') && strcasecmp($method, 'post')) {
@@ -390,12 +392,16 @@ class Html
      */
     public static function a($text, $url = null, $options = [])
     {
-        if (!empty($url) && strpos($url, 'mailto:') !== 0) {
-            $url = (array)$url;
-            if (!isset($url['@scheme'])) {
-                $url['@scheme'] = Url::ABS;
+        if (!empty($url)) {
+            if (strpos($url, 'mailto:') !== 0) {
+                $url = (array)$url;
+                if (!isset($url['@scheme'])) {
+                    $url['@scheme'] = Url::ABS;
+                }
+                $options['href'] = Url::modify($url);
             }
-            $options['href'] = Url::modify($url);
+        } else {
+            $options['href'] = '#';
         }
 
         return static::tag('a', $text, $options);
