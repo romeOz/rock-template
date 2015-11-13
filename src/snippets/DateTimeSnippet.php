@@ -33,7 +33,7 @@ class DateTimeSnippet extends Snippet
      * Format of datetime.
      * @var string
      */
-    public $format = DateTime::DEFAULT_FORMAT;
+    public $format;
     public $timezone;
     public $config = [];
 
