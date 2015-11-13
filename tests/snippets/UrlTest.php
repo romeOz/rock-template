@@ -50,7 +50,7 @@ class UrlTest extends TemplateCommon
         );
 
         $this->assertSame(
-            'http://site.com/items/save',
+            '//site.com/items/save',
             $template->getSnippet('url',
                 [
                     'modify' => ['/items/save'],

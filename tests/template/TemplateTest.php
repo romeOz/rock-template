@@ -25,17 +25,17 @@ class TemplateTest extends TemplateCommon
 
     public function testPlaceholderAsMagic()
     {
-        $this->template->foo = 'foo text';
-        $this->assertTrue(isset($this->template->foo));
-        $this->assertSame('foo text', $this->template->foo);
-        unset($this->template->foo);
-        $this->assertFalse(isset($this->template->foo));
+        $this->template['foo'] = 'foo text';
+        $this->assertTrue(isset( $this->template['foo']));
+        $this->assertSame('foo text',  $this->template['foo']);
+        unset( $this->template['foo']);
+        $this->assertFalse(isset( $this->template['foo']));
     }
 
     public function testPlaceholder()
     {
         // add
-        $this->template->foo = 'foo text';
+        $this->template['foo'] = 'foo text';
         $this->template->addPlaceholder('$root.bar', 'bar text');
         $this->template->addPlaceholder('$parent.baz', 'baz text');
 
@@ -133,21 +133,21 @@ class TemplateTest extends TemplateCommon
             'css' => ['<style>.title {color: #354a57;}</style>'],
             'cssFiles' => [
                 Template::POS_HEAD => [
-                    '<link href="/assets/css/main.css" rel="stylesheet" media="screen, projection">'
+                    '<link href="//site.com/assets/css/main.css" rel="stylesheet" media="screen, projection">'
                 ],
                 Template::POS_END => [
-                    '<!--[if !(IE) | (gt IE 8)]><link href="/assets/css/footer.css" rel="stylesheet" media="screen, projection"><![endif]-->'
+                    '<!--[if !(IE) | (gt IE 8)]><link href="//site.com/assets/css/footer.css" rel="stylesheet" media="screen, projection"><![endif]-->'
                 ]
             ],
             'jsFiles' => [
                 Template::POS_HEAD => [
-                    '<!--[if lt IE 9]><script src="/assets/head.js"></script><![endif]-->'
+                    '<!--[if lt IE 9]><script src="//site.com/assets/head.js"></script><![endif]-->'
                 ],
                 Template::POS_BEGIN => [
-                    '<!--[if lt IE 9]><script src="/assets/begin.js"></script><![endif]-->'
+                    '<!--[if lt IE 9]><script src="//site.com/assets/begin.js"></script><![endif]-->'
                 ],
                 Template::POS_END => [
-                    '<script src="/assets/end.js"></script>'
+                    '<script src="//site.com/assets/end.js"></script>'
                 ]
             ],
             'js' => [
@@ -165,8 +165,8 @@ class TemplateTest extends TemplateCommon
 
         // Rock engine
         $this->assertSame(
-            static::removeSpace($this->getTemplate($config)->render($this->path . '/meta.html', ['about' => 'demo'])),
-            static::removeSpace(file_get_contents($this->path . '/_meta.html'))
+            static::removeSpace(file_get_contents($this->path . '/_meta.html')),
+            static::removeSpace($this->getTemplate($config)->render($this->path . '/meta.html', ['about' => 'demo']))
         );
         // Rock engine as default
         $this->assertSame(
@@ -182,9 +182,9 @@ class TemplateTest extends TemplateCommon
 
         // register
         $template = $this->getTemplate();
-        $template->head = '<!DOCTYPE html>
-            <!--[if !IE]>--><html class="no-js"><!--<![endif]-->';
-        $template->title = 'Demo';
+        $template->setHead('<!DOCTYPE html>
+            <!--[if !IE]>--><html class="no-js"><!--<![endif]-->');
+        $template->setTitle('Demo');
         $template->registerMetaTag(['charset' => 'UTF-8']);
         $template->registerMetaTag(['http-equiv' => 'Content-Language', 'content' => 'en'], 'language');
         $template->registerMetaTag(['name' => 'robots', 'content' => 'all'], 'robots');
@@ -370,7 +370,7 @@ class TemplateTest extends TemplateCommon
                         &modify=`{"0" : "!", "page" : 1, "#" : "name"}`
                         &scheme=`abs`
                      ]]';
-        $this->assertSame('http://site.com/categories/?page=1#name', $this->template->replace($replace, ['url' => '/categories/?view=all']));
+        $this->assertSame('//site.com/categories/?page=1#name', $this->template->replace($replace, ['url' => '/categories/?view=all']));
         $this->template->removeAllPlaceholders();
 
         // modify url + remove args + add args
@@ -378,7 +378,7 @@ class TemplateTest extends TemplateCommon
                         &modify=`{"0" : "!view","page" : 1}`
                         &scheme=`abs`
                      ]]';
-        $this->assertSame('http://site.com/categories/?page=1', $this->template->replace($replace, ['url' => '/categories/?view=all']));
+        $this->assertSame('//site.com/categories/?page=1', $this->template->replace($replace, ['url' => '/categories/?view=all']));
         $this->template->removeAllPlaceholders();
 
         // modify url + remove all args
@@ -386,7 +386,7 @@ class TemplateTest extends TemplateCommon
                         &modify=`["!", "!#"]`
                         &scheme=`abs`
                      ]]';
-        $this->assertSame('http://site.com/categories/', $this->template->replace($replace, ['url' => '/categories/?view=all#name']));
+        $this->assertSame('//site.com/categories/', $this->template->replace($replace, ['url' => '/categories/?view=all#name']));
         $this->template->removeAllPlaceholders();
 
         // modify url + input null
@@ -533,17 +533,17 @@ class TemplateTest extends TemplateCommon
     public function testUnknownFilter()
     {
         $this->setExpectedException(TemplateException::className());
-        $this->template->replace('[[+num:foo&operator=`<<`]]', ['num' => 2], '2');
+        $this->template->replace('[[+num:foo&operator=`<<`]]', ['num' => 2]);
     }
 
     public function testAutoEscape()
     {
-        $this->template->autoEscape = false;
-        $this->assertSame('Hello World', $this->template->replace('[[+title?autoEscape=`2`]]', ['title' => '<b>Hello World</b>']));
+        $this->template->setSanitize(Template::SANITIZE_DISABLE);
+        $this->assertSame('Hello World', $this->template->replace('[[+title?sanitize=`2`]]', ['title' => '<b>Hello World</b>']));
         $this->template->removeAllPlaceholders();
 
-        $this->template->autoEscape = Template::SANITIZE_ESCAPE | Template::SANITIZE_TO_TYPE;
-        $this->assertSame('<b>Hello World</b>', $this->template->replace('[[+title?autoEscape=`false`]]', ['title' => '<b>Hello World</b>']));
+        $this->template->setSanitize(Template::SANITIZE_ESCAPE | Template::SANITIZE_TO_TYPE);
+        $this->assertSame('<b>Hello World</b>', $this->template->replace('[[+title?sanitize=`0`]]', ['title' => '<b>Hello World</b>']));
     }
 
     public function testGetNamePrefix()
@@ -568,18 +568,20 @@ class TemplateTest extends TemplateCommon
 
     public function testSnippet()
     {
-        $this->template->snippets['test']['class'] = TestSnippet::className();
+        $this->template->setSnippets(['test' => ['class' =>  TestSnippet::className()]]);
         $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet('test', ['param' => '<b>test snippet</b>']));
         $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet(new TestSnippet(), ['param' => '<b>test snippet</b>']));
         $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->replace('[[test?param=`<b>test snippet</b>`]]'));
         $this->assertSame('<b>test snippet</b>', $this->template->replace('[[!test?param=`<b>test snippet</b>`]]'));
 
         // as callable
-        $this->template->snippets['test'] = function () {
-            return [
-                'class' => TestSnippet::className()
-            ];
-        };
+        $this->template->setSnippets([
+           'test' => function () {
+                return [
+                    'class' => TestSnippet::className()
+                ];
+            }
+        ]);
         $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet('test', ['param' => '<b>test snippet</b>']));
         $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->getSnippet(new TestSnippet(), ['param' => '<b>test snippet</b>']));
         $this->assertSame(StringHelper::encode('<b>test snippet</b>'), $this->template->replace('[[test?param=`<b>test snippet</b>`]]'));
@@ -588,7 +590,7 @@ class TemplateTest extends TemplateCommon
 
     public function testNullSnippet()
     {
-        $this->template->snippets['nullSnippet']['class'] = NullSnippet::className();
+        $this->template->setSnippets(['nullSnippet' => ['class' => NullSnippet::className()]]);
         $this->assertEmpty($this->template->getSnippet('nullSnippet'));
     }
 
@@ -600,14 +602,14 @@ class TemplateTest extends TemplateCommon
 
     public function testExtensions()
     {
-        $this->template->extensions = [
+        $this->template->setExtensions([
             'extension' => function (array $keys, array $params = []) {
                 if (current($keys) === 'get' && isset($params['param'])) {
                     return $params['param'];
                 }
                 return 'fail';
             },
-        ];
+        ]);
 
         $this->assertSame(StringHelper::encode('<b>test extension</b>'), $this->template->replace('[[#extension.get?param=`<b>test extension</b>`]]'));
         $this->assertSame('<b>test extension</b>', $this->template->replace('[[!#extension.get?param=`<b>test extension</b>`]]'));
@@ -615,7 +617,7 @@ class TemplateTest extends TemplateCommon
 
     public function testNotSerializePlaceholder()
     {
-        $this->template->extensions = [
+        $this->template->setExtensions([
             'extension' => function (array $keys, array $params = []) {
 
                 if (current($keys) === 'get' && isset($params['param'])) {
@@ -626,7 +628,7 @@ class TemplateTest extends TemplateCommon
             'foo' => function () {
                 return ['bar' => '<b>bar text</b>'];
             },
-        ];
+        ]);
         $this->assertSame('<b>text</b>', $this->template->replace('[[!#extension.get?param=`!+foo`]]', ['foo' => ['bar' => '<b>text</b>']]));
         $this->assertSame(StringHelper::encode('<b>bar text</b>'), $this->template->replace('[[!#extension.get?param=`#foo.get`]]'));
     }
@@ -642,7 +644,7 @@ class TemplateTest extends TemplateCommon
         $cache = static::getCache();
         $className = TestSnippet::className();
         $this->template->cache = $cache;
-        $this->template->snippets['test']['class'] = TestSnippet::className();
+        $this->template->setSnippets(['test' => ['class' => TestSnippet::className()]]);
 
         // Rock engine
         $this->assertSame('<b>test snippet</b>', $this->template->replace('[[!test?param=`<b>test snippet</b>`?cacheKey=`' . $className . '`]]'));

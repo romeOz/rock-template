@@ -99,9 +99,9 @@ class ListViewTest extends TemplateCommon
 
     public function testRender()
     {
-        $this->template->snippets['prepareSnippet'] = [
+        $this->template->setSnippets(['prepareSnippet' => [
             'class' => \rockunit\snippets\data\PrepareSnippet::className()
-        ];
+        ]]);
         $this->assertSame(
             $this->removeSpace($this->template->render('@rockunit.tpl/layout', [], new \rockunit\snippets\data\FooController)),
             $this->removeSpace(file_get_contents($this->path . '/_layout.html'))

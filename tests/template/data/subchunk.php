@@ -2,4 +2,4 @@
 use rock\template\Template;
 /** @var Template $this */
 ?>
-<b>subchunk</b><?=$this->getPlaceholder('title');$this->custom?>
+<b>subchunk</b><?=$this->getPlaceholder('title');$this->getPlaceholder('custom')?>
