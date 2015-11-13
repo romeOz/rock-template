@@ -4,6 +4,7 @@ namespace rock\snippets;
 use rock\helpers\ArrayHelper;
 use rock\helpers\Helper;
 use rock\helpers\Json;
+use rock\template\Template;
 
 /**
  * Snippet "listView".
@@ -167,9 +168,9 @@ class ListViewSnippet extends Snippet
      */
     public $errorText = '';
     /**
-     * @var int|bool
+     * @inheritdoc
      */
-    public $autoEscape = false;
+    public $sanitize = Template::SANITIZE_DISABLE;
 
     /**
      * @inheritdoc
@@ -312,7 +313,7 @@ class ListViewSnippet extends Snippet
         }
         $this->prepare['params'] = Helper::getValue($this->prepare['params'], []);
         $this->prepare['params']['placeholders'] = $placeholders;
-        $this->prepare['params']['autoEscape'] = false;
+        $this->prepare['params']['sanitize'] = Template::SANITIZE_DISABLE;
         $placeholders = $this->callFunction($this->prepare['call'], $this->prepare['params']);
     }
 

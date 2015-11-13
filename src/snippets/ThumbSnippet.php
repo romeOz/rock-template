@@ -6,6 +6,7 @@ use rock\helpers\Instance;
 use rock\image\ImageProvider;
 use rock\image\ThumbInterface;
 use rock\template\Html;
+use rock\template\Template;
 
 /**
  * Snippet "Thumb"
@@ -49,7 +50,10 @@ class ThumbSnippet extends Snippet
     /** @var  string */
     public $dummy;
     public $const = 1;
-    public $autoEscape = false;
+    /**
+     * @inheritdoc
+     */
+    public $sanitize = Template::SANITIZE_DISABLE;
 
     /** @var  ImageProvider|string|array */
     public $imageProvider = 'imageProvider';

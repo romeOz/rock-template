@@ -42,7 +42,7 @@ class UrlSnippet extends Snippet implements UrlInterface
     /**
      * @inheritdoc
      */
-    public $autoEscape = Template::STRIP_TAGS;
+    public $sanitize = Template::SANITIZE_STRIP_TAGS;
 
     public function init()
     {

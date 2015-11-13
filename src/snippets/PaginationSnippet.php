@@ -2,6 +2,7 @@
 namespace rock\snippets;
 
 use rock\helpers\Helper;
+use rock\template\Template;
 use rock\url\Url;
 
 /**
@@ -62,13 +63,11 @@ class PaginationSnippet extends Snippet
     public $pageParam = \rock\helpers\Pagination::PAGE_PARAM;
     /**
      * Template for active page.
-     *
      * @var string
      */
     public $pageActiveTpl = '@template.views/pagination/numActive';
     /**
      * Template for num page.
-     *
      * @var string
      */
     public $pageNumTpl = '@template.views/pagination/num';
@@ -79,7 +78,6 @@ class PaginationSnippet extends Snippet
     public $pageFirstName = 'page first';
     /**
      * Template for first page.
-     *
      * @var string
      */
     public $pageFirstTpl = '@template.views/pagination/first';
@@ -90,19 +88,20 @@ class PaginationSnippet extends Snippet
     public $pageLastName = 'page last';
     /**
      * Template for last page.
-     *
      * @var string
      */
     public $pageLastTpl = '@template.views/pagination/last';
     /**
      * Template for wrapper.
-     *
      * @var string
      */
     public $wrapperTpl = '@template.views/pagination/wrapper';
     /** @var  array */
     public $url = [];
-    public $autoEscape = false;
+    /**
+     * @inheritdoc
+     */
+    public $sanitize = Template::SANITIZE_DISABLE;
     /**
      * URL-arguments.
      *

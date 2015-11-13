@@ -17,11 +17,14 @@ abstract class Snippet implements ComponentsInterface
     const EVENT_AFTER_SNIPPET = 'afterSnippet';
 
     /**
-     * Is mode auto-escaping
-     * @var int|bool
+     * Mode sanitize.
+     * @var int
      */
-    public $autoEscape = true;
-    /** @var  Template|string|array */
+    public $sanitize = Template::SANITIZE_ESCAPE;
+    /**
+     * Instance Rock Template.
+     * @var Template|string|array
+     */
     public $template = 'template';
 
     public function init()
@@ -31,7 +34,7 @@ abstract class Snippet implements ComponentsInterface
     }
 
     /**
-     * Get content
+     * Returns a content.
      *
      * @return mixed
      */
@@ -98,9 +101,7 @@ abstract class Snippet implements ComponentsInterface
     }
 
     /**
-     * @param mixed $function - may be a callable, snippet, and instance
-     * @param array $params
-     * @return mixed
+     * Call function.
      *
      * ```php
      * $this->callFunction('\foo\Snippet');
@@ -109,6 +110,10 @@ abstract class Snippet implements ComponentsInterface
      * $this->callFunction([Foo::className(), 'get']);
      * $this->callFunction([new Foo(), 'get']);
      * ```
+     *
+     * @param mixed $function may be a callable, snippet, and instance.
+     * @param array $params
+     * @return mixed
      */
     protected function callFunction($function, array $params = [])
     {
@@ -122,7 +127,7 @@ abstract class Snippet implements ComponentsInterface
         }
         if (is_array($function)) {
             if ($function[0] === 'context') {
-                $function[0] = $this->template->context;
+                $function[0] = $this->template->getContext();
                 return call_user_func_array($function, $params);
             } elseif (is_string($function[0])) {
                 if (class_exists('\rock\di\Container') && Container::exists($function[0])) {

@@ -1,5 +1,6 @@
 <?php
 namespace rock\snippets;
+use rock\template\Template;
 
 /**
  * Snippet "ForSnippet"
@@ -38,11 +39,10 @@ class ForSnippet extends Snippet
      * @var string
      */
     public $wrapperTpl;
-
     /**
-     * @var int|bool
+     * @inheritdoc
      */
-    public $autoEscape = false;
+    public $autoEscape = Template::SANITIZE_DISABLE;
 
 
     public function get()

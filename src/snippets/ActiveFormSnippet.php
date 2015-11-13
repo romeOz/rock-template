@@ -9,6 +9,7 @@ use rock\helpers\ArrayHelper;
 use rock\helpers\Helper;
 use rock\helpers\Instance;
 use rock\template\Html;
+use rock\template\Template;
 
 class ActiveFormSnippet extends Snippet
 {
@@ -35,8 +36,7 @@ class ActiveFormSnippet extends Snippet
     /**
      * @inheritdoc
      */
-    public $autoEscape = false;
-
+    public $sanitize = Template::SANITIZE_DISABLE;
 
     /**
      * @inheritdoc
