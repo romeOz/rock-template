@@ -3,27 +3,21 @@
 namespace rock\snippets\filters;
 
 
-use rock\access\Access;
-use rock\helpers\Instance;
+use rock\filters\AccessTrait;
 
 class AccessFilter extends SnippetFilter
 {
-    /** @var  Access */
-    public $access;
+    use AccessTrait;
+
+    /**
+     * Sending response headers. `true` by default.
+     * @var bool
+     */
+    public $sendHeaders = false;
     public $rules = [];
 
     public function before()
     {
-        $this->access = Instance::ensure([
-            'class' => Access::className(),
-            'owner' => $this->owner,
-            'rules' => $this->rules,
-            'request' => $this->request
-        ]);
-        if (!$this->access->checkAccess()) {
-            return false;
-        }
-
-        return true;
+        return $this->check();
     }
 }

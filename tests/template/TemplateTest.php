@@ -542,7 +542,7 @@ class TemplateTest extends TemplateCommon
         $this->assertSame('Hello World', $this->template->replace('[[+title?autoEscape=`2`]]', ['title' => '<b>Hello World</b>']));
         $this->template->removeAllPlaceholders();
 
-        $this->template->autoEscape = Template::ESCAPE | Template::TO_TYPE;
+        $this->template->autoEscape = Template::SANITIZE_ESCAPE | Template::SANITIZE_TO_TYPE;
         $this->assertSame('<b>Hello World</b>', $this->template->replace('[[+title?autoEscape=`false`]]', ['title' => '<b>Hello World</b>']));
     }
 

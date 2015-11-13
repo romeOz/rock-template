@@ -44,7 +44,7 @@ abstract class TemplateCommon extends \PHPUnit_Framework_TestCase
     {
         $config = array_merge([
             'chroots' => ['@template.views', '@rockunit.tpl'],
-            'autoEscape' => Template::ESCAPE | Template::TO_TYPE
+            'autoEscape' => Template::SANITIZE_ESCAPE | Template::SANITIZE_TO_TYPE
         ], $config);
         return new Template($config);
     }
