@@ -24,7 +24,7 @@ matrix:
     - php: hhvm-nightly
 
 services:
-  - memcached
+  - redis-server
 
 install:
   - composer self-update && composer --version
