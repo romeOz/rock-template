@@ -113,11 +113,6 @@ class ViewRendererTest extends TemplateCommon
         $this->assertEquals($content, '6');
     }
 
-    public function test_()
-    {
-        var_dump($this->template->render('@rockunit.views\layout.twig'));
-    }
-
     /**
      * @inheritdoc
      */
