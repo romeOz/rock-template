@@ -3,6 +3,7 @@
 namespace rock\template;
 
 
+use rock\base\ClassName;
 use rock\csrf\CSRF;
 use rock\helpers\ArrayHelper;
 use rock\helpers\Instance;
@@ -14,6 +15,8 @@ use rock\url\Url;
 
 class Html
 {
+    use ClassName;
+
     /**
      * @var array list of void elements (element name => 1)
      * @see http://www.w3.org/TR/html-markup/syntax.html#void-element

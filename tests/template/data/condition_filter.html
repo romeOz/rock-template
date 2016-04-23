@@ -1,9 +1,9 @@
 [[+title:notEmpty&then=`@INLINE[[!+title]]`]]
 [[!+title:notEmpty&then=`@INLINE[[!+output]]`]]
-[[!+title:notEmpty&then=`@rockunit.tpl\subchunk`&addPlaceholders=`{"0" : "title", "custom" : "foo"}`]]
-[[!+title:notEmpty&then=`@INLINE[[$@rockunit.tpl\subchunk?title=`[[!+title]]`?custom=`foo`]]`]]
+[[!+title:notEmpty&then=`@rockunit.views\subchunk`&addPlaceholders=`{"0" : "title", "custom" : "foo"}`]]
+[[!+title:notEmpty&then=`@INLINE[[$@rockunit.views\subchunk?title=`[[!+title]]`?custom=`foo`]]`]]
 [[+content:empty&then=`@INLINE[[+title]]`]]
-[[+content:empty&then=`@rockunit.tpl\subchunk`]]
+[[+content:empty&then=`@rockunit.views\subchunk`]]
 [[+content:notEmpty&then=`@INLINE[[+output]]`]]
 
 [[!+num:notEmpty&then=`@INLINE[[!+output]]`]]

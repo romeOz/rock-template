@@ -27,8 +27,7 @@ class Template implements EventsInterface, \ArrayAccess
 {
     use EventsTrait;
 
-    const ENGINE_ROCK = 1;
-    const ENGINE_PHP = 2;
+    const ENGINE_ROCK = 'rock';
 
     const SANITIZE_DISABLE = 0;
     const SANITIZE_ESCAPE = 1;
@@ -74,15 +73,14 @@ class Template implements EventsInterface, \ArrayAccess
      * @var array
      */
     protected $engines = [
-        self::ENGINE_ROCK => 'html',
-        self::ENGINE_PHP => 'php',
+        'html' => self::ENGINE_ROCK,
     ];
     /**
-     * Use of engine default.
+     * Default extension to file.
      *
      * @var int
      */
-    protected $defaultEngine = self::ENGINE_ROCK;
+    protected $defaultExtension = 'html';
     /**
      * List filters.
      *
@@ -171,31 +169,32 @@ class Template implements EventsInterface, \ArrayAccess
      * @var string
      */
     protected $locale = 'en';
+    protected $renderMeta = true;
     /**
      * Head layout.
      * @var string
      */
-    protected $head = "<!DOCTYPE html>\n<html>";
+    public $head = "<!DOCTYPE html>\n<html>";
     /**
      * The page title.
      * @var string
      */
-    protected $title = '';
+    public $title = '';
     /**
      * @var array the registered meta tags.
      * @see registerMetaTag()
      */
-    protected $metaTags = [];
+    public $metaTags = [];
     /**
      * @var array the registered link tags.
      * @see registerLinkTag()
      */
-    protected $linkTags = [];
+    public $linkTags = [];
     /**
      * Body layout.
      * @var string
      */
-    protected $body = '<body>';
+    public $body = '<body>';
     /**
      * List placeholders.
      * @var array
@@ -229,6 +228,9 @@ class Template implements EventsInterface, \ArrayAccess
         }
         $this->request = Instance::ensure($this->request, '\rock\request\Request');
         $this->cache = Instance::ensure($this->cache, null, [], false);
+        foreach ($this->chroots as &$chroot) {
+            $chroot = Alias::getAlias($chroot);
+        }
         $this->snippets = array_merge($this->defaultSnippets(), $this->snippets);
         $this->filters = array_merge($this->defaultFilters(), $this->filters);
     }
@@ -236,10 +238,28 @@ class Template implements EventsInterface, \ArrayAccess
     /**
      * Sets a locale.
      * @param string $locale
+     * @return $this
      */
     public function setLocale($locale)
     {
         $this->locale = strtolower($locale);
+        return $this;
+    }
+
+    /**
+     * Adds a engines.
+     * @param array $engines
+     * @return $this
+     */
+    public function setEngines(array $engines)
+    {
+        $this->engines = array_merge($this->engines, $engines);
+        return $this;
+    }
+
+    public function setRenderMeta()
+    {
+
     }
 
     /**
@@ -357,9 +377,9 @@ class Template implements EventsInterface, \ArrayAccess
      * @param int $engine
      * @return $this
      */
-    public function setDefaultEngine($engine)
+    public function setDefaultExtension($engine)
     {
-        $this->defaultEngine = $engine;
+        $this->defaultExtension = $engine;
         return $this;
     }
 
@@ -414,6 +434,15 @@ class Template implements EventsInterface, \ArrayAccess
     {
         $this->chroots = $paths;
         return $this;
+    }
+
+    /**
+     * Returns root-paths to view directories.
+     * @return array
+     */
+    public function getChroots()
+    {
+        return $this->chroots;
     }
 
     /**
@@ -887,7 +916,7 @@ class Template implements EventsInterface, \ArrayAccess
     {
         $path = Alias::getAlias($path, ['lang' => $this->locale]);
         if (!pathinfo($path, PATHINFO_EXTENSION)) {
-            $path .= '.' . $this->engines[$this->defaultEngine];
+            $path .= '.' . $this->defaultExtension;
         }
 
         return file_exists($path);
@@ -1224,12 +1253,18 @@ class Template implements EventsInterface, \ArrayAccess
             throw new TemplateException("The requested view '{$path}' is beyond the scope of chroot");
         }
         $this->path = $path;
-        if (current(array_keys($this->engines, pathinfo($path, PATHINFO_EXTENSION))) === self::ENGINE_PHP) {
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        if (isset($this->engines[$ext])) {
+            if ($this->engines[$ext] === self::ENGINE_ROCK) {
+                return $this->replace(file_get_contents($path), $placeholders);
+            }
+            /** @var BaseViewRenderer $renderer */
+            $renderer = Instance::ensure($this->engines[$ext]);
+            return $renderer->render($this, $path, $placeholders);
+        } else {
             $this->addMultiPlaceholders($placeholders ?: []);
 
             return $this->renderPhpFile($path);
-        } else {
-            return $this->replace(file_get_contents($path), $placeholders);
         }
     }
 
@@ -1907,7 +1942,7 @@ class Template implements EventsInterface, \ArrayAccess
         $path = FileHelper::normalizePath($path, DIRECTORY_SEPARATOR, false);
 
         if (!pathinfo($path, PATHINFO_EXTENSION)) {
-            $path .= '.' . $this->engines[$this->defaultEngine];
+            $path .= '.' . $this->defaultExtension;
         }
         $normalizePath = $path;
         // relative path
@@ -1931,7 +1966,7 @@ class Template implements EventsInterface, \ArrayAccess
     protected function checkPath($path)
     {
         foreach ($this->chroots as $chroot) {
-            if (StringHelper::contains($path, Alias::getAlias($chroot))) {
+            if (StringHelper::contains($path, $chroot)) {
                 return true;
             }
         }

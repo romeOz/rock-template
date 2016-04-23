@@ -24,7 +24,7 @@ abstract class TemplateCommon extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $this->calculatePath();
-        Alias::setAlias('rockunit.tpl', $this->path);
+        Alias::setAlias('rockunit.views', $this->path);
         $this->template = $this->getTemplate();
     }
 
@@ -40,10 +40,14 @@ abstract class TemplateCommon extends \PHPUnit_Framework_TestCase
         static::clearCache();
     }
 
+    /**
+     * @param array $config
+     * @return Template
+     */
     protected function getTemplate(array $config = [])
     {
         $config = array_merge([
-            'chroots' => ['@template.views', '@rockunit.tpl'],
+            'chroots' => ['@template.views', '@rockunit.views'],
             'sanitize' => Template::SANITIZE_ESCAPE | Template::SANITIZE_TO_TYPE
         ], $config);
         return new Template($config);
