@@ -4,6 +4,7 @@ namespace rockunit\common;
 
 
 use rock\cache\Memcached;
+use rock\cache\Redis;
 use rock\helpers\FileHelper;
 
 trait CommonTestTrait
@@ -27,7 +28,7 @@ trait CommonTestTrait
      */
     protected static function getCache(array $config = [])
     {
-        return new Memcached($config);
+        return new Redis($config);
     }
 
     protected static function clearCache()

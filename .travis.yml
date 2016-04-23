@@ -30,7 +30,7 @@ install:
   - composer self-update && composer --version
   - composer install --prefer-dist
   - composer require satooshi/php-coveralls:*@dev
-  - tests/data/travis/memcache-setup.sh
+  - tests/data/travis/redis-setup.sh
 
 script:
   - mkdir -p build/logs
