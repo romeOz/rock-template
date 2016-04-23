@@ -103,7 +103,7 @@ class ListViewTest extends TemplateCommon
             'class' => \rockunit\snippets\data\PrepareSnippet::className()
         ]]);
         $this->assertSame(
-            $this->removeSpace($this->template->render('@rockunit.tpl/layout', [], new \rockunit\snippets\data\FooController)),
+            $this->removeSpace($this->template->render('@rockunit.views/layout', [], new \rockunit\snippets\data\FooController)),
             $this->removeSpace(file_get_contents($this->path . '/_layout.html'))
         );
     }
